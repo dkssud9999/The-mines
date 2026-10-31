@@ -184,8 +184,8 @@
   let selectedWeapon='axe', difficulty=0, soundOn=true, audio=null, musicTimer=0, musicStep=0,lastEnemyShotSound=0;
   let screen='title', previousScreen='playing', lastTime=0, time=0, toastTimer=0, shake=0;
   let keys={}, mouse={x:W/2,y:H/2,down:false};
-  let touchMode=false;const stickRadius=60,chargeStickScale=1.3;
-  const touchMove={active:false,id:null,x:0,y:0,dx:0,dy:0},touchAim={active:false,id:null,x:0,y:0,dx:0,dy:0,chargeLocked:false,rechargeDelay:0,firedWhileHeld:false};
+  let touchMode=false;const stickRadius=60,chargeStickScale=1.3,tapMaxMs=260,tapMovePx=18;
+  const touchMove={active:false,id:null,x:0,y:0,dx:0,dy:0},touchAim={active:false,id:null,x:0,y:0,dx:0,dy:0,chargeLocked:false,rechargeDelay:0,firedWhileHeld:false,tapCandidate:false,downAt:0,downX:0,downY:0,fallbackAngle:-Math.PI/2};
   const stickHomes={left:{x:112,y:H-112},right:{x:W-112,y:H-112}},defaultStickHomes={left:{x:112,y:H-112},right:{x:W-112,y:H-112}},touchDashHome={x:W-78,y:H-220,r:50},touchPauseHome={x:W/2,y:31,r:21};
   let player, enemies=[], bullets=[], shots=[], particles=[], texts=[], obstacles=[], drops=[], hazards=[], lightningArcs=[], weaponEffects=[];
   let stage=1, phase='wave', roomCount=0, kills=0, xp=0, xpNeed=6, runTime=0, runDifficulty=0, endless=false, boss=null;
@@ -212,7 +212,7 @@
     });
     $('unlockNote').textContent=`최고 구역 ${saved.bestZone} · 처치 ${saved.bestKills} · 클리어 ${saved.wins}회${saved.highestDifficulty?` · 해금 난이도 ${difficultyName(saved.highestDifficulty)}`:''}`;
     $('moveHelp').textContent=touchMode?'왼쪽 조이스틱 이동':'W A S D 이동';$('aimHelp').textContent=touchMode?'오른쪽 조이스틱 조준':'마우스 조준';$('dashHelp').textContent=touchMode?'오른쪽 위 대시 버튼':'SPACE 대시';$('pauseHelp').textContent=touchMode?'위쪽 일시정지 버튼':'ESC 일시정지';
-    $('attackHelp').textContent=touchMode?(selectedWeapon==='axe'?'도끼: 드래그 중 기본 공격 · 1.3× 넘게 당겨 차지':'오른쪽 조이스틱을 움직여 조준·공격'):selectedWeapon==='axe'?'도끼: 눌러 모으고 놓기 · 완충 시 자동 발사':selectedWeapon==='twin'?'쌍날 낫: 누르고 빠른 참격':'지팡이: 누르고 조준 방향으로 연사';
+    $('attackHelp').textContent=touchMode?(selectedWeapon==='axe'?'탭: 자동 조준 · 드래그: 공격 · 1.3×: 도끼 차지':'탭: 가까운 적 자동 조준 · 드래그: 직접 조준·공격'):selectedWeapon==='axe'?'도끼: 눌러 모으고 놓기 · 완충 시 자동 발사':selectedWeapon==='twin'?'쌍날 낫: 누르고 빠른 참격':'지팡이: 누르고 조준 방향으로 연사';
     $('difficultyButton').textContent=`난이도 · ${difficultyName(difficulty)}`;
     $('difficultyButton').disabled=difficulty>saved.highestDifficulty;
   }
@@ -471,6 +471,19 @@
     }
     for(let i=0;i<slashAngles.length;i++)weaponEffects.push({kind:'cleave',x:player.x,y:player.y,angle:slashAngles[i],reach,halfAngle,color:i%2?'#d4aeff':'#9de8d9',life:.24,maxLife:.24});
   }
+  function autoAimAttack(){
+    if(!player||screen!=='playing'||attackTimer>0)return;
+    const range=player.weapon==='twin'?185:player.weapon==='axe'?240:700;
+    let target=null,nearest=range;
+    for(const enemy of enemies){
+      if(enemy.hp<=0||(enemy.kind==='boss'&&enemy.invulnerable))continue;
+      const distance=dist(player,enemy)-enemy.r;
+      if(distance<nearest){nearest=distance;target=enemy;}
+    }
+    const angle=target?Math.atan2(target.y-player.y,target.x-player.x):touchAim.fallbackAngle;
+    mouse.x=player.x+Math.cos(angle)*400;mouse.y=player.y+Math.sin(angle)*400;
+    startAttack(player.weapon==='axe'?0:1);
+  }
   function tryDash(){
     if(dashCooldown>0||!player)return;
     let dx=(keys.d||keys.ArrowRight?1:0)-(keys.a||keys.ArrowLeft?1:0)+touchMove.dx,dy=(keys.s||keys.ArrowDown?1:0)-(keys.w||keys.ArrowUp?1:0)+touchMove.dy;
@@ -492,16 +505,18 @@
     collidePlayer();
     player.moveVX=dt?(player.x-oldPlayerX)/dt:0;player.moveVY=dt?(player.y-oldPlayerY)/dt:0;
     const touchAimLength=Math.hypot(touchAim.x-stickHomes.right.x,touchAim.y-stickHomes.right.y);
+    if(touchAim.active&&touchAim.tapCandidate&&performance.now()-touchAim.downAt>tapMaxMs)touchAim.tapCandidate=false;
+    const manualTouchAim=touchAim.active&&!touchAim.tapCandidate;
     if(touchAim.active&&touchAimLength>8){touchAim.dx=(touchAim.x-stickHomes.right.x)/touchAimLength;touchAim.dy=(touchAim.y-stickHomes.right.y)/touchAimLength;mouse.x=player.x+touchAim.dx*400;mouse.y=player.y+touchAim.dy*400;}
     if(touchAim.active&&touchAim.rechargeDelay>0)touchAim.rechargeDelay=Math.max(0,touchAim.rechargeDelay-dt);
     if(touchAim.active&&touchAimLength<stickRadius*chargeStickScale*.82){touchAim.chargeLocked=false;touchAim.rechargeDelay=0;}
     else if(touchAim.active&&touchAim.rechargeDelay<=0&&touchAimLength>=stickRadius*chargeStickScale)touchAim.chargeLocked=false;
-    if(player.weapon==='axe'&&(mouse.down||touchAim.active)){
+    if(player.weapon==='axe'&&(mouse.down||manualTouchAim)){
       if(mouse.down&&!player.charging)startAxeCharge();
-      if(touchAim.active&&touchAimLength>=stickRadius*chargeStickScale&&!touchAim.chargeLocked&&touchAim.rechargeDelay<=0&&!player.charging){startAxeCharge();touchAim.firedWhileHeld=true;}
-      if(touchAim.active&&touchAimLength>8&&touchAimLength<stickRadius*chargeStickScale&&!player.charging&&attackTimer<=0){startAttack(0);touchAim.firedWhileHeld=true;}
+      if(manualTouchAim&&touchAimLength>=stickRadius*chargeStickScale&&!touchAim.chargeLocked&&touchAim.rechargeDelay<=0&&!player.charging){startAxeCharge();touchAim.firedWhileHeld=true;}
+      if(manualTouchAim&&touchAimLength>8&&touchAimLength<stickRadius*chargeStickScale&&!player.charging&&attackTimer<=0){startAttack(0);touchAim.firedWhileHeld=true;}
       if(player.charging){player.chargeTime+=dt;if(player.chargeTime>=axeChargeMax){releaseAxeCharge();if(touchAim.active){touchAim.chargeLocked=true;touchAim.rechargeDelay=.2;}}}
-    } else if((mouse.down||(touchAim.active&&touchAimLength>12))&&attackTimer<=0){startAttack();if(touchAim.active)touchAim.firedWhileHeld=true;}
+    } else if((mouse.down||(manualTouchAim&&touchAimLength>12))&&attackTimer<=0){startAttack();if(manualTouchAim)touchAim.firedWhileHeld=true;}
     updateShots(dt);updateEnemies(dt);updateBullets(dt);updateHazards(dt);updateLightningArcs(dt);updateWeaponEffects(dt);updateDrops(dt);updateParticles(dt);updateTexts(dt);
     if(relicBag.razor){player.razorAngle=(player.razorAngle||0)+dt*2.5;const n=1+Math.min(2,relicBag.razor-1);for(let i=0;i<n;i++){const a=player.razorAngle+Math.PI*2*i/n;const p={x:player.x+Math.cos(a)*31,y:player.y+Math.sin(a)*31,r:8};for(const e of enemies){if(dist(p,e)<p.r+e.r&&Math.random()<dt*3.5)damageEnemy(e,5+relicBag.razor*2,'razor');}}}
     if(phase==='boss'&&boss){boss.phase=boss.hp<boss.maxHp*boss.rageAt?2:1;updateHud();}
@@ -894,14 +909,14 @@
   function moveStickHomeWithinRange(name,x,y){const anchor=defaultStickHomes[name],home=stickHomes[name],dx=x-anchor.x,dy=y-anchor.y,distance=Math.hypot(dx,dy),limit=stickRadius*.75,scale=distance>limit?limit/distance:1;home.x=anchor.x+dx*scale;home.y=anchor.y+dy*scale;}
   function resetStickHome(name){stickHomes[name].x=defaultStickHomes[name].x;stickHomes[name].y=defaultStickHomes[name].y;}
   function updateTouchStick(stick,home){stick.x=mouse.x;stick.y=mouse.y;let dx=(stick.x-home.x)/stickRadius,dy=(stick.y-home.y)/stickRadius,length=Math.hypot(dx,dy);if(length>1){dx/=length;dy/=length;}stick.dx=dx;stick.dy=dy;if(stick===touchAim&&player){const aimLength=Math.hypot(stick.x-home.x,stick.y-home.y);if(aimLength>8){mouse.x=player.x+(stick.x-home.x)/aimLength*400;mouse.y=player.y+(stick.y-home.y)/aimLength*400;}}}
-  canvas.addEventListener('pointermove',e=>{if(e.pointerType==='touch'||e.pointerType==='pen'){setMouse(e);if(touchMove.active&&touchMove.id===e.pointerId)updateTouchStick(touchMove,stickHomes.left);if(touchAim.active&&touchAim.id===e.pointerId)updateTouchStick(touchAim,stickHomes.right);}else setMouse(e);});
+  canvas.addEventListener('pointermove',e=>{if(e.pointerType==='touch'||e.pointerType==='pen'){setMouse(e);if(touchMove.active&&touchMove.id===e.pointerId)updateTouchStick(touchMove,stickHomes.left);if(touchAim.active&&touchAim.id===e.pointerId){if(Math.hypot(e.clientX-touchAim.downX,e.clientY-touchAim.downY)>tapMovePx)touchAim.tapCandidate=false;updateTouchStick(touchAim,stickHomes.right);}}else setMouse(e);});
   canvas.addEventListener('pointerdown',e=>{
     if(e.pointerType==='touch'||e.pointerType==='pen'){if(!touchMode){touchMode=true;syncWeaponPicker();}
-      e.preventDefault();setMouse(e);if(screen!=='playing'||!player)return;
+      e.preventDefault();const previousAim=player?Math.atan2(mouse.y-player.y,mouse.x-player.x):-Math.PI/2;setMouse(e);if(screen!=='playing'||!player)return;
       const p=touchPauseHome;if(Math.hypot(mouse.x-p.x,mouse.y-p.y)<=p.r+14){cancelAxeCharge();mouse.down=false;previousScreen='playing';setScreen('paused','pauseOverlay');canvas.setPointerCapture?.(e.pointerId);return;}
       const d=touchDashHome;if(Math.hypot(mouse.x-d.x,mouse.y-d.y)<=d.r+18){tryDash();canvas.setPointerCapture?.(e.pointerId);return;}
       if(mouse.x<W/2&&!touchMove.active){moveStickHomeWithinRange('left',mouse.x,mouse.y);touchMove.active=true;touchMove.id=e.pointerId;updateTouchStick(touchMove,stickHomes.left);}
-      else if(mouse.x>=W/2&&!touchAim.active){moveStickHomeWithinRange('right',mouse.x,mouse.y);touchAim.active=true;touchAim.id=e.pointerId;touchAim.chargeLocked=false;touchAim.rechargeDelay=0;touchAim.firedWhileHeld=false;updateTouchStick(touchAim,stickHomes.right);}
+      else if(mouse.x>=W/2&&!touchAim.active){moveStickHomeWithinRange('right',mouse.x,mouse.y);touchAim.active=true;touchAim.id=e.pointerId;touchAim.chargeLocked=false;touchAim.rechargeDelay=0;touchAim.firedWhileHeld=false;touchAim.tapCandidate=true;touchAim.downAt=performance.now();touchAim.downX=e.clientX;touchAim.downY=e.clientY;touchAim.fallbackAngle=previousAim;updateTouchStick(touchAim,stickHomes.right);}
       canvas.setPointerCapture?.(e.pointerId);return;
     }
     setMouse(e);if(e.button===0){mouse.down=true;if(screen==='playing'&&player?.weapon==='axe')startAxeCharge();canvas.setPointerCapture?.(e.pointerId);}
@@ -909,13 +924,13 @@
   window.addEventListener('pointerup',e=>{
     if(e.pointerType==='touch'||e.pointerType==='pen'){
       if(touchMove.active&&touchMove.id===e.pointerId){touchMove.active=false;touchMove.id=null;touchMove.dx=0;touchMove.dy=0;resetStickHome('left');}
-      if(touchAim.active&&touchAim.id===e.pointerId){const aimLength=touchAimLengthForDraw();if(player&&aimLength>8){mouse.x=player.x+(touchAim.x-stickHomes.right.x)/aimLength*400;mouse.y=player.y+(touchAim.y-stickHomes.right.y)/aimLength*400;}if(screen==='playing'&&player){if(player.weapon==='axe'){if(player.charging)releaseAxeCharge();else if(!touchAim.firedWhileHeld&&aimLength>2&&aimLength<stickRadius*chargeStickScale&&attackTimer<=0)startAttack(0);}else if(!touchAim.firedWhileHeld&&aimLength>12&&attackTimer<=0)startAttack();}touchAim.active=false;touchAim.id=null;touchAim.dx=0;touchAim.dy=0;touchAim.chargeLocked=false;touchAim.rechargeDelay=0;touchAim.firedWhileHeld=false;resetStickHome('right');}
+      if(touchAim.active&&touchAim.id===e.pointerId){const aimLength=touchAimLengthForDraw(),isTap=touchAim.tapCandidate&&performance.now()-touchAim.downAt<=tapMaxMs&&Math.hypot(e.clientX-touchAim.downX,e.clientY-touchAim.downY)<=tapMovePx;if(player&&aimLength>8){mouse.x=player.x+(touchAim.x-stickHomes.right.x)/aimLength*400;mouse.y=player.y+(touchAim.y-stickHomes.right.y)/aimLength*400;}if(screen==='playing'&&player){if(isTap)autoAimAttack();else if(player.weapon==='axe'){if(player.charging)releaseAxeCharge();else if(!touchAim.firedWhileHeld&&aimLength>2&&aimLength<stickRadius*chargeStickScale&&attackTimer<=0)startAttack(0);}else if(!touchAim.firedWhileHeld&&aimLength>12&&attackTimer<=0)startAttack();}touchAim.active=false;touchAim.id=null;touchAim.dx=0;touchAim.dy=0;touchAim.chargeLocked=false;touchAim.rechargeDelay=0;touchAim.firedWhileHeld=false;touchAim.tapCandidate=false;resetStickHome('right');}
       return;
     }
     if(e.button!==0)return;if(screen==='playing')releaseAxeCharge();else cancelAxeCharge();mouse.down=false;
   });
-  window.addEventListener('pointercancel',()=>{cancelAxeCharge();mouse.down=false;touchMove.active=false;touchMove.id=null;touchMove.dx=touchMove.dy=0;resetStickHome('left');touchAim.active=false;touchAim.id=null;touchAim.dx=touchAim.dy=0;touchAim.chargeLocked=false;touchAim.rechargeDelay=0;touchAim.firedWhileHeld=false;resetStickHome('right');});
-  window.addEventListener('blur',()=>{cancelAxeCharge();mouse.down=false;touchMove.active=false;touchMove.dx=touchMove.dy=0;resetStickHome('left');touchAim.active=false;touchAim.dx=touchAim.dy=0;touchAim.chargeLocked=false;touchAim.rechargeDelay=0;touchAim.firedWhileHeld=false;resetStickHome('right');});
+  window.addEventListener('pointercancel',()=>{cancelAxeCharge();mouse.down=false;touchMove.active=false;touchMove.id=null;touchMove.dx=touchMove.dy=0;resetStickHome('left');touchAim.active=false;touchAim.id=null;touchAim.dx=touchAim.dy=0;touchAim.chargeLocked=false;touchAim.rechargeDelay=0;touchAim.firedWhileHeld=false;touchAim.tapCandidate=false;resetStickHome('right');});
+  window.addEventListener('blur',()=>{cancelAxeCharge();mouse.down=false;touchMove.active=false;touchMove.dx=touchMove.dy=0;resetStickHome('left');touchAim.active=false;touchAim.dx=touchAim.dy=0;touchAim.chargeLocked=false;touchAim.rechargeDelay=0;touchAim.firedWhileHeld=false;touchAim.tapCandidate=false;resetStickHome('right');});
   canvas.addEventListener('contextmenu',e=>e.preventDefault());
   function cancelAxeCharge(){if(player){player.charging=false;player.chargeTime=0;}}
   window.addEventListener('keydown',e=>{const key=e.key.length===1?e.key.toLowerCase():e.key;keys[key]=true;if([' ','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key))e.preventDefault();if(e.key===' '&&screen==='playing')tryDash();if(e.key==='Escape'){if(screen==='playing'){cancelAxeCharge();mouse.down=false;previousScreen='playing';setScreen('paused','pauseOverlay');}else if(screen==='paused')setScreen('playing');}});
