@@ -43,8 +43,16 @@ These notes collect reusable ideas for the game's combat and weapon design. The 
 6. For bosses, keep an attack sequence stable across phase breaks, then add one readable objective or lingering arena threat at a health threshold. This raises pressure and target priority while keeping the learned core pattern intact.
 7. The Twin Scythe had been implemented as two long-range returning axes, making it feel like a weaker copy of the Boomerang Axe. Its core is now short-range paired crescents; its cleave evolution now changes every swing into a stronger, wider slash, and Split adds another crescent.
 8. The Star boss's twin-add phase now pauses the boss's normal attacks and schedules the brothers in turns. Normal uses longer warning and recovery intervals with fewer bullets; Hard keeps a shorter cadence and denser volleys.
-9. The relic pool now has 15 items, with six new effects for defense, movement, kill healing, enemy control, burn explosions, and every-fifth-attack damage. New relics enter loot pools without requiring existing save data to be reset.
-10. Normal's final boss now has a distinct difficulty budget: lower health, shorter and sparser bullet-hell segments, fewer homing shots, weaker twin adds, and a later, wider last-stand arena. Hard retains the original pressure and full pattern density.
+9. The relic pool now has 18 items, including new effects for defense, movement, kill healing, enemy control, burn explosions, every-fifth-attack damage, and weapon-specific attacks. New relics enter loot pools without requiring existing save data to be reset.
+10. The Explorer final boss is now slightly below the previous Hard pressure, while Abyss retains that previous Hard baseline. Abyss and Collapse also step up ordinary-enemy speed/fire cadence and the pressure of non-final bosses.
+
+## Recorded playtest follow-ups
+
+These are tracked for playtesting and are not part of the current difficulty-profile change:
+
+- Recheck whether the 200-unit enemy spawn buffer feels fair across every arena edge and stage; the fallback chooses the farthest sampled point if no candidate meets the buffer.
+- Rebalance regular-enemy and boss health after several full runs at each difficulty, especially the final boss's long multi-phase health budget.
+- Verify mobile controls on a real phone or tablet: touch versus mouse mode switching, fullscreen start, the 75% dynamic-center range, dash isolation, and repeated axe charging while held.
 
 ## Difficulty context
 
