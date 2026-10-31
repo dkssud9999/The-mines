@@ -184,7 +184,7 @@
   let selectedWeapon='axe', difficulty=0, soundOn=true, audio=null, musicTimer=0, musicStep=0,lastEnemyShotSound=0;
   let screen='title', previousScreen='playing', lastTime=0, time=0, toastTimer=0, shake=0;
   let keys={}, mouse={x:W/2,y:H/2,down:false};
-  let touchMode=false;const stickRadius=60,chargeStickScale=1.3,tapMaxMs=260,tapMovePx=18;
+  let touchMode=false;const stickRadius=60,chargeStickScale=1.3,tapMaxMs=260,tapMoveRatio=.3;
   const touchMove={active:false,id:null,x:0,y:0,dx:0,dy:0},touchAim={active:false,id:null,x:0,y:0,dx:0,dy:0,chargeLocked:false,rechargeDelay:0,firedWhileHeld:false,tapCandidate:false,downAt:0,downX:0,downY:0,fallbackAngle:-Math.PI/2};
   const stickHomes={left:{x:112,y:H-112},right:{x:W-112,y:H-112}},defaultStickHomes={left:{x:112,y:H-112},right:{x:W-112,y:H-112}},touchDashHome={x:W-78,y:H-220,r:50},touchPauseHome={x:W/2,y:31,r:21};
   let player, enemies=[], bullets=[], shots=[], particles=[], texts=[], obstacles=[], drops=[], hazards=[], lightningArcs=[], weaponEffects=[];
@@ -906,17 +906,18 @@
   }
   function loop(now){const dt=Math.min(.033,(now-lastTime)/1000||0);lastTime=now;update(dt);draw();requestAnimationFrame(loop);}
   function setMouse(e){const r=canvas.getBoundingClientRect();mouse.x=(e.clientX-r.left)*W/r.width;mouse.y=(e.clientY-r.top)*H/r.height;}
+  function tapTravel(e){const r=canvas.getBoundingClientRect(),x=(e.clientX-r.left)*W/r.width,y=(e.clientY-r.top)*H/r.height;return Math.hypot(x-touchAim.downX,y-touchAim.downY);}
   function moveStickHomeWithinRange(name,x,y){const anchor=defaultStickHomes[name],home=stickHomes[name],dx=x-anchor.x,dy=y-anchor.y,distance=Math.hypot(dx,dy),limit=stickRadius*.75,scale=distance>limit?limit/distance:1;home.x=anchor.x+dx*scale;home.y=anchor.y+dy*scale;}
   function resetStickHome(name){stickHomes[name].x=defaultStickHomes[name].x;stickHomes[name].y=defaultStickHomes[name].y;}
   function updateTouchStick(stick,home){stick.x=mouse.x;stick.y=mouse.y;let dx=(stick.x-home.x)/stickRadius,dy=(stick.y-home.y)/stickRadius,length=Math.hypot(dx,dy);if(length>1){dx/=length;dy/=length;}stick.dx=dx;stick.dy=dy;if(stick===touchAim&&player){const aimLength=Math.hypot(stick.x-home.x,stick.y-home.y);if(aimLength>8){mouse.x=player.x+(stick.x-home.x)/aimLength*400;mouse.y=player.y+(stick.y-home.y)/aimLength*400;}}}
-  canvas.addEventListener('pointermove',e=>{if(e.pointerType==='touch'||e.pointerType==='pen'){setMouse(e);if(touchMove.active&&touchMove.id===e.pointerId)updateTouchStick(touchMove,stickHomes.left);if(touchAim.active&&touchAim.id===e.pointerId){if(Math.hypot(e.clientX-touchAim.downX,e.clientY-touchAim.downY)>tapMovePx)touchAim.tapCandidate=false;updateTouchStick(touchAim,stickHomes.right);}}else setMouse(e);});
+  canvas.addEventListener('pointermove',e=>{if(e.pointerType==='touch'||e.pointerType==='pen'){setMouse(e);if(touchMove.active&&touchMove.id===e.pointerId)updateTouchStick(touchMove,stickHomes.left);if(touchAim.active&&touchAim.id===e.pointerId){if(Math.hypot(mouse.x-touchAim.downX,mouse.y-touchAim.downY)>stickRadius*tapMoveRatio)touchAim.tapCandidate=false;updateTouchStick(touchAim,stickHomes.right);}}else setMouse(e);});
   canvas.addEventListener('pointerdown',e=>{
     if(e.pointerType==='touch'||e.pointerType==='pen'){if(!touchMode){touchMode=true;syncWeaponPicker();}
       e.preventDefault();const previousAim=player?Math.atan2(mouse.y-player.y,mouse.x-player.x):-Math.PI/2;setMouse(e);if(screen!=='playing'||!player)return;
       const p=touchPauseHome;if(Math.hypot(mouse.x-p.x,mouse.y-p.y)<=p.r+14){cancelAxeCharge();mouse.down=false;previousScreen='playing';setScreen('paused','pauseOverlay');canvas.setPointerCapture?.(e.pointerId);return;}
       const d=touchDashHome;if(Math.hypot(mouse.x-d.x,mouse.y-d.y)<=d.r+18){tryDash();canvas.setPointerCapture?.(e.pointerId);return;}
       if(mouse.x<W/2&&!touchMove.active){moveStickHomeWithinRange('left',mouse.x,mouse.y);touchMove.active=true;touchMove.id=e.pointerId;updateTouchStick(touchMove,stickHomes.left);}
-      else if(mouse.x>=W/2&&!touchAim.active){moveStickHomeWithinRange('right',mouse.x,mouse.y);touchAim.active=true;touchAim.id=e.pointerId;touchAim.chargeLocked=false;touchAim.rechargeDelay=0;touchAim.firedWhileHeld=false;touchAim.tapCandidate=true;touchAim.downAt=performance.now();touchAim.downX=e.clientX;touchAim.downY=e.clientY;touchAim.fallbackAngle=previousAim;updateTouchStick(touchAim,stickHomes.right);}
+      else if(mouse.x>=W/2&&!touchAim.active){moveStickHomeWithinRange('right',mouse.x,mouse.y);touchAim.active=true;touchAim.id=e.pointerId;touchAim.chargeLocked=false;touchAim.rechargeDelay=0;touchAim.firedWhileHeld=false;touchAim.tapCandidate=true;touchAim.downAt=performance.now();touchAim.downX=mouse.x;touchAim.downY=mouse.y;touchAim.fallbackAngle=previousAim;updateTouchStick(touchAim,stickHomes.right);}
       canvas.setPointerCapture?.(e.pointerId);return;
     }
     setMouse(e);if(e.button===0){mouse.down=true;if(screen==='playing'&&player?.weapon==='axe')startAxeCharge();canvas.setPointerCapture?.(e.pointerId);}
@@ -924,7 +925,7 @@
   window.addEventListener('pointerup',e=>{
     if(e.pointerType==='touch'||e.pointerType==='pen'){
       if(touchMove.active&&touchMove.id===e.pointerId){touchMove.active=false;touchMove.id=null;touchMove.dx=0;touchMove.dy=0;resetStickHome('left');}
-      if(touchAim.active&&touchAim.id===e.pointerId){const aimLength=touchAimLengthForDraw(),isTap=touchAim.tapCandidate&&performance.now()-touchAim.downAt<=tapMaxMs&&Math.hypot(e.clientX-touchAim.downX,e.clientY-touchAim.downY)<=tapMovePx;if(player&&aimLength>8){mouse.x=player.x+(touchAim.x-stickHomes.right.x)/aimLength*400;mouse.y=player.y+(touchAim.y-stickHomes.right.y)/aimLength*400;}if(screen==='playing'&&player){if(isTap)autoAimAttack();else if(player.weapon==='axe'){if(player.charging)releaseAxeCharge();else if(!touchAim.firedWhileHeld&&aimLength>2&&aimLength<stickRadius*chargeStickScale&&attackTimer<=0)startAttack(0);}else if(!touchAim.firedWhileHeld&&aimLength>12&&attackTimer<=0)startAttack();}touchAim.active=false;touchAim.id=null;touchAim.dx=0;touchAim.dy=0;touchAim.chargeLocked=false;touchAim.rechargeDelay=0;touchAim.firedWhileHeld=false;touchAim.tapCandidate=false;resetStickHome('right');}
+      if(touchAim.active&&touchAim.id===e.pointerId){const aimLength=touchAimLengthForDraw(),isTap=touchAim.tapCandidate&&performance.now()-touchAim.downAt<=tapMaxMs&&tapTravel(e)<=stickRadius*tapMoveRatio;if(player&&aimLength>8){mouse.x=player.x+(touchAim.x-stickHomes.right.x)/aimLength*400;mouse.y=player.y+(touchAim.y-stickHomes.right.y)/aimLength*400;}if(screen==='playing'&&player){if(isTap)autoAimAttack();else if(player.weapon==='axe'){if(player.charging)releaseAxeCharge();else if(!touchAim.firedWhileHeld&&aimLength>2&&aimLength<stickRadius*chargeStickScale&&attackTimer<=0)startAttack(0);}else if(!touchAim.firedWhileHeld&&aimLength>12&&attackTimer<=0)startAttack();}touchAim.active=false;touchAim.id=null;touchAim.dx=0;touchAim.dy=0;touchAim.chargeLocked=false;touchAim.rechargeDelay=0;touchAim.firedWhileHeld=false;touchAim.tapCandidate=false;resetStickHome('right');}
       return;
     }
     if(e.button!==0)return;if(screen==='playing')releaseAxeCharge();else cancelAxeCharge();mouse.down=false;
