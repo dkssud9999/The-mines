@@ -32,6 +32,7 @@
     .hudright { text-align:right; justify-items:end; }
     .hudlabel { color:#c2b9aa; font-size:10px; letter-spacing:.12em; }
     .hudval { color:#fff6df; font-size:13px; font-weight:900; }
+    .difficultyBadge { padding:4px 7px; border:1px solid #665c4b; border-radius:3px; color:#ffe4a2; background:#14121bd9; font-size:9px; font-weight:900; letter-spacing:.08em; }
     .healthbar { width:min(250px,34vw); height:11px; border:2px solid #f2dfb4; background:#291d2a; box-shadow:2px 2px #09080b; }
     .healthfill { height:100%; width:100%; background:linear-gradient(90deg,#e84f67,#ff9b6c); transition:width .12s; }
     .relics { display:flex; gap:5px; justify-content:flex-end; flex-wrap:wrap; max-width:310px; }
@@ -87,7 +88,7 @@
       <button class="exitfullscreen" id="exitFullscreenButton" type="button">화면 복귀</button>
       <div class="hud" id="hud">
         <div class="hudleft"><div class="hudlabel">체력 <span id="hpText">100 / 100</span></div><div class="healthbar"><div class="healthfill" id="healthFill"></div></div><div class="hudval" id="weaponHud">부메랑 도끼</div><div class="hudlabel" id="xpText">유물 경험치 0 / 6</div></div>
-        <div class="hudright"><div class="hudlabel" id="zoneHud">구역 1 · 갱도의 입구</div><div class="hudval" id="roomHud">전투</div><div class="relics" id="relicHud"></div><div class="hudlabel" id="recordHud"></div></div>
+        <div class="hudright"><div class="difficultyBadge" id="difficultyHud">난이도 · 광부</div><div class="hudlabel" id="zoneHud">구역 1 · 갱도의 입구</div><div class="hudval" id="roomHud">전투</div><div class="relics" id="relicHud"></div><div class="hudlabel" id="recordHud"></div></div>
       </div>
       <div class="bossbar" id="bossbar"><div class="bossname" id="bossName"></div><div class="bosshealth"><div class="bossfill" id="bossFill"></div></div></div>
       <div class="toast" id="toast"></div>
@@ -390,6 +391,7 @@
     const weaponUpgrade=weaponUpgrades[player.weapon].find(option=>option.id===player.weaponUpgrade);
     $('weaponHud').textContent=weapons[player.weapon].name+(weaponUpgrade?` · ${weaponUpgrade.name}`:'');$('xpText').textContent=`잔향 ${xp} / ${xpNeed}`;
     $('zoneHud').textContent=`${endless?'무한 구역':'구역 '+stage} · ${zoneName()}`;
+    $('difficultyHud').textContent=`난이도 · ${difficultyName(runDifficulty)}`;
     $('roomHud').textContent=phase==='boss'?'보스전':phase==='elite'?'정예 굴':'전투';
     $('relicHud').innerHTML=Object.entries(relicBag).filter(([,n])=>n>0).map(([id,n])=>`<span class="relicpip" title="${relics[id].name}">${relics[id].icon}${n>1?'×'+n:''}</span>`).join('');
     $('recordHud').textContent=`처치 ${kills} · 최고 구역 ${saved.bestZone}`;
