@@ -159,25 +159,25 @@
   };
   const relics={
     ember:{name:'잿불 심장',icon:'♨',desc:'공격 적중 시 적을 불태워 지속 피해를 준다.',color:'#ff8d5e'},
-    split:{name:'갈라진 송곳니',icon:'⋈',desc:'공격할 때 나가는 투사체나 낫 참격이 하나 늘어난다.',color:'#e8ca75'},
-    thunder:{name:'폭풍 실타래',icon:'ϟ',desc:'명중할 때마다 번개가 내려치고 주변 적에게 연쇄된다.',color:'#9ee9ff'},
-    echo:{name:'메아리 태엽',icon:'◉',desc:'네 번째 공격이 무기 형태를 따라 한 번 더 되풀이된다.',color:'#d6a6ff'},
+    split:{name:'갈라진 송곳니',icon:'⋈',desc:'공격할 때 나가는 투사체나 낫 참격이 늘어난다. 최대 3회 중첩된다.',color:'#e8ca75',maxStacks:3},
+    thunder:{name:'폭풍 실타래',icon:'ϟ',desc:'명중할 때마다 번개가 내려치고 주변 적에게 연쇄된다. 중첩되지 않는다.',color:'#9ee9ff',maxStacks:1},
+    echo:{name:'메아리 태엽',icon:'◉',desc:'네 번째 공격에 메아리 일격을 추가한다. 도끼와 지팡이는 귀환 투사체, 낫은 약한 추가 참격을 만든다. 중첩 시 공격 간격이 짧아진다.',color:'#d6a6ff',maxStacks:11},
     razor:{name:'면도날 고리',icon:'◌',desc:'주변을 도는 칼날이 적을 베어낸다.',color:'#a7efbf'},
     heart:{name:'광부의 심장',icon:'♥',desc:'최대 체력이 20 늘고 체력을 회복한다.',color:'#ff8e9b'},
-    dash:{name:'잔상 장화',icon:'➤',desc:'대시 재사용 시간이 줄어든다.',color:'#8de8d2'},
+    dash:{name:'잔상 장화',icon:'➤',desc:'대시 재사용 시간이 줄어든다. 최대 5회 중첩된다.',color:'#8de8d2',maxStacks:5},
     void:{name:'공허 종',icon:'◈',desc:'보스에게 주는 피해가 크게 늘어난다.',color:'#c6a5ff',unlock:1},
     sun:{name:'태양 파편',icon:'☼',desc:'모든 공격 피해가 강해진다.',color:'#ffd879',unlock:2},
-    guard:{name:'현무암 외피',icon:'⬟',desc:'받는 피해가 10% 감소한다. 중첩 가능.',color:'#a9adb8'},
+    guard:{name:'현무암 외피',icon:'⬟',desc:'받는 피해가 10% 감소한다. 최대 5회 중첩된다.',color:'#a9adb8',maxStacks:5},
     gale:{name:'질풍의 깃털',icon:'➶',desc:'이동 속도가 14 증가한다. 중첩 가능.',color:'#9de8d9'},
     blood:{name:'붉은 수확',icon:'♥',desc:'적 처치 시 체력 2, 보스 처치 시 체력 8을 회복한다. 중첩 가능.',color:'#ef7185'},
-    frost:{name:'서리 인장',icon:'❄',desc:'공격에 맞은 일반 적과 정예 적이 잠시 둔화된다. 중첩 시 더 느려진다.',color:'#8bdfff'},
+    frost:{name:'서리 인장',icon:'❄',desc:'공격에 맞은 일반 적과 정예 적이 잠시 둔화된다. 최대 5회 중첩된다.',color:'#8bdfff',maxStacks:5},
     wildfire:{name:'화염 도가니',icon:'♨',desc:'공격에 맞은 적은 1.5초간 불씨 표식을 얻는다. 표식 중 처치하면 주변에 폭발한다. 중첩 시 폭발이 강해진다.',color:'#ff9b60'},
     keen:{name:'사냥꾼의 눈',icon:'◎',desc:'매 다섯 번째 공격이 추가 피해를 준다. 중첩 시 강타가 더 세진다.',color:'#ffe08a'},
     axe_core:{name:'귀환의 불씨',icon:'✹',desc:'완전히 충전한 도끼가 처음 적중할 때 주변 적에게 작은 폭발을 일으킨다. 중첩 시 폭발 피해가 오른다.',color:'#ffc06a',weapon:'axe'},
-    wand_arc:{name:'연쇄 수정',icon:'⌁',desc:'지팡이의 네 번째 공격이 처음 맞힌 적 주변의 적 하나에게 연쇄된다.',color:'#9ee9ff',weapon:'wand'},
-    twin_moon:{name:'쌍월 문장',icon:'☾',desc:'낫의 세 번째 공격이 더 넓고 강한 참격이 된다. 중첩 시 피해가 오른다.',color:'#d8b4ff',weapon:'twin'}
+    wand_arc:{name:'연쇄 수정',icon:'⌁',desc:'지팡이의 네 번째 공격이 처음 맞힌 적 주변의 적 하나에게 연쇄된다. 중첩되지 않는다.',color:'#9ee9ff',weapon:'wand',maxStacks:1},
+    twin_moon:{name:'쌍월 문장',icon:'☾',desc:'낫의 세 번째 공격에 넓은 추가 참격을 가한다. 중첩 시 피해가 오른다.',color:'#d8b4ff',weapon:'twin'}
   };
-  const synergyText={ember_split:'잿불 파편: 갈라진 탄환도 적을 불태운다.',split_thunder:'폭풍 분열: 갈라진 공격이 번개를 연쇄한다.',echo_thunder:'메아리 폭풍: 되돌아온 공격도 번개를 부른다.',ember_echo:'영원한 불씨: 메아리 공격의 화상 지속시간이 늘어난다.',ember_wildfire:'잿더미 폭발: 화염 폭발의 범위와 피해가 늘어난다.',axe_core_ember:'용광로 귀환: 완충 도끼의 폭발 범위와 피해가 커진다.'};
+  const synergyText={ember_split:'잿불 파편: 갈라진 탄환도 적을 불태운다.',split_thunder:'폭풍 분열: 갈라진 공격이 번개를 연쇄한다.',echo_thunder:'메아리 폭풍: 메아리 공격도 번개를 부른다.',ember_echo:'영원한 불씨: 메아리 공격의 화상 지속시간이 늘어난다.',ember_wildfire:'잿더미 폭발: 화염 폭발의 범위와 피해가 늘어난다.',axe_core_ember:'용광로 귀환: 완충 도끼의 폭발 범위와 피해가 커진다.'};
   const synergyPairs={ember_split:['ember','split'],split_thunder:['split','thunder'],echo_thunder:['echo','thunder'],ember_echo:['ember','echo'],ember_wildfire:['ember','wildfire'],axe_core_ember:['axe_core','ember']};
   const weaponRelics={axe:'axe_core',wand:'wand_arc',twin:'twin_moon'};
   const saved=loadSave();
@@ -295,8 +295,9 @@
     setScreen('loot','lootOverlay');playSound('chest');
   }
   function makeLoot(optionCount=3){
-    let pool=Object.entries(relics).filter(([id,item])=>(!item.unlock||saved.unlockedRelics.includes(id))&&(!item.weapon||!player||item.weapon===player.weapon));
-    if(!pool.length)pool=Object.entries(relics);
+    const eligible=Object.entries(relics).filter(([id,item])=>(!item.unlock||saved.unlockedRelics.includes(id))&&(!item.weapon||!player||item.weapon===player.weapon));
+    let pool=eligible.filter(([id,item])=>!item.maxStacks||(relicBag[id]||0)<item.maxStacks);
+    if(!pool.length)pool=eligible;
     const picked=[],count=Math.min(optionCount,pool.length);
     while(picked.length<count){
       const available=pool.filter(([id])=>!picked.includes(id));let one;
@@ -310,12 +311,12 @@
     return picked.map(id=>({id,...relics[id]}));
   }
   function takeLoot(id){
+    const relic=relics[id];if(!relic||relic.maxStacks&&(relicBag[id]||0)>=relic.maxStacks)return;
     const oldSynergies=new Set(activeSynergies().map(item=>item.key));
     relicBag[id]=(relicBag[id]||0)+1;
     if(id==='heart'){player.maxHp+=20;player.hp=Math.min(player.maxHp,player.hp+25);}
     if(id==='dash')player.dashBase=Math.max(.55,(player.dashBase||1.35)-.18);
     if(id==='gale')player.speed+=14;
-    if(id==='sun')player.damageBonus=(player.damageBonus||0)+.14;
     if(id==='void')player.bossBonus=(player.bossBonus||0)+.25;
     const found=activeSynergies().find(item=>!oldSynergies.has(item.key));if(found)toast(`시너지 발동 · ${synergyText[found.key]}`);
     playSound('relic');
@@ -415,25 +416,26 @@
     if(relicBag.keen&&attackNumber%5===0){damage*=1+.75*relicBag.keen;floatText(player.x,player.y-20,'강타!','#ffe08a',13);}
     if(player.weaponUpgrade==='wand_rail'&&attackNumber%3===0)fireWandRail(angle,damage*1.8);
     else if(player.weaponUpgrade==='twin_rift'&&attackNumber%4===0)fireTwinRift(angle,damage*2.7);
-    else if(player.weapon==='twin'&&relicBag.twin_moon&&attackNumber%3===0)fireTwinCleave(angle,damage*(1.35+.12*(relicBag.twin_moon-1)));
     else if(player.weaponUpgrade==='twin_cleave')fireTwinCleave(angle,damage*1.9);
     else if(player.weaponUpgrade==='twin_orbit'){
       const count=Math.min(4,2+(relicBag.split||0));
-      for(let i=0;i<count;i++)shots.push({kind:'orbiter',x:player.x,y:player.y,orbitAngle:angle+Math.PI*2*i/count,orbitRadius:38,orbitSpeed:8.5,life:.82,hit:new Set(),damage:damage*.62,pierce:999,spin:0});
+      for(let i=0;i<count;i++)shots.push({kind:'orbiter',x:player.x,y:player.y,orbitAngle:angle+Math.PI*2*i/count,orbitRadius:38,orbitSpeed:8.5,life:.82,hit:new Set(),damage:damage*(.62+.08*Math.max(0,(relicBag.split||0)-2)),pierce:999,spin:0});
     } else {
-      let count=player.weapon==='twin'?2:player.weapon==='wand'&&player.weaponUpgrade==='wand_fan'?3:1,spread=player.weapon==='twin'?.2:player.weapon==='wand'&&player.weaponUpgrade==='wand_fan'?.24:0;
-      if(relicBag.split){count+=1+Math.min(2,relicBag.split-1);spread=player.weapon==='twin'?.2:player.weapon==='wand'&&player.weaponUpgrade==='wand_fan'?.24:.13;}
+      let count=player.weapon==='twin'?twinSwipeCount():player.weapon==='wand'&&player.weaponUpgrade==='wand_fan'?3:1,spread=player.weapon==='twin'?.2:player.weapon==='wand'&&player.weaponUpgrade==='wand_fan'?.24:0;
+      if(relicBag.split&&player.weapon!=='twin'){count+=1+Math.min(2,relicBag.split-1);spread=player.weapon==='wand'&&player.weaponUpgrade==='wand_fan'?.24:.13;}
       if(player.weapon==='twin'){fireTwinSwipes(angle,damage,count,spread);}
       else for(let i=0;i<count;i++){
         const offset=count===1?0:(i-(count-1)/2)*spread,a=angle+offset;
         shots.push({kind:player.weapon==='wand'?'bolt':'axe',x:player.x+Math.cos(a)*13,y:player.y+Math.sin(a)*13,ox:player.x,oy:player.y,vx:Math.cos(a)*weap.speed,vy:Math.sin(a)*weap.speed,angle:a,age:0,returnAt:.4,life:player.weapon==='wand'?1.25:1.18,returning:false,hit:new Set(),damage:player.weapon==='wand'&&player.weaponUpgrade==='wand_fan'?damage*.58:damage,pierce:player.weapon==='wand'?(player.weaponUpgrade==='wand_fan'?1:2):999,spin:0,upgrade:player.weaponUpgrade,charge:player.weapon==='axe'?clamp(charge,0,1):0,scale:player.weapon==='axe'?1+1.5*clamp(charge,0,1):1,chargeBlast:player.weapon==='axe'&&i===0,chargeBurst:false,chain:player.weapon==='wand'&&!!relicBag.wand_arc&&attackNumber%4===0&&i===0});
       }
     }
+    if(player.weapon==='twin'&&relicBag.twin_moon&&attackNumber%3===0)fireTwinCleave(angle,damage*(.35+.1*(relicBag.twin_moon-1)));
     player.attackCount=attackNumber;
-    if(relicBag.echo&&player.attackCount%4===0){setTimeout(()=>{if(!player||screen!=='playing')return;const echoDamage=weap.damage*(1+(player.damageBonus||0));if(player.weapon==='twin'){fireTwinSwipes(angle,echoDamage*.7,2+(relicBag.split||0),.24);}else shots.push({kind:'echo',x:player.x,y:player.y,ox:player.x,oy:player.y,vx:Math.cos(angle)*weap.speed,vy:Math.sin(angle)*weap.speed,angle,age:0,returnAt:.4,life:1.18,returning:false,hit:new Set(),damage:echoDamage,pierce:999,spin:0,upgrade:player.weaponUpgrade});},110);}
+    if(relicBag.echo&&player.attackCount%4===0){setTimeout(()=>{if(!player||screen!=='playing')return;const echoDamage=weap.damage*(1+(player.damageBonus||0));if(player.weapon==='twin'){fireTwinSwipes(angle,echoDamage*.7,twinSwipeCount(),.24);}else shots.push({kind:'echo',x:player.x,y:player.y,ox:player.x,oy:player.y,vx:Math.cos(angle)*weap.speed,vy:Math.sin(angle)*weap.speed,angle,age:0,returnAt:.4,life:1.18,returning:false,hit:new Set(),damage:echoDamage,pierce:999,spin:0,upgrade:player.weaponUpgrade});},110);}
     const normalCooldown=weap.cooldown*Math.max(.62,1-(relicBag.echo||0)*.035);
-    attackTimer=player.weapon==='axe'?weap.cooldown*(1-.74*clamp(charge,0,1)):normalCooldown;playSound('shot');
+    attackTimer=player.weapon==='axe'?weap.cooldown*(1-.74*clamp(charge,0,1))*Math.max(.62,1-(relicBag.echo||0)*.035):normalCooldown;playSound('shot');
   }
+  function twinSwipeCount(){return 2+(relicBag.split?1+Math.min(2,relicBag.split-1):0);}
   function fireWandRail(angle,damage){
     const start={x:player.x,y:player.y},end=rayEnd(player.x,player.y,angle),length=dist(start,end),dx=end.x-start.x,dy=end.y-start.y,lenSq=dx*dx+dy*dy;
     let clearLength=length;
@@ -571,7 +573,7 @@
         if(s.chargeBlast&&s.charge>=.95&&relicBag.axe_core&&!s.chargeBurst){s.chargeBurst=true;const furnace=activeSynergies().some(item=>item.key==='axe_core_ember'),radius=58+(furnace?22:0),blast=hitDamage*(.34+.1*(relicBag.axe_core-1))*(furnace?1.35:1);burst(s.x,s.y,'#ffc06a',10);for(const nearby of [...enemies])if(nearby!==e&&dist(s,nearby)<radius)damageEnemy(nearby,blast,'axe');}
         if(s.kind==='bolt'&&s.chain&&!s.didChain){s.didChain=true;const target=enemies.filter(other=>other!==e&&!s.hit.has(other)&&!(other.kind==='boss'&&other.invulnerable)&&dist(other,s)<185).sort((a,b)=>dist(a,s)-dist(b,s))[0];if(target){drawLightning(s,target);damageEnemy(target,s.damage*.58,'lightning');}}
         if(s.upgrade==='wand_prism'&&!s.didSplit){s.didSplit=true;for(const direction of [-1,1]){const a=s.angle+direction*.43,speed=weapons.wand.speed*.78;shots.push({kind:'prism',x:s.x,y:s.y,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,angle:a,life:.9,hit:new Set([e]),damage:s.damage*.58,pierce:1,spin:0});}}
-        if(s.pierce<999){s.pierce--;if(s.pierce<=0){shots.splice(i,1);blocked=true;break;}}
+        if(s.pierce<999){s.pierce--;if(s.pierce<=0){blocked=true;break;}}
       }}
       const canReturnOffscreen=s.returning&&(s.kind==='axe'||s.kind==='echo');
       if(blocked||s.life<=0||(!canReturnOffscreen&&(s.x<0||s.x>W||s.y<0||s.y>H)))shots.splice(i,1);
@@ -585,6 +587,12 @@
     let bonus=source==='boss'?(player.bossBonus||0):0;
     if(e.kind==='boss'&&source!=='boss')bonus+=player.bossBonus||0;
     amount*=1+bonus+(relicBag.sun||0)*.14;
+    if(e.kind==='boss'&&e.bossKind==='star'&&e.act==='combat'){
+      let gate=null;
+      if(e.thresholdIndex<3)gate=[.76,.52,.3][e.thresholdIndex];
+      else if(e.finalAct&&!e.lastStand)gate=.08+.04*Math.min(1.65,bossPressure(e));
+      if(gate!==null){amount=Math.min(amount,Math.max(0,e.hp-e.maxHp*gate));if(amount<=0)return;}
+    }
     e.hp-=amount;e.flash=.09;
     if(Math.random()<.22||e.hp<=0)floatText(e.x+rand(-8,8),e.y-14,Math.round(amount),e.kind==='boss'?'#ffe596':'#fff0c0',12);
     if(relicBag.ember&&source!=='burn')e.burn=Math.max(e.burn||0,2.2+(activeSynergies().some(s=>s.key==='ember_echo')?1.5:0));
@@ -709,22 +717,29 @@
     } else if(t.pattern==='aimed'){
       const count=e.phase===2?5:3;for(let i=0;i<count;i++)enemyShot(e,t.aim+(i-(count-1)/2)*.16,e.finalAct?285:245,e.color);
     } else if(t.pattern==='fan'){
-      const count=e.phase===2?9:7;for(let i=0;i<count;i++)enemyShot(e,t.aim+(i-(count-1)/2)*.13,e.phase===2?260:220,e.color);
+      const {count,spread}=bossVolleyShape(e,t.pattern);for(let i=0;i<count;i++)enemyShot(e,t.aim+(i-(count-1)/2)*spread,e.phase===2?260:220,e.color);
     } else if(t.pattern==='target'){
       for(const p of t.targets||[]){hazards.push({kind:'target',x:p.x,y:p.y,r:44,phase:'warn',timer:Math.max(.42,.78-.16*pressure),activeTime:.28,damage:pressure===0?15:15+Math.ceil(3*pressure),burstCount:pressure===0?7:7+Math.floor(3*pressure),color:'#ef78a3',life:1.1});}
     } else if(t.pattern==='gigablast'){
       const count=e.lastStand?(pressure===0?2:2+Math.floor(pressure)):e.phase===2?2:1;for(let i=0;i<count;i++){const a=t.aim+(i-(count-1)/2)*.24;bullets.push({kind:'giant',x:e.x,y:e.y,vx:Math.cos(a)*145,vy:Math.sin(a)*145,angle:a,speed:145,homing:1.0,r:14,color:'#ff987d',damage:19,life:3,splitAt:1.18,splitCount:e.lastStand?(pressure===0?12:12+Math.floor(6*pressure)):14});}
     } else if(t.pattern==='feather'){
-      const count=e.phase===2?7:5;for(let i=0;i<count;i++){const a=t.aim+(i-(count-1)/2)*.18;bullets.push({kind:'feather',x:e.x,y:e.y,vx:Math.cos(a)*38,vy:Math.sin(a)*38,r:7,color:'#ff8ca9',damage:17,life:3,mode:'hover',delay:.58,trackTimer:.42,aimed:false});}
+      const {count,spread}=bossVolleyShape(e,t.pattern);for(let i=0;i<count;i++){const a=t.aim+(i-(count-1)/2)*spread;bullets.push({kind:'feather',x:e.x,y:e.y,vx:Math.cos(a)*38,vy:Math.sin(a)*38,r:7,color:'#ff8ca9',damage:17,life:3,mode:'hover',delay:.58,trackTimer:.42,aimed:false});}
     } else if(t.pattern==='split'){
       for(let i=-1;i<=1;i++)bullets.push({x:e.x,y:e.y,vx:Math.cos(t.aim+i*.24)*135,vy:Math.sin(t.aim+i*.24)*135,r:9,color:'#f4a4ff',damage:15,life:3,splitAt:.72,splitCount:e.phase===2?8:6});
     } else if(t.pattern==='wall'){
       for(const pos of t.positions||[])hazards.push({kind:'lane',axis:t.axis,pos,phase:'warn',timer:.68,activeTime:.22,width:24,damage:18,color:'#ff826f',life:1});
     } else if(t.pattern==='beam'){
-      const count=e.lastStand?(pressure===0?2:2+Math.floor(2*pressure)):e.finalAct?3:1;for(let i=0;i<count;i++){const a=t.aim+i*Math.PI*2/count;hazards.push({kind:'sweep',x:e.x,y:e.y,angle:a,direction:i%2?-1:1,speed:e.lastStand?1.95:e.finalAct?1.45:1.35,phase:'warn',timer:.62,activeTime:e.finalAct?2.3:1.8,width:e.lastStand?24:e.finalAct?22:18,damage:20,color:'#f3c7ff',life:2.5});}e.attack=e.finalAct?1.65:1.45;
+      const {count}=bossVolleyShape(e,t.pattern);for(let i=0;i<count;i++){const a=t.aim+i*Math.PI*2/count;hazards.push({kind:'sweep',x:e.x,y:e.y,angle:a,direction:i%2?-1:1,speed:e.lastStand?1.95:e.finalAct?1.45:1.35,phase:'warn',timer:.62,activeTime:e.finalAct?2.3:1.8,width:e.lastStand?24:e.finalAct?22:18,damage:20,color:'#f3c7ff',life:2.5});}e.attack=e.finalAct?1.65:1.45;
     } else if(t.pattern==='charge'){
       t.path[0]={x:e.x,y:e.y};e.chargePath=t.path;e.chargeLeg=0;e.chargeSpeed=e.finalAct?760:e.phase===2?680:600;let pathLength=0;for(let i=1;i<t.path.length;i++)pathLength+=dist(t.path[i-1],t.path[i]);e.chargeTime=pathLength/e.chargeSpeed+.18;e.trail=.06;e.attack=e.chargeTime+.4;
     }
+  }
+  function bossVolleyShape(e,pattern){
+    const pressure=bossPressure(e);
+    if(pattern==='fan')return {count:e.phase===2?9:7,spread:.13};
+    if(pattern==='feather')return {count:e.phase===2?7:5,spread:.18};
+    if(pattern==='beam')return {count:e.lastStand?(pressure===0?2:2+Math.floor(2*pressure)):e.finalAct?3:1};
+    return {count:1,spread:0};
   }
   function beginFinalHell(e,threshold=true){
     const pressure=bossPressure(e);
@@ -844,10 +859,10 @@
     else if(t.pattern==='target'){for(const p of t.targets||[]){ctx.beginPath();ctx.arc(p.x,p.y,44,0,Math.PI*2);ctx.fill();ctx.stroke();}}
     else if(t.pattern==='gigablast'){ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(e.x+Math.cos(t.aim)*850,e.y+Math.sin(t.aim)*850);ctx.stroke();}
     else if(t.pattern==='charge'){ctx.beginPath();(t.path||[{x:e.x,y:e.y},{x:e.x+Math.cos(t.aim)*1000,y:e.y+Math.sin(t.aim)*1000}]).forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke();}
-    else if(t.pattern==='beam'){const count=e.lastStand?4:e.finalAct?3:1;for(let i=0;i<count;i++){const a=t.aim+i*Math.PI*2/count,end=rayEnd(e.x,e.y,a);ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(end.x,end.y);ctx.lineWidth=8;ctx.stroke();}}
+    else if(t.pattern==='beam'){const {count}=bossVolleyShape(e,t.pattern);for(let i=0;i<count;i++){const a=t.aim+i*Math.PI*2/count,end=rayEnd(e.x,e.y,a);ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(end.x,end.y);ctx.lineWidth=8;ctx.stroke();}}
     else if(t.pattern==='ring'){const gap=t.safeAngle+time*.3;ctx.beginPath();ctx.arc(e.x,e.y,120,gap-.36,gap+.36);ctx.stroke();}
     else if(t.pattern==='spiral'){for(let i=0;i<4;i++){const a=time+i*Math.PI/2;ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(e.x+Math.cos(a)*740,e.y+Math.sin(a)*740);ctx.stroke();}}
-    else if(t.pattern==='fan'||t.pattern==='feather'||t.pattern==='split'){const count=t.pattern==='fan'?7:t.pattern==='feather'?5:3,spread=t.pattern==='fan' ? .13 : (t.pattern==='feather' ? .18 : .24);for(let i=0;i<count;i++){const a=t.aim+(i-(count-1)/2)*spread;ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(e.x+Math.cos(a)*740,e.y+Math.sin(a)*740);ctx.stroke();}}
+    else if(t.pattern==='fan'||t.pattern==='feather'||t.pattern==='split'){const shape=bossVolleyShape(e,t.pattern),count=t.pattern==='split'?3:shape.count,spread=t.pattern==='split'?.24:shape.spread;for(let i=0;i<count;i++){const a=t.aim+(i-(count-1)/2)*spread;ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(e.x+Math.cos(a)*740,e.y+Math.sin(a)*740);ctx.stroke();}}
     ctx.restore();}}
   function drawArenaHazards(){for(const h of hazards){const active=h.phase==='active';ctx.save();const alpha=active ? .68 : .34+Math.sin(time*22)*.12;ctx.globalAlpha=alpha;ctx.fillStyle=active?h.color:'#ffd18b';ctx.strokeStyle=active?'#fff1cb':h.color;if(h.kind==='lane'){if(h.axis==='x'){ctx.fillRect(h.pos-h.width/2,35,h.width,H-70);ctx.strokeRect(h.pos-h.width/2,35,h.width,H-70);}else{ctx.fillRect(35,h.pos-h.width/2,W-70,h.width);ctx.strokeRect(35,h.pos-h.width/2,W-70,h.width);}}else if(h.kind==='sweep'){const end=rayEnd(h.x,h.y,h.angle);ctx.lineCap='round';ctx.beginPath();ctx.moveTo(h.x,h.y);ctx.lineTo(end.x,end.y);ctx.lineWidth=h.width+10;ctx.stroke();ctx.strokeStyle='#fff4fa';ctx.lineWidth=3;ctx.stroke();}else{ctx.beginPath();ctx.arc(h.x,h.y,h.r*(active?1:.75+Math.sin(time*20)*.08),0,Math.PI*2);ctx.fill();ctx.lineWidth=3;ctx.stroke();}ctx.restore();}}
   function drawDrops(){for(const d of drops){if(d.kind==='warning')continue;}}
