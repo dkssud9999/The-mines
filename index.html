@@ -1118,15 +1118,20 @@
     }
     if(e.button!==0)return;if(screen==='playing')releaseAxeCharge();else cancelAxeCharge();mouse.down=false;
   });
-  window.addEventListener('pointercancel',()=>{cancelAxeCharge();mouse.down=false;touchMove.active=false;touchMove.id=null;touchMove.dx=touchMove.dy=0;resetStickHome('left');touchAim.active=false;touchAim.id=null;touchAim.dx=touchAim.dy=0;touchAim.chargeLocked=false;touchAim.rechargeDelay=0;touchAim.firedWhileHeld=false;touchAim.tapCandidate=false;resetStickHome('right');});
-  window.addEventListener('blur',()=>{cancelAxeCharge();mouse.down=false;touchMove.active=false;touchMove.dx=touchMove.dy=0;resetStickHome('left');touchAim.active=false;touchAim.dx=touchAim.dy=0;touchAim.chargeLocked=false;touchAim.rechargeDelay=0;touchAim.firedWhileHeld=false;touchAim.tapCandidate=false;resetStickHome('right');});
+  function clearHeldInput(){
+    cancelAxeCharge();mouse.down=false;keys={};
+    touchMove.active=false;touchMove.id=null;touchMove.dx=touchMove.dy=0;resetStickHome('left');
+    touchAim.active=false;touchAim.id=null;touchAim.dx=touchAim.dy=0;touchAim.chargeLocked=false;touchAim.rechargeDelay=0;touchAim.firedWhileHeld=false;touchAim.tapCandidate=false;resetStickHome('right');
+  }
+  window.addEventListener('pointercancel',clearHeldInput);
+  window.addEventListener('blur',clearHeldInput);
   canvas.addEventListener('contextmenu',e=>e.preventDefault());
   function cancelAxeCharge(){if(player){player.charging=false;player.chargeTime=0;}}
   window.addEventListener('keydown',e=>{const key=e.key.length===1?e.key.toLowerCase():e.key;keys[key]=true;if([' ','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key))e.preventDefault();if(e.key===' '&&screen==='playing')tryDash();if(e.key==='Escape'){if(screen==='playing'){cancelAxeCharge();mouse.down=false;previousScreen='playing';setScreen('paused','pauseOverlay');}else if(screen==='paused')setScreen('playing');}});
   window.addEventListener('keyup',e=>{const key=e.key.length===1?e.key.toLowerCase():e.key;keys[key]=false;});
   $('startButton').addEventListener('click',()=>{if(touchMode)enterFullscreen();startRun();});$('eliteButton').addEventListener('click',()=>chooseRoute('elite'));$('shrineButton').addEventListener('click',()=>chooseRoute('shrine'));
   $('resumeButton').addEventListener('click',()=>setScreen('playing'));$('quitButton').addEventListener('click',()=>{updateOverlay('titleOverlay');screen='title';$('hud').classList.remove('visible');$('bossbar').classList.remove('visible');syncWeaponPicker();});
-  $('difficultyButton').addEventListener('click',()=>{difficulty=(difficulty+1)%(saved.highestDifficulty+1);syncWeaponPicker();});
+  $('difficultyButton').addEventListener('click',()=>{difficulty=(difficulty+1)%(Math.min(saved.highestDifficulty,3)+1);syncWeaponPicker();});
   $('soundToggle').addEventListener('click',()=>{soundOn=!soundOn;if(soundOn){startAudio();$('soundToggle').textContent='♫ 소리 켜짐';}else{$('soundToggle').textContent='♫ 소리 켜기';clearInterval(musicTimer);musicTimer=0;if(audio){audio.close();audio=null;}}});
   const gameframe=$('gameframe');
   async function enterFullscreen(){try{if(gameframe.requestFullscreen){await gameframe.requestFullscreen();document.body.classList.remove('pseudoFullscreen');try{await window.screen.orientation?.lock?.('landscape');}catch{}}else document.body.classList.add('pseudoFullscreen');$('fullscreenToggle').textContent='⤢ 화면 복귀';}catch{document.body.classList.add('pseudoFullscreen');$('fullscreenToggle').textContent='⤢ 화면 복귀';}}
