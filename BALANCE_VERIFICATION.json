@@ -1,62 +1,62 @@
 {
-  "sourceSha256": "4eced247aeba84efd8e25a98f7c44486b4026b72e37ac068382a6c3c4e881f7e",
+  "sourceSha256": "68fc862c4965ea54e2ee5eb3c34bdbf522115e14f28cb9ea523ab77872353b7e",
   "runtime": "v24.22.1",
-  "checks": 40,
+  "checks": 41,
   "failed": 0,
   "combatCases": 1260,
   "configurations": [
     {
       "weapon": "axe",
       "search": "",
-      "passed": 40,
+      "passed": 41,
       "failed": 0
     },
     {
       "weapon": "axe",
       "search": "?balanceSeed=0",
-      "passed": 40,
+      "passed": 41,
       "failed": 0
     },
     {
       "weapon": "axe",
       "search": "?balanceSeed=1",
-      "passed": 40,
+      "passed": 41,
       "failed": 0
     },
     {
       "weapon": "wand",
       "search": "",
-      "passed": 40,
+      "passed": 41,
       "failed": 0
     },
     {
       "weapon": "wand",
       "search": "?balanceSeed=0",
-      "passed": 40,
+      "passed": 41,
       "failed": 0
     },
     {
       "weapon": "wand",
       "search": "?balanceSeed=1",
-      "passed": 40,
+      "passed": 41,
       "failed": 0
     },
     {
       "weapon": "twin",
       "search": "",
-      "passed": 40,
+      "passed": 41,
       "failed": 0
     },
     {
       "weapon": "twin",
       "search": "?balanceSeed=0",
-      "passed": 40,
+      "passed": 41,
       "failed": 0
     },
     {
       "weapon": "twin",
       "search": "?balanceSeed=1",
-      "passed": 40,
+      "passed": 41,
       "failed": 0
     }
   ],
@@ -219,6 +219,10 @@
     },
     {
       "name": "axe storm snapshots its initial 1.6x boost",
+      "ok": true
+    },
+    {
+      "name": "burn and lightning cannot refresh each other without another attack",
       "ok": true
     }
   ]

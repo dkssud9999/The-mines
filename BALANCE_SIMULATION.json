@@ -1,5 +1,5 @@
 {
-  "sourceSha256": "4eced247aeba84efd8e25a98f7c44486b4026b72e37ac068382a6c3c4e881f7e",
+  "sourceSha256": "68fc862c4965ea54e2ee5eb3c34bdbf522115e14f28cb9ea523ab77872353b7e",
   "note": "Diagnostic bot only: not a human win-rate estimate or balance acceptance measurement.",
   "results": [
     {
@@ -1049,27 +1049,23 @@
       "archetype": "balanced",
       "route": "shrine",
       "outcome": "death",
-      "time": 96.83,
-      "kills": 71,
-      "zone": 3,
+      "time": 73.73,
+      "kills": 41,
+      "zone": 2,
       "phase": "boss",
       "hp": 0,
-      "maxHp": 160,
+      "maxHp": 130,
       "upgrades": [
-        "wand_prism",
-        "wand_prism_lattice"
+        "wand_prism"
       ],
       "relics": {
         "exp_hunter": 1,
         "exp_spark": 1,
-        "exp_heart": 2,
+        "exp_heart": 1,
         "exp_tempo": 1,
         "thunder": 1,
         "wildfire": 1,
-        "ember": 1,
-        "split": 1,
-        "exp_edge": 1,
-        "keen": 1
+        "ember": 1
       },
       "rooms": [
         {
@@ -1136,51 +1132,18 @@
           "number": 3,
           "stage": 2,
           "phase": "boss",
-          "damageDealt": 1839.2400000000016,
-          "damageTaken": 66,
-          "healed": 10,
+          "damageDealt": 1631.1510000000035,
+          "damageTaken": 72,
+          "healed": 0,
           "resourceUses": 1,
           "damageByCause": {
-            "탄환": 36,
-            "장판": 30
+            "장판": 57,
+            "탄환": 15
           },
-          "elapsed": 13.27
-        },
-        {
-          "number": 1,
-          "stage": 3,
-          "phase": "wave",
-          "damageDealt": 1169.964000000001,
-          "damageTaken": 0,
-          "healed": 32,
-          "resourceUses": 0,
-          "elapsed": 3.05
-        },
-        {
-          "number": 2,
-          "stage": 3,
-          "phase": "wave",
-          "damageDealt": 1358.7479999999998,
-          "damageTaken": 0,
-          "healed": 37,
-          "resourceUses": 0,
-          "elapsed": 4.05
-        },
-        {
-          "number": 3,
-          "stage": 3,
-          "phase": "boss",
-          "damageDealt": 803.8656000000001,
-          "damageTaken": 85,
-          "healed": 0,
-          "resourceUses": 0,
-          "damageByCause": {
-            "장판": 85
-          },
-          "elapsed": 14.68
+          "elapsed": 11.95
         }
       ],
-      "steps": 5818
+      "steps": 4429
     },
     {
       "seed": 123,

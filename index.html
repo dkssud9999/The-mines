@@ -280,9 +280,9 @@
     collapse_burst:{name:'단기 결전',icon:'⌛',desc:'보스에게 피해를 줄 수 있는 누적 20초간 피해가 4배입니다. 이후 공격 속도가 절반이 됩니다.',color:'#ff8573',tier:3,maxStacks:1},
     collapse_cannon:{name:'피의 포문',icon:'🩸',desc:'각 방의 첫 공격에 최대 체력 20%를 지불하고 4초간 직접 공격 피해가 3배가 됩니다. 비용으로 사망할 수 있습니다.',color:'#ff8573',tier:3,maxStacks:1},
     collapse_momentum:{name:'끝없는 기세',icon:'🔥',desc:'적중할 때마다 피해가 1%씩 누적 증가합니다. 피격 시 누적이 초기화되고, 이번 판 동안 모든 능력치가 10%p 영구 감소합니다.',color:'#ff8573',tier:3,maxStacks:1},
-    ember:{name:'잿불 심장',icon:'♨',desc:'공격 적중 시 적을 불태워 지속 피해를 준다.',color:'#ff8d5e'},
+    ember:{name:'잿불 심장',icon:'♨',desc:'무기 공격 적중 시 적을 불태워 지속 피해를 줍니다. 화상이나 번개가 다시 화상을 만들지는 않습니다.',color:'#ff8d5e'},
     split:{name:'갈라진 송곳니',icon:'⋈',desc:'공격할 때 나가는 투사체나 낫 참격이 늘어난다. 최대 3회 중첩된다.',color:'#e8ca75',maxStacks:3},
-    thunder:{name:'폭풍 실타래',icon:'ϟ',desc:'명중할 때마다 번개가 내려치고 주변 적에게 연쇄된다. 중첩되지 않는다.',color:'#9ee9ff',maxStacks:1},
+    thunder:{name:'폭풍 실타래',icon:'ϟ',desc:'무기 공격 적중 시 번개가 주변 적에게 연쇄됩니다. 화상이나 번개는 추가 번개를 만들지 않습니다. 중첩되지 않습니다.',color:'#9ee9ff',maxStacks:1},
     echo:{name:'메아리 태엽',icon:'◉',desc:'네 번째 공격에 메아리 일격을 추가한다. 도끼와 지팡이는 귀환 투사체, 낫은 약한 추가 참격을 만든다. 중첩 시 공격 간격이 짧아진다.',color:'#d6a6ff',maxStacks:11},
     razor:{name:'면도날 고리',icon:'◌',desc:'주변을 도는 칼날이 적을 베어낸다.',color:'#a7efbf'},
     heart:{name:'광부의 심장',icon:'♥',desc:'최대 체력이 20 늘고 체력을 회복한다.',color:'#ff8e9b'},
@@ -867,8 +867,9 @@
     if(!enemies.includes(e))return;
     if(e.kind==='boss'&&e.invulnerable)return;
     const attackContext=origin?.attackContext||origin?.missState||null;if(attackContext)attackContext.landed=true;
-    if(relicBag.frost&&e.kind!=='boss'&&source!=='burn')e.slowTimer=Math.max(e.slowTimer||0,.72);
-    if(relicBag.wildfire&&source!=='burn')e.wildfireTimer=Math.max(e.wildfireTimer||0,1.5);
+    const triggersOnHit=['axe','bolt','prism','echo','orbiter','cleave','rift','rail','moon'].includes(source);
+    if(triggersOnHit&&relicBag.frost&&e.kind!=='boss')e.slowTimer=Math.max(e.slowTimer||0,.72);
+    if(triggersOnHit&&relicBag.wildfire)e.wildfireTimer=Math.max(e.wildfireTimer||0,1.5);
     if(!alreadyScaled){if(e.kind==='boss'&&source!=='boss'){if(relicBag.void)amount*=1+.25*relicBag.void;if(relicBag.exp_hunter)amount*=1.35;}if(relicBag.sun)amount*=1+.14*relicBag.sun;amount*=outgoingDamageMultiplier(e,source,attackAngle,attackContext);}
     const inheritedDamage=amount;
     if(e.kind==='boss'&&e.bossKind==='star'&&e.act==='combat'){
@@ -881,8 +882,8 @@
     if(['axe','bolt','prism','echo','orbiter','cleave','rift','rail'].includes(source)&&relicBag.collapse_momentum)momentumHits++;
     if(['bolt','prism','echo','rail'].includes(source)&&(attackContext?.hungry||!attackContext&&relicBag.abyss_hungry)){if(attackContext){if(!attackContext.counted){abyssHitStreak++;attackContext.counted=true;}}else abyssHitStreak++;}
     if(runRandom()<.22||e.hp<=0)floatText(e.x+rand(-8,8),e.y-14,Math.round(amount),e.kind==='boss'?'#ffe596':'#fff0c0',12);
-    if(relicBag.ember&&source!=='burn')e.burn=Math.max(e.burn||0,2.2+(source==='echo'&&activeSynergies().some(s=>s.key==='ember_echo')?1.5:0));
-    if(relicBag.thunder&&source!=='lightning'){
+    if(triggersOnHit&&relicBag.ember)e.burn=Math.max(e.burn||0,2.2+(source==='echo'&&activeSynergies().some(s=>s.key==='ember_echo')?1.5:0));
+    if(triggersOnHit&&relicBag.thunder){
       const target=enemies.filter(other=>other!==e&&!(other.kind==='boss'&&other.invulnerable)&&dist(other,e)<220).sort((a,b)=>dist(a,e)-dist(b,e))[0];
       if(target){drawLightning(e,target);damageEnemy(target,inheritedDamage*.52,'lightning',null,null,true);if(origin?.splitAttack&&activeSynergies().some(s=>s.key==='split_thunder')){const second=enemies.filter(other=>other!==e&&other!==target&&dist(other,target)<160).sort((a,b)=>dist(a,target)-dist(b,target))[0];if(second){drawLightning(target,second);damageEnemy(second,inheritedDamage*.32,'lightning',null,null,true);}}}
       else {drawLightning({x:e.x+rand(-34,34),y:32},e);damageEnemy(e,inheritedDamage*.24,'lightning',null,null,true);}
