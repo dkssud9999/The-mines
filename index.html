@@ -247,7 +247,7 @@
       {id:'wand_fan_focus',icon:'✧',name:'수렴 부채',desc:'탄환이 좁게 모이고 각 탄환의 피해가 증가한다.'}
     ],
     twin_orbit:[
-      {id:'twin_orbit_blades',icon:'✥',name:'다섯 번째 칼날',desc:'궤도 칼날이 하나 더 생긴다.'},
+      {id:'twin_orbit_blades',icon:'✥',name:'추가 궤도 칼날',desc:'궤도 칼날이 하나 더 생긴다. 갈라진 송곳니와 함께 최대 여섯 개까지 늘어난다.'},
       {id:'twin_orbit_reach',icon:'◉',name:'넓은 궤도',desc:'칼날이 더 빠르고 넓게 회전하며 피해가 증가한다.'}
     ],
     twin_cleave:[
@@ -260,14 +260,14 @@
     ]
   };
   const relics={
-    exp_edge:{name:'푸른 날의 맹세',icon:'⚔️',desc:'주는 피해가 25% 증가합니다.',color:'#72d9e8',tier:1},
+    exp_edge:{name:'푸른 날의 맹세',icon:'⚔️',desc:'주는 피해가 25% 증가합니다.',color:'#72d9e8',tier:1,maxStacks:1},
     exp_heart:{name:'탐험가의 심장',icon:'💠',desc:'최대 체력이 30 증가하고 체력을 30 회복합니다.',color:'#72d9e8',tier:1},
     exp_stride:{name:'바람길 장화',icon:'🥾',desc:'이동 속도가 30 증가합니다.',color:'#72d9e8',tier:1},
-    exp_tempo:{name:'박동 태엽',icon:'⏱️',desc:'공격 속도가 20% 증가합니다.',color:'#72d9e8',tier:1},
+    exp_tempo:{name:'박동 태엽',icon:'⏱️',desc:'공격 속도가 20% 증가합니다.',color:'#72d9e8',tier:1,maxStacks:1},
     exp_bounty:{name:'사냥꾼의 부적',icon:'🪙',desc:'적 처치 시 체력을 2 회복합니다.',color:'#72d9e8',tier:1},
-    exp_hunter:{name:'균열 추적자',icon:'🎯',desc:'보스에게 주는 피해가 35% 증가합니다.',color:'#72d9e8',tier:1},
-    exp_guard:{name:'청동 파수패',icon:'🛡️',desc:'받는 피해가 20% 감소합니다.',color:'#72d9e8',tier:1},
-    exp_spark:{name:'잔광 탄환',icon:'✨',desc:'매 5번째 공격이 80% 강해집니다.',color:'#72d9e8',tier:1},
+    exp_hunter:{name:'균열 추적자',icon:'🎯',desc:'보스에게 주는 피해가 35% 증가합니다.',color:'#72d9e8',tier:1,maxStacks:1},
+    exp_guard:{name:'청동 파수패',icon:'🛡️',desc:'받는 피해가 20% 감소합니다.',color:'#72d9e8',tier:1,maxStacks:1},
+    exp_spark:{name:'잔광 탄환',icon:'✨',desc:'매 5번째 공격이 80% 강해집니다.',color:'#72d9e8',tier:1,maxStacks:1},
     abyss_hungry:{name:'굶주린 탄환',icon:'🩸',desc:'지팡이 탄환이 적을 하나 더 관통하고, 연속 적중마다 다음 탄환 피해가 10% 증가합니다. 빗나가면 체력 3을 잃고 누적이 초기화됩니다.',color:'#c69aff',tier:2,weapon:'wand',maxStacks:1},
     abyss_gambler:{name:'도박사의 탄창',icon:'🎲',desc:'공격마다 20% 확률로 피해가 5배가 됩니다. 발동하지 않은 공격은 피해가 절반입니다.',color:'#c69aff',tier:2,maxStacks:1},
     abyss_axe_storm:{name:'도끼 폭풍',icon:'🪓',desc:'도끼가 적중 후 다른 적에게 최대 두 번 튕깁니다. 도끼가 돌아오기 전까지 다시 공격할 수 없습니다.',color:'#c69aff',tier:2,weapon:'axe',maxStacks:1},
@@ -287,7 +287,7 @@
     dash:{name:'잔상 장화',icon:'➤',desc:'대시 재사용 시간이 줄어든다. 최대 5회 중첩된다.',color:'#8de8d2',maxStacks:5},
     void:{name:'공허 종',icon:'◈',desc:'보스에게 주는 피해가 크게 늘어난다.',color:'#c6a5ff',unlock:1},
     sun:{name:'태양 파편',icon:'☼',desc:'모든 공격 피해가 강해진다.',color:'#ffd879',unlock:2},
-    guard:{name:'현무암 외피',icon:'⬟',desc:'받는 피해가 10% 감소한다. 최대 5회 중첩된다.',color:'#a9adb8',maxStacks:5},
+    guard:{name:'현무암 외피',icon:'⬟',desc:'받는 피해가 10% 감소한다. 최대 5회 중첩되며, 피해 감소는 최대 45%다.',color:'#a9adb8',maxStacks:5},
     gale:{name:'질풍의 깃털',icon:'➶',desc:'이동 속도가 14 증가한다. 중첩 가능.',color:'#9de8d9'},
     blood:{name:'붉은 수확',icon:'♥',desc:'적 처치 시 체력 2, 보스 처치 시 체력 8을 회복한다. 중첩 가능.',color:'#ef7185'},
     frost:{name:'서리 인장',icon:'❄',desc:'공격에 맞은 일반 적과 정예 적이 잠시 둔화된다. 최대 5회 중첩된다.',color:'#8bdfff',maxStacks:5},
@@ -371,7 +371,7 @@
   }
   function zoneName(){return stage<=3?names[stage]:`무한 구역 ${stage-3}`;}
   function spawnEnemy(kind,index=0){
-    const elite=kind==='elite',charger=kind==='charger',baseHp=elite?100:kind==='shooter'?31:charger?38:42;
+    const elite=kind==='elite',charger=kind==='charger',baseHp=elite?150:kind==='shooter'?31:charger?38:42;
     const radius=elite?17:kind==='shooter'?12:charger?15:13;let x,y,bestPoint=null,bestDistance=-1;
     for(let attempt=0;attempt<32;attempt++){
       const side=(index+Math.floor(attempt/8))%4;let candidate;
@@ -388,6 +388,7 @@
     const enemyHp=baseHp*(1+(stage-1)*.19)*difficultyHpMultiplier(runDifficulty);
     const enemy={kind,x,y,r:radius,hp:enemyHp,maxHp:enemyHp,speed:(elite?92:kind==='shooter'?61:charger?68:77)*aggression,damage:elite?16:charger?12:10,fire:rand(.8,2)/fireRate,fireRate,flash:0,phase:0,angle:0,color:elite?'#e6a34c':kind==='shooter'?'#9e83c6':charger?'#e68b4e':'#a9b176'};
     if(charger){enemy.chargeState='approach';enemy.chargeTimer=0;enemy.chargeCooldown=rand(1.1,1.8);enemy.chargeAim=0;}
+    if(elite){enemy.eliteState='approach';enemy.eliteTimer=1.4;enemy.eliteAim=0;}
     resolveEntityFromWalls(enemy);enemies.push(enemy);
   }
   function startElite(){
@@ -563,7 +564,7 @@
     else if(player.weaponUpgrade==='twin_rift'&&attackNumber%(player.weaponUpgrade2==='twin_rift_repeat'?3:4)===0)fireTwinRift(angle,damage*2.7*(player.weaponUpgrade2==='twin_rift_pierce'?1.3:1));
     else if(player.weaponUpgrade==='twin_cleave')fireTwinCleave(angle,damage*1.9*(player.weaponUpgrade2==='twin_cleave_long'?1.15:1));
     else if(player.weaponUpgrade==='twin_orbit'){
-      const count=Math.min(5,2+(relicBag.split||0)+(player.weaponUpgrade2==='twin_orbit_blades'?1:0)),reach=player.weaponUpgrade2==='twin_orbit_reach';
+      const count=Math.min(6,2+(relicBag.split||0)+(player.weaponUpgrade2==='twin_orbit_blades'?1:0)),reach=player.weaponUpgrade2==='twin_orbit_reach';
       for(let i=0;i<count;i++)shots.push({kind:'orbiter',x:player.x,y:player.y,orbitAngle:angle+Math.PI*2*i/count,orbitRadius:reach?54:38,orbitSpeed:reach?12:8.5,life:.82,hit:new Set(),damage:damage*(.62+.08*Math.max(0,(relicBag.split||0)-2))*(reach?1.35:1),pierce:999,spin:0});
     } else {
       let count=player.weapon==='twin'?twinSwipeCount():player.weapon==='wand'&&player.weaponUpgrade==='wand_fan'?(player.weaponUpgrade2==='wand_fan_storm'?5:3):1,spread=player.weapon==='twin'?.2:player.weapon==='wand'&&player.weaponUpgrade==='wand_fan'?(player.weaponUpgrade2==='wand_fan_focus'?.1:player.weaponUpgrade2==='wand_fan_storm'?.4:.24):0;
@@ -726,7 +727,7 @@
       if(!obstacles.some(r=>overlapsObstacle(entity.x,entity.y+stepY,entity.r,r)))entity.y+=stepY;
     }
   }
-  function startShotReturn(s){if(s.returning)return;s.returning=true;s.hit.clear();if(s.kind==='axe'&&s.upgrade==='axe_return_cut'&&player.weaponUpgrade2==='axe_return_split'&&!s.returnSplinter){s.returnSplinter=true;for(const direction of [-1,1]){const angle=s.angle+direction*.42,damage=s.damage*.48;shots.push({kind:'axe',x:s.x,y:s.y,vx:Math.cos(angle)*weapons.axe.speed*.78,vy:Math.sin(angle)*weapons.axe.speed*.78,angle,age:0,returnAt:.3,life:.9,returning:false,hit:new Set(),landedHit:false,damage,pierce:999,spin:0,upgrade:'axe_return_cut'});}}}
+  function startShotReturn(s){if(s.returning)return;s.returning=true;s.hit.clear();if(s.kind==='axe'&&s.upgrade==='axe_return_cut'&&player.weaponUpgrade2==='axe_return_split'&&!s.returnSplinter){s.returnSplinter=true;for(const direction of [-1,1]){const angle=s.angle+direction*.42,damage=s.damage*.48;shots.push({kind:'axe',x:s.x,y:s.y,vx:Math.cos(angle)*weapons.axe.speed*.78,vy:Math.sin(angle)*weapons.axe.speed*.78,angle,age:0,returnAt:.3,life:.9,returning:false,returnSplinter:true,hit:new Set(),landedHit:false,damage,pierce:999,spin:0,upgrade:'axe_return_cut'});}}}
   function updateShots(dt){
     for(let i=shots.length-1;i>=0;i--){const s=shots[i],prevX=s.x,prevY=s.y;s.life-=dt;s.spin+=dt*15;
       if(s.kind==='orbiter'){
@@ -817,7 +818,9 @@
       if(e.kind==='seal'||e.kind==='brother'||e.kind==='maw'){updateFinalAdd(e,dt);continue;}
       const oldX=e.x,oldY=e.y,dx=player.x-e.x,dy=player.y-e.y,d=Math.hypot(dx,dy)||1;
       e.slowTimer=Math.max(0,(e.slowTimer||0)-dt);const moveSpeed=e.speed*(e.slowTimer>0?Math.max(.42,.64-.055*((relicBag.frost||1)-1)):1),advancedSteps=Math.max(0,runDifficulty-1);
-      if(e.kind==='charger'){
+      if(e.kind==='elite'){
+        updateElite(e,dt,dx,dy,d,moveSpeed);
+      } else if(e.kind==='charger'){
         if(e.chargeState==='approach'){
           if(d>205)moveEntityWithWalls(e,dx/d*moveSpeed*dt,dy/d*moveSpeed*dt);
           e.chargeCooldown-=dt;
@@ -839,6 +842,39 @@
       const travel=Math.hypot(e.x-oldX,e.y-oldY);e.walkDistance=(e.walkDistance||0)+travel;e.moveSpeed=dt?travel/dt:0;
       if(d<e.r+player.r+2&&invuln<=0)hurtPlayer(e.damage);
     }
+  }
+  function updateElite(e,dt,dx,dy,d,moveSpeed){
+    if(e.eliteState==='tell'){
+      e.eliteTimer-=dt;
+      if(e.eliteTimer<=0){e.eliteState='dash';e.eliteTimer=.3;}
+      return;
+    }
+    if(e.eliteState==='dash'){
+      const dashSpeed=(runDifficulty>=3?690:runDifficulty===2?620:540)*(e.speed?moveSpeed/e.speed:1);
+      moveEntityWithWalls(e,Math.cos(e.eliteAim)*dashSpeed*dt,Math.sin(e.eliteAim)*dashSpeed*dt);
+      e.eliteTimer-=dt;
+      if(e.eliteTimer<=0){
+        e.eliteState='shotTell';e.eliteTimer=.38;e.eliteShotAim=Math.atan2(player.y-e.y,player.x-e.x);
+      }
+      return;
+    }
+    if(e.eliteState==='shotTell'){
+      e.eliteTimer-=dt;
+      if(e.eliteTimer<=0){
+        const count=runDifficulty>=3?5:3,spread=runDifficulty>=3?.18:.24;
+        for(let i=0;i<count;i++)enemyShot(e,e.eliteShotAim+(i-(count-1)/2)*spread,runDifficulty>=2?225:190,'#ffd27a');
+        e.eliteState='recover';e.eliteTimer=runDifficulty>=2?.48:.62;
+      }
+      return;
+    }
+    if(e.eliteState==='recover'){
+      e.eliteTimer-=dt;
+      if(e.eliteTimer<=0){e.eliteState='approach';e.eliteTimer=runDifficulty>=3?1.25:1.65;}
+      return;
+    }
+    moveEntityWithWalls(e,dx/d*moveSpeed*.72*dt,dy/d*moveSpeed*.72*dt);
+    e.eliteTimer-=dt;
+    if(e.eliteTimer<=0){e.eliteAim=Math.atan2(dy,dx);e.eliteState='tell';e.eliteTimer=runDifficulty>=3?.52:runDifficulty===2?.62:.78;}
   }
   function updateBoss(e,dt){
     const pressure=bossPressure(e);
@@ -1094,6 +1130,7 @@
   }
   function drawWarnings(){
     for(const d of drops){if(d.kind!=='warning')continue;const pulse=.75+Math.sin(time*18)*.18;ctx.strokeStyle=`rgba(255,112,150,${pulse})`;ctx.lineWidth=3;ctx.beginPath();ctx.arc(d.x,d.y,d.r*(1.2-d.life*.35),0,Math.PI*2);ctx.stroke();ctx.fillStyle='rgba(235,75,120,.14)';ctx.beginPath();ctx.arc(d.x,d.y,d.r,0,Math.PI*2);ctx.fill();}
+    for(const e of enemies){if(e.kind!=='elite'||e.eliteState!=='shotTell')continue;const count=runDifficulty>=3?5:3,spread=runDifficulty>=3?.18:.24;ctx.save();ctx.globalAlpha=.5+.25*Math.sin(time*24);ctx.strokeStyle='#ffe29a';ctx.lineWidth=3;ctx.setLineDash([8,7]);for(let i=0;i<count;i++){const angle=e.eliteShotAim+(i-(count-1)/2)*spread,end=rayEnd(e.x,e.y,angle);ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(end.x,end.y);ctx.stroke();}ctx.restore();}
     for(const e of enemies){if(e.kind!=='boss'||!e.telegraph||!['aimed','radial'].includes(e.telegraph.pattern))continue;const t=e.telegraph;ctx.save();ctx.globalAlpha=.38+Math.sin(time*18)*.1;ctx.strokeStyle='#ff718a';ctx.lineWidth=3;ctx.setLineDash([9,8]);if(t.pattern==='aimed'){ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(e.x+Math.cos(t.aim)*1100,e.y+Math.sin(t.aim)*1100);ctx.stroke();}else{ctx.beginPath();ctx.arc(e.x,e.y,90+(1-t.timer)*120,0,Math.PI*2);ctx.stroke();}ctx.restore();}
     for(const e of enemies){if(e.kind!=='brother'||!e.attackTell)continue;const pressure=e.finalPressure??runDifficulty,t=e.attackTell,count=t.pattern==='fist'?(pressure===0?5:5+Math.floor(2*pressure)):(pressure===0?3:3+Math.floor(2*pressure)),spread=t.pattern==='fist'?(pressure===0?.14:.14-.02*pressure):(pressure===0?.2:.2-.04*pressure);ctx.save();ctx.globalAlpha=.42+Math.sin(time*20)*.18;ctx.strokeStyle=t.pattern==='fist'?'#d7b9ff':'#ff9fb9';ctx.lineWidth=2;ctx.setLineDash([7,7]);for(let i=0;i<count;i++){const a=t.aim+(i-(count-1)/2)*spread,end=rayEnd(e.x,e.y,a);ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(end.x,end.y);ctx.stroke();}if(t.pattern==='slash'){ctx.setLineDash([]);ctx.strokeStyle='#ffbfd0';ctx.lineWidth=3;ctx.beginPath();ctx.arc(t.target.x,t.target.y,35+Math.sin(time*20)*3,0,Math.PI*2);ctx.stroke();}ctx.restore();}
   }
@@ -1198,12 +1235,13 @@
       if(e.kind==='boss'&&e.bossKind==='star')ctx.rotate(Math.sin(time*1.3)*.035);
       ctx.scale(sx,sy);
       if(e.kind==='charger'&&e.chargeState==='tell'){ctx.strokeStyle='#ffd18b';ctx.lineWidth=3;ctx.setLineDash([8,6]);ctx.beginPath();ctx.moveTo(-size*.55,0);ctx.lineTo(230,0);ctx.stroke();ctx.setLineDash([]);}
+      if(e.kind==='elite'&&e.eliteState==='tell'){ctx.save();ctx.rotate(e.eliteAim);ctx.globalAlpha=.65+.3*Math.sin(time*24);ctx.strokeStyle='#ffe29a';ctx.lineWidth=4;ctx.setLineDash([10,7]);ctx.beginPath();ctx.moveTo(size*.35,0);ctx.lineTo(270,0);ctx.stroke();ctx.setLineDash([]);ctx.restore();}
       const regular=e.kind==='grunt'||e.kind==='shooter'||e.kind==='charger'||e.kind==='elite',atlas=regular?regularEnemySpriteAtlas:enemySpriteAtlas;
       if(atlas.complete&&atlas.naturalWidth){const pixelSize=enemyPixelSize(e),animationFrame=getEnemyAnimationFrame(e);ctx.filter=e.flash>0?'brightness(1.8)':e.slowTimer>0?'hue-rotate(150deg) saturate(1.35)':'none';ctx.imageSmoothingEnabled=false;if(animationFrame){const scale=(size-2)/Math.max(animationFrame.sw,animationFrame.sh),drawW=Math.round(animationFrame.sw*scale),drawH=Math.round(animationFrame.sh*scale),drawY=animationFrame.grounded?Math.floor(size/2)-drawH:-Math.floor(drawH/2);ctx.drawImage(animationFrame.atlas,animationFrame.sx,animationFrame.sy,animationFrame.sw,animationFrame.sh,-Math.floor(drawW/2),drawY,drawW,drawH);}else{const pixelSprite=getEnemyPixelSprite(column,row,pixelSize,regular);ctx.drawImage(pixelSprite,-size/2,-size/2,size,size);}ctx.filter='none';}
       else{ctx.fillStyle=e.color;ctx.fillRect(-e.r,-e.r,e.r*2,e.r*2);}
       if(e.kind==='boss'&&e.invulnerable){ctx.strokeStyle='#fff2ad';ctx.lineWidth=3;ctx.setLineDash([5,5]);ctx.beginPath();ctx.arc(0,0,e.r+12+Math.sin(time*5)*3,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);}
       ctx.restore();
-      if(e.kind!=='boss'&&e.hp<e.maxHp){const barWidth=size*.72,left=e.x+dx-barWidth/2,top=e.y+dy-size*.42-7;ctx.fillStyle='#16131b';ctx.fillRect(left,top,barWidth,3);ctx.fillStyle='#f08d76';ctx.fillRect(left,top,barWidth*clamp(e.hp/e.maxHp,0,1),3);}
+      if(e.kind==='elite'||(e.kind!=='boss'&&e.hp<e.maxHp)){const miniBoss=e.kind==='elite',barWidth=miniBoss?82:size*.72,left=e.x+dx-barWidth/2,top=e.y+dy-size*.42-(miniBoss?12:7),barHeight=miniBoss?6:3;ctx.fillStyle='#16131b';ctx.fillRect(left,top,barWidth,barHeight);ctx.fillStyle=miniBoss?'#f3b85f':'#f08d76';ctx.fillRect(left,top,barWidth*clamp(e.hp/e.maxHp,0,1),barHeight);if(miniBoss){ctx.fillStyle='#ffe5a8';ctx.font='bold 10px sans-serif';ctx.textAlign='center';ctx.fillText('정예',e.x+dx,top-2);}}
       if(e.burn>0){ctx.fillStyle='#ff9a56';ctx.fillRect(e.x+dx-2,e.y+dy-size*.48,4,4);}
       if(e.wildfireTimer>0){ctx.strokeStyle='#ff9b60';ctx.lineWidth=1.5;ctx.setLineDash([2,3]);ctx.beginPath();ctx.arc(e.x+dx,e.y+dy,e.r+4+Math.sin(time*16),0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);}
       if(e.kind==='elite'){const glint=.45+.45*Math.sin(time*5+e.x);ctx.globalAlpha=glint;ctx.fillStyle='#fff4b4';ctx.fillRect(e.x+dx-1,e.y+dy-2,2,2);ctx.globalAlpha=1;}
