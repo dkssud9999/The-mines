@@ -255,7 +255,7 @@
   }
   function save(){ try{localStorage.setItem('mine-reverb-save',JSON.stringify(saved));}catch{} }
   function updateOverlay(which){ overlays.forEach(id=>$(id).classList.toggle('visible',id===which)); }
-  function setScreen(value,overlay=null){screen=value;updateOverlay(overlay);$('hud').classList.toggle('visible',value==='playing'||value==='paused');$('bossbar').classList.toggle('visible',value==='playing'&&phase==='boss'&&!!boss);}
+  function setScreen(value,overlay=null){if(value!=='playing'&&value!=='paused')pendingEchoes=[];screen=value;updateOverlay(overlay);$('hud').classList.toggle('visible',value==='playing'||value==='paused');$('bossbar').classList.toggle('visible',value==='playing'&&phase==='boss'&&!!boss);}
   function syncWeaponPicker(){
     const root=$('weaponSelect'); root.innerHTML='';
     Object.entries(weapons).forEach(([id,w])=>{
