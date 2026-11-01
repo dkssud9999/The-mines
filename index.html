@@ -317,7 +317,7 @@
   const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
   const balanceSeedParam=new URLSearchParams(location.search).get('balanceSeed');
   const balanceSeed=balanceSeedParam!==null&&Number.isFinite(Number(balanceSeedParam))?Number(balanceSeedParam)>>>0:null;
-  let balanceRngState=balanceSeed||1;
+  let balanceRngState=balanceSeed??1;
   function runRandom(){if(balanceSeed===null)return Math.random();balanceRngState=(balanceRngState+0x6D2B79F5)|0;let t=balanceRngState;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;}
   const rand=(a,b)=>a+runRandom()*(b-a);
   const choice=a=>a[Math.floor(runRandom()*a.length)];
@@ -335,10 +335,20 @@
   function updateOverlay(which){ overlays.forEach(id=>$(id).classList.toggle('visible',id===which)); }
   const activePointers=new Set(),blockedOpeningPointers=new Set(),suppressedPointerClicks=new Set();let overlayChoiceInputBlockedUntil=0;
   function lockOverlayChoiceInput(){overlayChoiceInputBlockedUntil=performance.now()+350;blockedOpeningPointers.clear();for(const id of activePointers)blockedOpeningPointers.add(id);}
-  function setScreen(value,overlay=null){if(value!=='playing'&&value!=='paused')pendingEchoes=[];if(value==='choice'||value==='loot'||value==='weaponUpgrade')lockOverlayChoiceInput();screen=value;updateOverlay(overlay);$('hud').classList.toggle('visible',value==='playing'||value==='paused');$('bossbar').classList.toggle('visible',value==='playing'&&phase==='boss'&&!!boss);}
+  function setScreen(value,overlay=null){if(value!=='playing'&&value!=='paused')clearPendingEchoes();if(value==='choice'||value==='loot'||value==='weaponUpgrade')lockOverlayChoiceInput();screen=value;updateOverlay(overlay);$('hud').classList.toggle('visible',value==='playing'||value==='paused');$('bossbar').classList.toggle('visible',value==='playing'&&phase==='boss'&&!!boss);}
   function runStatMultiplier(){return Math.max(0,1-runStatPenalty);}
+  function payHealthCost(amount,cause){
+    const before=Math.max(0,player.hp);player.hp-=amount;
+    if(balanceRoom){balanceRoom.selfDamage=(balanceRoom.selfDamage||0)+Math.min(before,amount);const costs=balanceRoom.selfCosts||(balanceRoom.selfCosts={});costs[cause]=(costs[cause]||0)+Math.min(before,amount);}
+    if(player.hp<=0){player.hp=0;gameOver();return false;}return true;
+  }
   function attackRateMultiplier(){const lateCollapse=relicBag.collapse_burst&&player&&player.collapseBurstOver ? .5 : 1;return runStatMultiplier()*(relicBag.exp_tempo?1.2:1)*lateCollapse;}
-  function outgoingDamageMultiplier(target,source,attackAngle=null){const direct=['axe','bolt','prism','echo','orbiter','cleave','rift','rail'].includes(source);let mult=runStatMultiplier();if(player?.rageActive>0)mult*=1.5;if(player?.adrenalineActive>0)mult*=2.5;if(relicBag.exp_edge)mult*=1.25;if(direct&&relicBag.collapse_momentum)mult*=1+momentumHits*.01;if(direct&&relicBag.abyss_hungry&&['bolt','prism','echo','rail'].includes(source))mult*=Math.min(2.5,1+abyssHitStreak*.1);if(direct&&relicBag.collapse_cannon&&(player?.collapseCannonTimer||0)>0)mult*=3;if(relicBag.collapse_burst&&phase==='boss'&&boss&&!boss.invulnerable&&(player?.collapseBurstTimer||0)>0)mult*=4;if(relicBag.collapse_frontal&&target?.kind==='boss'){const toward=Math.atan2(player.y-target.y,player.x-target.x),face=target.facingAngle??0,diff=Math.abs(Math.atan2(Math.sin(toward-face),Math.cos(toward-face)));mult*=diff<Math.PI/3?3:.15;}return mult;}
+  function newAttackContext(damage){return{id:`${runToken}:${player?.attackCount+1||0}`,damage,pending:1,landed:false,counted:false,paid:false,paidReflect:false,hungry:player?.weapon==='wand'&&!!relicBag.abyss_hungry,cannon:!!(relicBag.collapse_cannon&&player?.collapseCannonTimer>0),cancelled:false};}
+  function retainAttackContext(context){if(context)context.pending++;}
+  function releaseAttackContext(context){if(!context||context.pending<=0)return;if(--context.pending===0&&!context.cancelled&&!context.landed&&context.hungry&&!context.paid){context.paid=true;payHealthCost(3,'굶주린 탄환');abyssHitStreak=0;floatText(player.x,player.y-18,'-3','#ff7181',13);}}
+  function clearShots(cancelled=false){for(const shot of shots){if(!shot.attackContext)continue;if(cancelled)shot.attackContext.cancelled=true;releaseAttackContext(shot.attackContext);}shots=[];}
+  function clearPendingEchoes(){for(const echo of pendingEchoes){if(echo.attackContext){echo.attackContext.cancelled=true;releaseAttackContext(echo.attackContext);}}pendingEchoes=[];}
+  function outgoingDamageMultiplier(target,source,attackAngle=null,context=null){const direct=['axe','bolt','prism','echo','orbiter','cleave','rift','rail'].includes(source);let mult=runStatMultiplier();if(player?.rageActive>0)mult*=1.5;if(player?.adrenalineActive>0)mult*=2.5;if(relicBag.exp_edge)mult*=1.25;if(direct&&relicBag.collapse_momentum)mult*=1+momentumHits*.01;if(direct&&(context?.hungry||!context&&relicBag.abyss_hungry)&&['bolt','prism','echo','rail'].includes(source))mult*=Math.min(2.5,1+abyssHitStreak*.1);if(direct&&relicBag.collapse_cannon&&((player?.collapseCannonTimer||0)>0||context?.cannon))mult*=3;if(relicBag.collapse_burst&&phase==='boss'&&boss&&!boss.invulnerable&&(player?.collapseBurstTimer||0)>0)mult*=4;if(relicBag.collapse_frontal&&target?.kind==='boss'){const toward=Math.atan2(player.y-target.y,player.x-target.x),face=target.facingAngle??0,diff=Math.abs(Math.atan2(Math.sin(toward-face),Math.cos(toward-face)));mult*=diff<Math.PI/3?3:.15;}return mult;}
   function healPlayer(amount){if(!player)return 0;const healed=Math.max(0,Math.min(player.maxHp-player.hp,amount));player.hp+=healed;if(balanceRoom){balanceRoom.healed+=healed;if(!balanceRoom.active&&balanceRooms.length)balanceRooms[balanceRooms.length-1].healed+=healed;}return healed;}
   window.addEventListener('pointerdown',e=>activePointers.add(e.pointerId),true);
   window.addEventListener('pointerup',e=>{activePointers.delete(e.pointerId);if(blockedOpeningPointers.delete(e.pointerId)){suppressedPointerClicks.add(e.pointerId);setTimeout(()=>suppressedPointerClicks.delete(e.pointerId),0);}},true);
@@ -361,13 +371,15 @@
   function difficultyName(n){return ['광부','탐험가','심연','붕괴'][n]||'광부';}
   function bossPressure(e){return e.finalPressure??runDifficulty;}
   function startRun(){
-    balanceRooms.length=0;balanceRoom={active:false,number:0,stage:1,phase:'wave',startedAt:0,damageDealt:0,damageTaken:0,healed:0,resourceUses:0};balanceRngState=balanceSeed||1;
-    runToken++;pendingEchoes=[];runStatPenalty=0;momentumHits=0;abyssHitStreak=0;
+    clearHeldInput();
+    balanceRooms.length=0;balanceRoom={active:false,number:0,stage:1,phase:'wave',startedAt:0,damageDealt:0,damageTaken:0,healed:0,resourceUses:0};balanceRngState=balanceSeed??1;
+    runToken++;clearPendingEchoes();runStatPenalty=0;momentumHits=0;abyssHitStreak=0;
     stage=1;phase='wave';roomCount=0;kills=0;xp=0;xpNeed=6;runTime=0;runDifficulty=difficulty;endless=false;boss=null;
     weaponUpgradeUsed=false;weaponUpgrade2Used=false;
+    clearShots(true);
     for(const k of Object.keys(relicBag))delete relicBag[k];
     player={x:W/2,y:H*.68,r:11,hp:100,maxHp:100,speed:205,weapon:selectedWeapon,attackCount:0,weaponUpgrade:null,weaponUpgrade2:null,charging:false,chargeTime:0,rage:0,rageActive:0,adrenaline:0,adrenalineActive:0,voidCharge:0};
-    enemies=[];bullets=[];shots=[];particles=[];texts=[];drops=[];hazards=[];lightningArcs=[];weaponEffects=[];voidWaves=[];attackTimer=.25;dashTimer=0;dashCooldown=0;invuln=0;shake=0;
+    enemies=[];bullets=[];clearShots(true);particles=[];texts=[];drops=[];hazards=[];lightningArcs=[];weaponEffects=[];voidWaves=[];attackTimer=.25;dashTimer=0;dashCooldown=0;invuln=0;shake=0;
     setObstacles();startWave();setScreen('playing');playSound('start');
   }
   function setObstacles(){
@@ -377,11 +389,12 @@
   }
   function resetRoomCombat(){
     if(relicBag.collapse_cannon&&player){player.collapseCannonUsed=false;player.collapseCannonTimer=0;}
+    if(voidWaves.length&&player)player.voidCharge=0;
     voidWaves=[];
   }
   function startWave(){
     resetRoomCombat();
-    phase='wave';beginBalanceRoom();boss=null;setObstacles();enemies=[];bullets=[];shots=[];hazards=[];
+    phase='wave';beginBalanceRoom();boss=null;setObstacles();enemies=[];bullets=[];clearShots(true);hazards=[];
     const upper=runDifficulty>=1,count=upper?(roomCount===0?8+Math.max(0,stage-1)*2+runDifficulty-1:10+Math.max(0,stage-1)*2+runDifficulty-1):5+stage*2+runDifficulty*2;
     for(let i=0;i<count;i++){const shooter=i%4===3,charger=stage>=2&&(!upper||roomCount>0)&&i%5===4;spawnEnemy(charger?'charger':shooter?'shooter':'grunt',i);}
     toast(`${zoneName()} · 전투 시작`);updateHud();
@@ -410,14 +423,14 @@
   }
   function startElite(){
     resetRoomCombat();
-    phase='elite';beginBalanceRoom();boss=null;enemies=[];bullets=[];shots=[];hazards=[];setObstacles();
+    phase='elite';beginBalanceRoom();boss=null;enemies=[];bullets=[];clearShots(true);hazards=[];setObstacles();
     const count=runDifficulty>=1?3:2+Math.min(2,stage);
     for(let i=0;i<count;i++)spawnEnemy(i===0?'elite':i%2?'shooter':'grunt',i);
     setScreen('playing');toast('정예 전투 · 보상을 획득하세요');updateHud();
   }
   function startBoss(){
     resetRoomCombat();
-    phase='boss';beginBalanceRoom();enemies=[];bullets=[];shots=[];hazards=[];lightningArcs=[];setObstacles();
+    phase='boss';beginBalanceRoom();enemies=[];bullets=[];clearShots(true);hazards=[];lightningArcs=[];setObstacles();
     if(relicBag.collapse_burst){player.collapseBurstTimer=20;player.collapseBurstOver=false;}
     const def=bosses[(stage-1)%bosses.length],pressure=def.kind==='star'?(finalBossPressure[runDifficulty]??1):runDifficulty,scale=(1+(stage-1)*.31)*difficultyHpMultiplier(runDifficulty,'boss');
     const health=(def.kind==='star'?840:780)*scale;
@@ -436,7 +449,7 @@
     lootAfter=after;lootPool=after==='riskPick'?makeTierLoot(2,3):after==='eliteBonus'?makeOwnedStackLoot():makeLoot(phase==='elite'?4:3);const fourItems=lootPool.length===4;$('lootPanel').classList.toggle('fourItems',fourItems);$('lootCards').classList.toggle('fourCards',fourItems);$('lootCards').innerHTML='';
     if(after==='eliteBonus'&&!lootPool.length){$('lootTitle').textContent='추가 유물이 없습니다';$('lootSubtitle').textContent='대신 유물 3개 중 하나를 더 고르세요.';lootAfter='eliteExtra';lootPool=makeLoot(3);}
     $('lootKicker').textContent=phase==='boss'?'보스 상자':phase==='elite'?'정예 보상':'유물 상자';
-    $('lootTitle').textContent='상자가 열렸다';$('lootSubtitle').textContent='획득할 유물을 고르세요.';
+    $('lootTitle').textContent=lootAfter==='eliteBonus'?'유물 하나를 강화하세요':lootAfter==='eliteExtra'?'추가 유물 보상':after==='riskPick'?'위험을 선택하세요':'상자가 열렸다';$('lootSubtitle').textContent=lootAfter==='eliteBonus'?'보유 유물 하나를 한 번 중첩합니다.':lootAfter==='eliteExtra'?'중첩할 유물이 없어 새 유물 하나를 받습니다.':after==='riskPick'?'대가를 확인하고 선택하세요. 건너뛸 수 있습니다.':'획득할 유물을 고르세요.';
     lootPool.forEach((item,index)=>{
       const card=document.createElement('button');card.type='button';card.className=`card revealCard${item.tier?` tier-${['','explorer','abyss','collapse'][item.tier]}`:''}`;card.style.setProperty('--reveal-delay',`${index*.18}s`);
       const artwork=item.tier?`<span class="cardicon">${item.icon}</span>`:`<img class="relicImage" src="assets/relic-icons/${item.id}.png" alt="">`;
@@ -454,7 +467,7 @@
     $('synergyHint').textContent=previews.length?`새 조합 미리보기 · ${previews.slice(0,2).join(' / ')}`:active.length?`작동 중인 조합 · ${active.slice(0,2).join(' / ')}`:'';
     setScreen('loot','lootOverlay');playSound('chest');
   }
-  function makeTierLoot(minTier,count){const eligible=Object.entries(relics).filter(([id,item])=>(item.tier||0)>=minTier&&(item.tier||0)<=runDifficulty&&(!item.unlock||saved.unlockedRelics.includes(id))&&(!item.weapon||item.weapon===player.weapon)&&(!item.maxStacks||(relicBag[id]||0)<item.maxStacks));const chosen=[];while(chosen.length<Math.min(count,eligible.length)){const rest=eligible.filter(([id])=>!chosen.includes(id));chosen.push(choice(rest)[0]);}return chosen.map(id=>({id,...relics[id]}));}
+  function makeTierLoot(minTier,count){const eligible=Object.entries(relics).filter(([id,item])=>(item.tier||0)>=minTier&&(item.tier||0)<=runDifficulty&&(!item.unlock||saved.unlockedRelics.includes(id))&&(!item.weapon||item.weapon===player.weapon)&&(!item.maxStacks||(relicBag[id]||0)<item.maxStacks));const chosen=[];while(chosen.length<Math.min(count,eligible.length)){const rest=eligible.filter(([id])=>!chosen.includes(id));chosen.push(choice(rest)[0]);}const safe=Object.entries(relics).filter(([id,item])=>(item.tier||0)<minTier&&(!item.unlock||saved.unlockedRelics.includes(id))&&(!item.weapon||item.weapon===player.weapon)&&(!item.maxStacks||(relicBag[id]||0)<item.maxStacks));while(chosen.length<count){const rest=safe.filter(([id])=>!chosen.includes(id));if(!rest.length)break;chosen.push(choice(rest)[0]);}return chosen.map(id=>({id,...relics[id]}));}
   function makeOwnedStackLoot(){return Object.entries(relicBag).filter(([id,n])=>n>0&&(!relics[id].maxStacks||n<relics[id].maxStacks)&&(!relics[id].weapon||relics[id].weapon===player.weapon)).map(([id])=>({id,...relics[id]}));}
   function skipOptionalLoot(){if(lootAfter==='riskPick'){finishBossLoot();return;}if(lootAfter==='eliteBonus'||lootAfter==='eliteExtra'){startBoss();return;}}
   function makeLoot(optionCount=3){
@@ -477,10 +490,10 @@
     const relic=relics[id];if(!relic||relic.maxStacks&&(relicBag[id]||0)>=relic.maxStacks)return;
     const oldSynergies=new Set(activeSynergies().map(item=>item.key));
     relicBag[id]=(relicBag[id]||0)+1;
-    if(id==='heart'){player.maxHp+=20;healPlayer(25);}
+    if(id==='heart'){player.maxHp+=20*runStatMultiplier();healPlayer(25);}
     if(id==='dash')player.dashBase=Math.max(.55,(player.dashBase||1.35)-.18);
     if(id==='gale')player.speed+=14;
-    if(id==='exp_heart'){player.maxHp+=30;healPlayer(30);}
+    if(id==='exp_heart'){player.maxHp+=30*runStatMultiplier();healPlayer(30);}
     if(id==='exp_stride')player.speed+=30;
     const found=activeSynergies().find(item=>!oldSynergies.has(item.key));if(found)toast(`시너지 발동 · ${synergyText[found.key]}`);
     playSound('relic');
@@ -574,7 +587,7 @@
     $('weaponHud').textContent=weapons[player.weapon].name+(weaponUpgrade?` · ${weaponUpgrade.name}`:'')+(weaponUpgrade2?` · ${weaponUpgrade2.name}`:'');$('xpText').textContent=`잔향 ${xp} / ${xpNeed}`;
     $('zoneHud').textContent=endless?zoneName():`구역 ${stage} · ${zoneName()}`;
     $('difficultyHud').textContent=`난이도 · ${difficultyName(runDifficulty)}`;
-    $('roomHud').textContent=phase==='boss'?'보스전':phase==='elite'?'정예 굴':phase==='wave'&&runDifficulty>=1?`전투 ${roomCount+1} / 2`:'전투';
+    $('roomHud').textContent=phase==='boss'?'보스전':phase==='elite'?'정예 굴':phase==='wave'&&runDifficulty>=1?`전투 ${roomCount+1} / 2 · 다음: 유물`:'전투';
     $('relicHud').innerHTML=Object.entries(relicBag).filter(([,n])=>n>0).map(([id,n])=>`<span class="relicpip" title="${relics[id].name}">${relics[id].icon}${n>1?'×'+n:''}</span>`).join('');
     $('recordHud').textContent=`처치 ${kills} · 최고 구역 ${saved.bestZone}`+(relicBag.collapse_momentum?` · 기세 +${momentumHits}% / 손실 ${Math.round(runStatPenalty*100)}%`:'');
     if(boss){const state=boss.invulnerable?(boss.bossKind==='star'?' · 무적':boss.act==='hell'?' · 탄막 진행 중':boss.act==='transition'?' · 페이즈 전환 중':boss.hellIndex===3?' · 쌍둥이 처치 필요':' · 봉인 파괴 필요'):'';$('bossName').textContent=boss.name+(boss.phase===2?' · 광폭화':'')+state;$('bossFill').style.width=`${clamp(boss.hp/boss.maxHp*100,0,100)}%`;}
@@ -590,23 +603,24 @@
     if(!player||relicBag.abyss_axe_storm&&player.axeStormOut&&player.weapon==='axe')return;
     const weap=weapons[player.weapon],attackNumber=player.attackCount+1,angle=Math.atan2(mouse.y-player.y,mouse.x-player.x);let damage=weap.damage*(1+(player.damageBonus||0));
     if(player.weapon==='axe')damage*=1+1.2*clamp(charge,0,1);
-    const attackShotStart=shots.length,missState=player.weapon==='wand'?{landed:false,remaining:0,paid:false}:null;
+    const attackShotStart=shots.length;
     if(relicBag.abyss_gambler){const jackpot=runRandom()<.2;damage*=jackpot?5:.5;floatText(player.x,player.y-22,jackpot?'대박 ×5':'반감','#ffe08a',12);}
-    if(relicBag.collapse_cannon&&!player.collapseCannonUsed){player.collapseCannonUsed=true;player.collapseCannonTimer=4;player.hp-=player.maxHp*.2;if(balanceRoom)balanceRoom.resourceUses++;floatText(player.x,player.y-24,'피의 포문 ×3','#ff7181',13);}
+    if(relicBag.collapse_cannon&&!player.collapseCannonUsed){player.collapseCannonUsed=true;player.collapseCannonTimer=4;if(!payHealthCost(player.maxHp*.2,'피의 포문'))return;if(balanceRoom)balanceRoom.resourceUses++;floatText(player.x,player.y-24,'피의 포문 ×3','#ff7181',13);}
     if(relicBag.exp_spark&&attackNumber%5===0)damage*=1.8;
     if(player.weaponUpgrade==='wand_prism')damage*=1.25;
+    if(relicBag.abyss_axe_storm&&player.weapon==='axe')damage*=1.6;
     if(relicBag.keen&&attackNumber%5===0){damage*=1+.75*relicBag.keen;floatText(player.x,player.y-20,'강타!','#ffe08a',13);}
-    let railLanded=false;
-    if(player.weaponUpgrade==='wand_rail'&&attackNumber%3===0)railLanded=fireWandRail(angle,damage*2.1);
-    else if(player.weaponUpgrade==='twin_rift'&&attackNumber%(player.weaponUpgrade2==='twin_rift_repeat'?3:4)===0)fireTwinRift(angle,damage*(player.weaponUpgrade2==='twin_rift_repeat'?4.8:player.weaponUpgrade2==='twin_rift_pierce'?5.6:3.6));
-    else if(player.weaponUpgrade==='twin_cleave')fireTwinCleave(angle,damage*2.4*(player.weaponUpgrade2==='twin_cleave_long'?1.15:1));
+    const attackContext=newAttackContext(damage);
+    if(player.weaponUpgrade==='wand_rail'&&attackNumber%3===0)fireWandRail(angle,damage*2.1,true,true,attackContext);
+    else if(player.weaponUpgrade==='twin_rift'&&attackNumber%(player.weaponUpgrade2==='twin_rift_repeat'?3:4)===0)fireTwinRift(angle,damage*(player.weaponUpgrade2==='twin_rift_repeat'?4.8:player.weaponUpgrade2==='twin_rift_pierce'?5.6:3.6),attackContext);
+    else if(player.weaponUpgrade==='twin_cleave')fireTwinCleave(angle,damage*2.4*(player.weaponUpgrade2==='twin_cleave_long'?1.15:1),true,attackContext);
     else if(player.weaponUpgrade==='twin_orbit'){
       const count=Math.min(6,2+(relicBag.split||0)+(player.weaponUpgrade2==='twin_orbit_blades'?1:0)),reach=player.weaponUpgrade2==='twin_orbit_reach';
       for(let i=0;i<count;i++)shots.push({kind:'orbiter',x:player.x,y:player.y,orbitAngle:angle+Math.PI*2*i/count,orbitRadius:reach?54:38,orbitSpeed:reach?12:8.5,life:.82,hit:new Set(),damage:damage*(1.2+.08*Math.max(0,(relicBag.split||0)-2))*(reach?1.35:1),pierce:999,spin:0});
     } else {
       let count=player.weapon==='twin'?twinSwipeCount():player.weapon==='wand'&&player.weaponUpgrade==='wand_fan'?(player.weaponUpgrade2==='wand_fan_storm'?5:3):1,spread=player.weapon==='twin'?.2:player.weapon==='wand'&&player.weaponUpgrade==='wand_fan'?(player.weaponUpgrade2==='wand_fan_focus'?.1:player.weaponUpgrade2==='wand_fan_storm'?.12:.24):0;
       if(relicBag.split&&player.weapon!=='twin'){count+=1+Math.min(2,relicBag.split-1);spread=player.weapon==='wand'&&player.weaponUpgrade==='wand_fan'?(player.weaponUpgrade2==='wand_fan_focus'?.1:player.weaponUpgrade2==='wand_fan_storm'?.12:.24):.13;}
-      if(player.weapon==='twin'){fireTwinSwipes(angle,damage,count,spread,'axe');}
+      if(player.weapon==='twin'){fireTwinSwipes(angle,damage,count,spread,'axe',attackContext);}
       else for(let i=0;i<count;i++){
         const offset=count===1?0:(i-(count-1)/2)*spread,a=angle+offset;
         const fanDamage=player.weaponUpgrade2==='wand_fan_storm'?.44:player.weaponUpgrade2==='wand_fan_focus'?.9:.58;
@@ -614,13 +628,14 @@
       }
     }
     if(relicBag.abyss_axe_storm&&player.weapon==='axe')player.axeStormOut=true;
-    if(player.weapon==='twin'&&relicBag.twin_moon&&attackNumber%3===0)fireTwinCleave(angle,damage*(.35+.1*(relicBag.twin_moon-1)));
-    if(missState){const spawned=shots.slice(attackShotStart).filter(s=>s.kind==='bolt');missState.remaining=spawned.length;for(const shot of spawned)shot.missState=missState;if(player.weaponUpgrade==='wand_rail'&&attackNumber%3===0){if(railLanded&&relicBag.abyss_hungry)abyssHitStreak++;else if(!railLanded&&relicBag.abyss_hungry){player.hp-=3;abyssHitStreak=0;floatText(player.x,player.y-18,'-3','#ff7181',13);}}}
+    if(player.weapon==='twin'&&relicBag.twin_moon&&attackNumber%3===0)fireTwinCleave(angle,damage*(.35+.1*(relicBag.twin_moon-1)),true,attackContext,'moon');
+    for(const shot of shots.slice(attackShotStart)){shot.attackContext=attackContext;shot.missState=attackContext;retainAttackContext(attackContext);}
     player.attackCount=attackNumber;
     if(relicBag.echo&&player.attackCount%4===0){
       const token=runToken,weapon=player.weapon,upgrade=player.weaponUpgrade;
-      pendingEchoes.push({at:performance.now()+110,token,weapon,upgrade,angle,damage:weap.damage});
+      pendingEchoes.push({at:performance.now()+110,token,weapon,upgrade,angle,attackContext});retainAttackContext(attackContext);
     }
+    releaseAttackContext(attackContext);
     const normalCooldown=weap.cooldown*Math.max(.62,1-(relicBag.echo||0)*.035);
     attackTimer=(player.weapon==='axe'?weap.cooldown*(1-.74*clamp(charge,0,1))*Math.max(.62,1-(relicBag.echo||0)*.035):normalCooldown)/attackRateMultiplier();playSound('shot');
   }
@@ -628,18 +643,18 @@
     if(screen!=='playing'||!player)return;
     const now=performance.now();
     for(let i=pendingEchoes.length-1;i>=0;i--){
-      const echo=pendingEchoes[i];if(echo.token!==runToken){pendingEchoes.splice(i,1);continue;}
+      if(screen!=='playing')return;const echo=pendingEchoes[i];if(echo.token!==runToken){pendingEchoes.splice(i,1);echo.attackContext.cancelled=true;releaseAttackContext(echo.attackContext);continue;}
       if(now<echo.at)continue;
       pendingEchoes.splice(i,1);
-      const echoDamage=echo.damage*(1+(player.damageBonus||0));
-      if(echo.weapon==='twin')fireTwinSwipes(echo.angle,echoDamage*.7,twinSwipeCount(),.24,'echo');
-      else shots.push({kind:'echo',x:player.x,y:player.y,ox:player.x,oy:player.y,vx:Math.cos(echo.angle)*weapons[echo.weapon].speed,vy:Math.sin(echo.angle)*weapons[echo.weapon].speed,angle:echo.angle,age:0,returnAt:.4,life:1.18,returning:false,hit:new Set(),damage:echoDamage,pierce:999,spin:0,upgrade:echo.upgrade,splitAttack:false});
+      const echoDamage=echo.attackContext.damage*(echo.weapon==='twin'?.7:1);
+      if(echo.weapon==='twin'){fireTwinSwipes(echo.angle,echoDamage,twinSwipeCount(),.24,'echo',echo.attackContext);releaseAttackContext(echo.attackContext);}
+      else shots.push({kind:'echo',x:player.x,y:player.y,ox:player.x,oy:player.y,vx:Math.cos(echo.angle)*weapons[echo.weapon].speed,vy:Math.sin(echo.angle)*weapons[echo.weapon].speed,angle:echo.angle,age:0,returnAt:.4,life:1.18,returning:false,hit:new Set(),damage:echoDamage,pierce:999,spin:0,upgrade:echo.upgrade,splitAttack:false,attackContext:echo.attackContext,missState:echo.attackContext});
     }
   }
   function twinSwipeCount(){return 2+(relicBag.split?1+Math.min(2,relicBag.split-1):0);}
-  function fireWandRail(angle,damage,allowEcho=true,allowSplit=true){
+  function fireWandRail(angle,damage,allowEcho=true,allowSplit=true,attackContext=null){
     let landed=false;
-    if(allowSplit&&relicBag.split){const extra=1+Math.min(2,relicBag.split-1),count=extra+1;for(let i=0;i<count;i++){const rayAngle=angle+(i-(count-1)/2)*.16;landed=fireWandRail(rayAngle,damage,false,false)||landed;if(player.weaponUpgrade2==='wand_rail_echo')landed=fireWandRail(rayAngle+.1,damage*.58,false,false)||landed;}return landed;}
+    if(allowSplit&&relicBag.split){const extra=1+Math.min(2,relicBag.split-1),count=extra+1;for(let i=0;i<count;i++){const rayAngle=angle+(i-(count-1)/2)*.16;landed=fireWandRail(rayAngle,damage,false,false,attackContext)||landed;if(player.weaponUpgrade2==='wand_rail_echo')landed=fireWandRail(rayAngle+.1,damage*.58,false,false,attackContext)||landed;}return landed;}
     const start={x:player.x,y:player.y},end=rayEnd(player.x,player.y,angle),length=dist(start,end),dx=end.x-start.x,dy=end.y-start.y,lenSq=dx*dx+dy*dy;
     let clearLength=length;
     for(let d=8;d<length;d+=8){const x=start.x+dx/length*d,y=start.y+dy/length*d;if(obstacles.some(r=>overlapsObstacle(x,y,2,r))){clearLength=d;break;}}
@@ -647,38 +662,38 @@
     for(const e of [...enemies]){
       const along=((e.x-start.x)*dx+(e.y-start.y)*dy)/(lenSq||1),px=start.x+dx*along,py=start.y+dy*along;
       const wide=player.weaponUpgrade2==='wand_rail_wide',width=e.r+(wide?22:12),railDamage=damage*(wide?1.3:1);
-      if(along>=0&&along<=clearLength/length&&Math.hypot(e.x-px,e.y-py)<width){landed=true;damageEnemy(e,railDamage,'rail',null,angle);}
+      if(along>=0&&along<=clearLength/length&&Math.hypot(e.x-px,e.y-py)<width){landed=true;if(attackContext)attackContext.landed=true;damageEnemy(e,railDamage,'rail',{attackContext},angle);}
     }
     drawLightning(start,clearEnd);
-    if(allowEcho&&player.weaponUpgrade2==='wand_rail_echo')landed=fireWandRail(angle+.1,damage*.58,false,false)||landed;
+    if(allowEcho&&player.weaponUpgrade2==='wand_rail_echo')landed=fireWandRail(angle+.1,damage*.58,false,false,attackContext)||landed;
     return landed;
   }
-  function fireTwinCleave(angle,damage,allowAftershock=true){
+  function fireTwinCleave(angle,damage,allowAftershock=true,attackContext=null,source='cleave'){
     if(allowAftershock)damage*=twinSwipeCount()/2;
     const long=player.weaponUpgrade2==='twin_cleave_long',reach=long?250:190,halfAngle=long ? .86 : .72;
     for(const e of [...enemies]){
       const dx=e.x-player.x,dy=e.y-player.y,d=Math.hypot(dx,dy),delta=Math.atan2(Math.sin(Math.atan2(dy,dx)-angle),Math.cos(Math.atan2(dy,dx)-angle));
-      if(d<reach+e.r&&Math.abs(delta)<halfAngle)damageEnemy(e,damage,'cleave',null,angle);
+      if(d<reach+e.r&&Math.abs(delta)<halfAngle)damageEnemy(e,damage,source,{attackContext},angle);
     }
     weaponEffects.push({kind:'cleave',x:player.x,y:player.y,angle,reach,halfAngle,color:'#ffe08a',life:.24,maxLife:.24});
-    if(allowAftershock&&player.weaponUpgrade2==='twin_cleave_after')fireTwinCleave(angle+.38,damage*.58,false);
+    if(allowAftershock&&player.weaponUpgrade2==='twin_cleave_after')fireTwinCleave(angle+.38,damage*.58,false,attackContext,source);
   }
-  function fireTwinRift(angle,damage){
+  function fireTwinRift(angle,damage,attackContext=null){
     damage*=twinSwipeCount()/2;
     const pierce=player.weaponUpgrade2==='twin_rift_pierce',reach=pierce?410:285,halfAngle=pierce ? .28 : .2;
     for(const e of [...enemies]){
       const dx=e.x-player.x,dy=e.y-player.y,d=Math.hypot(dx,dy),delta=Math.atan2(Math.sin(Math.atan2(dy,dx)-angle),Math.cos(Math.atan2(dy,dx)-angle));
-      if(d<reach+e.r&&Math.abs(delta)<halfAngle)damageEnemy(e,damage,'rift',null,angle);
+      if(d<reach+e.r&&Math.abs(delta)<halfAngle)damageEnemy(e,damage,'rift',{attackContext},angle);
     }
     weaponEffects.push({kind:'cleave',x:player.x,y:player.y,angle,reach,halfAngle,color:'#83e5ff',life:.3,maxLife:.3});
   }
-  function fireTwinSwipes(angle,damage,count,spread,source='axe'){
+  function fireTwinSwipes(angle,damage,count,spread,source='axe',attackContext=null){
     const reach=158,halfAngle=.36,slashAngles=Array.from({length:count},(_,i)=>angle+(i-(count-1)/2)*spread);
     for(const e of [...enemies]){
       if(e.kind==='boss'&&e.invulnerable)continue;
       const dx=e.x-player.x,dy=e.y-player.y,d=Math.hypot(dx,dy),enemyAngle=Math.atan2(dy,dx);
       const hits=slashAngles.reduce((total,slashAngle)=>{const delta=Math.atan2(Math.sin(enemyAngle-slashAngle),Math.cos(enemyAngle-slashAngle));return total+(d<reach+e.r&&Math.abs(delta)<halfAngle?1:0);},0);
-      if(hits){damageEnemy(e,damage*hits,source,{splitAttack:source!=='echo'&&!!relicBag.split});if(hits>1)floatText(e.x,e.y-e.r-20,`양날 적중 ×${hits}`,'#e5c9ff',14);}
+      if(hits){damageEnemy(e,damage*hits,source,{splitAttack:source!=='echo'&&!!relicBag.split,attackContext});if(hits>1)floatText(e.x,e.y-e.r-20,`양날 적중 ×${hits}`,'#e5c9ff',14);}
     }
     for(let i=0;i<slashAngles.length;i++)weaponEffects.push({kind:'cleave',x:player.x,y:player.y,angle:slashAngles[i],reach,halfAngle,color:i%2?'#d4aeff':'#9de8d9',life:.24,maxLife:.24});
   }
@@ -751,7 +766,7 @@
     time+=dt;frame++;
     if(toastTimer>0){toastTimer-=dt;if(toastTimer<=0)$('toast').classList.remove('visible');}
     if(screen!=='playing')return;
-    updatePendingEchoes();
+    updatePendingEchoes();if(screen!=='playing')return;
     runTime+=dt;attackTimer-=dt;dashCooldown-=dt;invuln-=dt;if(shake>0)shake=Math.max(0,shake-dt*24);
     updateCombatPowers(dt);
     if(player.collapseCannonTimer>0)player.collapseCannonTimer=Math.max(0,player.collapseCannonTimer-dt);
@@ -760,7 +775,7 @@
     let dx=(keys.d||keys.ArrowRight?1:0)-(keys.a||keys.ArrowLeft?1:0)+touchMove.dx,dy=(keys.s||keys.ArrowDown?1:0)-(keys.w||keys.ArrowUp?1:0)+touchMove.dy;const inputLength=Math.hypot(dx,dy);if(inputLength>1){dx/=inputLength;dy/=inputLength;}
     if(player.dashing>0){player.dashing-=dt;dx=player.dashX;dy=player.dashY;player.x+=dx*570*runStatMultiplier()*dt;player.y+=dy*570*runStatMultiplier()*dt;}
     else {const voidSlow=runDifficulty>=3?1-.5*(player.voidCharge||0):1;player.x+=dx*player.speed*runStatMultiplier()*voidSlow*dt;player.y+=dy*player.speed*runStatMultiplier()*voidSlow*dt;}
-    if(wasDashing&&player.dashing<=0&&relicBag.collapse_dash){const cost=player.maxHp*.1;player.hp-=cost;floatText(player.x,player.y-20,`-${Math.ceil(cost)}`,'#ff7181',15);}
+    if(wasDashing&&player.dashing<=0&&relicBag.collapse_dash){const cost=player.maxHp*.1;if(!payHealthCost(cost,'무적의 역설'))return;floatText(player.x,player.y-20,`-${Math.ceil(cost)}`,'#ff7181',15);}
     if(player.axeStormOut&&relicBag.abyss_axe_storm&&!shots.some(s=>s.kind==='axe'))player.axeStormOut=false;
     if(boss&&boss.lastStand){const px=boss.x-player.x,py=boss.y-player.y,pd=Math.hypot(px,py)||1,pull=player.dashing>0?18:42+26*Math.min(1.65,bossPressure(boss));player.x+=px/pd*pull*dt;player.y+=py/pd*pull*dt;}
     const arenaEdge=boss&&boss.lastStand?132+26*Math.min(1.65,bossPressure(boss)):boss&&boss.finalAct?112:31;player.x=clamp(player.x,arenaEdge,W-arenaEdge);player.y=clamp(player.y,47,H-30);
@@ -769,6 +784,7 @@
     updateVoidCharge(dt,playerTravel,wasDashing,inputLength>.01);
     player.walking=!wasDashing&&inputLength>.01;
     updateBloodFootsteps(dt);
+    if(screen!=='playing')return;
     const touchAimLength=Math.hypot(touchAim.x-stickHomes.right.x,touchAim.y-stickHomes.right.y);
     if(touchAim.active&&touchAim.tapCandidate&&performance.now()-touchAim.downAt>tapMaxMs)touchAim.tapCandidate=false;
     const manualTouchAim=touchAim.active&&!touchAim.tapCandidate;
@@ -809,49 +825,51 @@
       if(!obstacles.some(r=>overlapsObstacle(entity.x,entity.y+stepY,entity.r,r)))entity.y+=stepY;
     }
   }
-  function startShotReturn(s){if(s.returning)return;s.returning=true;s.hit.clear();if(s.kind==='axe'&&s.upgrade==='axe_return_cut'&&player.weaponUpgrade2==='axe_return_split'&&!s.returnSplinter){s.returnSplinter=true;for(const direction of [-1,1]){const angle=s.angle+direction*.42,damage=s.damage*.48;shots.push({kind:'axe',x:s.x,y:s.y,vx:Math.cos(angle)*weapons.axe.speed*.78,vy:Math.sin(angle)*weapons.axe.speed*.78,angle,age:0,returnAt:.3,life:.9,returning:false,returnSplinter:true,hit:new Set(),landedHit:false,damage,pierce:999,spin:0,upgrade:'axe_return_cut'});}}}
+  function startShotReturn(s){if(s.returning)return;s.returning=true;s.hit.clear();if(s.kind==='axe'&&s.upgrade==='axe_return_cut'&&player.weaponUpgrade2==='axe_return_split'&&!s.returnSplinter){s.returnSplinter=true;for(const direction of [-1,1]){const angle=s.angle+direction*.42,damage=s.damage*.48;shots.push({kind:'axe',x:s.x,y:s.y,vx:Math.cos(angle)*weapons.axe.speed*.78,vy:Math.sin(angle)*weapons.axe.speed*.78,angle,age:0,returnAt:.3,life:.9,returning:false,returnSplinter:true,hit:new Set(),landedHit:false,damage,pierce:999,spin:0,upgrade:'axe_return_cut',attackContext:s.attackContext,missState:s.attackContext});retainAttackContext(s.attackContext);}}}
+  function removeShotAt(index){const shot=shots.splice(index,1)[0];if(shot)releaseAttackContext(shot.attackContext);}
   function updateShots(dt){
-    for(let i=shots.length-1;i>=0;i--){const s=shots[i],prevX=s.x,prevY=s.y;s.life-=dt;s.spin+=dt*15;
+    for(let i=shots.length-1;i>=0;i--){if(screen!=='playing')return;const s=shots[i],prevX=s.x,prevY=s.y;s.life-=dt;s.spin+=dt*15;
       if(s.kind==='orbiter'){
         s.orbitAngle+=s.orbitSpeed*dt;s.x=player.x+Math.cos(s.orbitAngle)*s.orbitRadius;s.y=player.y+Math.sin(s.orbitAngle)*s.orbitRadius;
-        if(s.life<=0){shots.splice(i,1);continue;}
+        if(s.life<=0){removeShotAt(i);continue;}
       } else if(s.orbiting){
         s.orbitLife-=dt;s.orbitAngle+=s.orbitSpeed*dt;s.x=player.x+Math.cos(s.orbitAngle)*s.orbitRadius;s.y=player.y+Math.sin(s.orbitAngle)*s.orbitRadius;
-        if(s.orbitLife<=0){if(player.weaponUpgrade2==='axe_orbit_burst'){burst(s.x,s.y,'#ffc56f',14);for(const e of [...enemies])if(dist(e,s)<100)damageEnemy(e,s.damage*1.4,'axe');}shots.splice(i,1);continue;}
+        if(s.orbitLife<=0){if(player.weaponUpgrade2==='axe_orbit_burst'){burst(s.x,s.y,'#ffc56f',14);for(const e of [...enemies])if(dist(e,s)<100)damageEnemy(e,s.damage*1.4,'explosion');}removeShotAt(i);continue;}
       } else if(s.kind==='axe'||s.kind==='echo'){
         s.age=(s.age||0)+dt;if(!s.returning&&s.age>=(s.returnAt||.4))startShotReturn(s);
         if(s.returning){const dx=player.x-s.x,dy=player.y-s.y,d=Math.hypot(dx,dy);if(d<18){
           if(s.kind==='axe'&&s.upgrade==='axe_rethrow'&&!s.rethrown){
             const targets=enemies.filter(e=>!(e.kind==='boss'&&e.invulnerable)).sort((a,b)=>dist(a,player)-dist(b,player)),target=targets[0];
-            if(target){const a=Math.atan2(target.y-player.y,target.x-player.x),hunt=player.weaponUpgrade2==='axe_rethrow_hunt',speed=weapons.axe.speed*(hunt?1.42:1.08);s.rethrown=true;s.returning=false;s.age=0;s.returnAt=.34;s.hit.clear();s.damage*=hunt?1.08:.72;s.life=Math.max(s.life,.92);s.x=player.x+Math.cos(a)*13;s.y=player.y+Math.sin(a)*13;s.vx=Math.cos(a)*speed;s.vy=Math.sin(a)*speed;s.angle=a;if(player.weaponUpgrade2==='axe_rethrow_split'&&targets[1]){const other=targets[1],a2=Math.atan2(other.y-player.y,other.x-player.x);shots.push({...s,x:player.x+Math.cos(a2)*13,y:player.y+Math.sin(a2)*13,vx:Math.cos(a2)*weapons.axe.speed,vy:Math.sin(a2)*weapons.axe.speed,angle:a2,hit:new Set(),damage:s.damage*.6,life:Math.max(s.life,.92)});}continue;}
+            if(target){const a=Math.atan2(target.y-player.y,target.x-player.x),hunt=player.weaponUpgrade2==='axe_rethrow_hunt',speed=weapons.axe.speed*(hunt?1.42:1.08);s.rethrown=true;s.returning=false;s.age=0;s.returnAt=.34;s.hit.clear();s.damage*=hunt?1.08:.72;s.life=Math.max(s.life,.92);s.x=player.x+Math.cos(a)*13;s.y=player.y+Math.sin(a)*13;s.vx=Math.cos(a)*speed;s.vy=Math.sin(a)*speed;s.angle=a;if(player.weaponUpgrade2==='axe_rethrow_split'&&targets[1]){const other=targets[1],a2=Math.atan2(other.y-player.y,other.x-player.x);shots.push({...s,x:player.x+Math.cos(a2)*13,y:player.y+Math.sin(a2)*13,vx:Math.cos(a2)*weapons.axe.speed,vy:Math.sin(a2)*weapons.axe.speed,angle:a2,hit:new Set(),damage:s.damage*.6,life:Math.max(s.life,.92)});retainAttackContext(s.attackContext);}continue;}
           }
           if(s.upgrade==='axe_orbit'){const storm=player.weaponUpgrade2==='axe_orbit_storm';s.orbiting=true;s.orbitLife=storm?1.05:.62;s.orbitAngle=Math.atan2(s.y-player.y,s.x-player.x);s.orbitSpeed=storm?13:10;s.orbitRadius=storm?48:34;if(storm)s.damage*=1.25;s.hit.clear();s.vx=0;s.vy=0;s.life=Math.max(s.life,s.orbitLife);continue;}
-          shots.splice(i,1);continue;
+          removeShotAt(i);continue;
         }const speed=Math.min(1500,Math.max(620,d/Math.max(dt,s.life)+player.speed+35));const a=Math.atan2(dy,dx);s.vx=Math.cos(a)*speed;s.vy=Math.sin(a)*speed;}
       }
       if(s.kind!=='orbiter'&&!s.orbiting){s.x+=s.vx*dt;s.y+=s.vy*dt;}
       let blocked=!(s.kind==='orbiter'||s.orbiting)&&obstacles.some(r=>overlapsObstacle(s.x,s.y,4*(s.scale||1),r));
       const edgeHit=s.x<22||s.x>W-22||s.y<35||s.y>H-35;
-      if((blocked||edgeHit)&&relicBag.abyss_reflect&&(s.kind==='bolt'||s.kind==='prism')&&(s.bouncesLeft??2)>0){if(blocked){const wall=obstacles.find(r=>overlapsObstacle(s.x,s.y,4*(s.scale||1),r));if(wall){const sideX=Math.min(Math.abs(prevX-wall.x),Math.abs(prevX-(wall.x+wall.w))),sideY=Math.min(Math.abs(prevY-wall.y),Math.abs(prevY-(wall.y+wall.h)));if(sideX<sideY)s.vx*=-1;else s.vy*=-1;}s.x=prevX;s.y=prevY;}else{if(s.x<22||s.x>W-22)s.vx*=-1;if(s.y<35||s.y>H-35)s.vy*=-1;s.x=clamp(s.x,22,W-22);s.y=clamp(s.y,35,H-35);}s.bouncesLeft=(s.bouncesLeft??2)-1;s.damage*=1.6;s.hit.clear();const reflectState=s.missState||s;if(!reflectState.paidReflect){reflectState.paidReflect=true;player.hp-=2;floatText(player.x,player.y-18,'-2','#ff7181',13);}blocked=false;}
+      if((blocked||edgeHit)&&relicBag.abyss_reflect&&(s.kind==='bolt'||s.kind==='prism')&&(s.bouncesLeft??2)>0){if(blocked){const wall=obstacles.find(r=>overlapsObstacle(s.x,s.y,4*(s.scale||1),r));if(wall){const sideX=Math.min(Math.abs(prevX-wall.x),Math.abs(prevX-(wall.x+wall.w))),sideY=Math.min(Math.abs(prevY-wall.y),Math.abs(prevY-(wall.y+wall.h)));if(sideX<sideY)s.vx*=-1;else s.vy*=-1;}s.x=prevX;s.y=prevY;}else{if(s.x<22||s.x>W-22)s.vx*=-1;if(s.y<35||s.y>H-35)s.vy*=-1;s.x=clamp(s.x,22,W-22);s.y=clamp(s.y,35,H-35);}s.bouncesLeft=(s.bouncesLeft??2)-1;s.damage*=1.6;s.hit.clear();const reflectState=s.missState||s;if(!reflectState.paidReflect){reflectState.paidReflect=true;if(!payHealthCost(2,'반사 결정'))return;floatText(player.x,player.y-18,'-2','#ff7181',13);}blocked=false;}
       if((blocked||edgeHit)&&(s.kind==='axe'||s.kind==='echo')&&!s.returning){startShotReturn(s);blocked=false;}
       if(s.returning&&(s.kind==='axe'||s.kind==='echo'))blocked=false;
       for(const e of [...enemies]){if(!s.hit.has(e)&&dist(s,e)<e.r+8*(s.scale||1)){s.hit.add(e);s.landedHit=true;if(s.missState)s.missState.landed=true;const hitDamage=s.damage*(s.upgrade==='axe_return_cut'&&s.returning?(player.weaponUpgrade2==='axe_return_rend'?2.5:1.6):1);damageEnemy(e,hitDamage,s.kind,s);
         if(s.kind==='axe'&&relicBag.abyss_axe_storm&&!s.returning&&s.stormBounces<2){const target=enemies.filter(other=>other!==e&&!s.hit.has(other)&&!(other.kind==='boss'&&other.invulnerable)&&dist(other,e)<340).sort((a,b)=>dist(a,e)-dist(b,e))[0];if(target){const angle=Math.atan2(target.y-e.y,target.x-e.x),speed=Math.hypot(s.vx,s.vy)||weapons.axe.speed;s.stormBounces++;s.damage*=1.25;s.x=e.x;s.y=e.y;s.vx=Math.cos(angle)*speed;s.vy=Math.sin(angle)*speed;s.angle=angle;s.age=0;s.returnAt=.55;break;}}
-        if(s.chargeBlast&&s.charge>=.95&&relicBag.axe_core&&!s.chargeBurst){s.chargeBurst=true;const furnace=activeSynergies().some(item=>item.key==='axe_core_ember'),radius=58+(furnace?22:0),blast=hitDamage*(.34+.1*(relicBag.axe_core-1))*(furnace?1.35:1);burst(s.x,s.y,'#ffc06a',10);for(const nearby of [...enemies])if(nearby!==e&&dist(s,nearby)<radius)damageEnemy(nearby,blast,'axe');}
+        if(s.chargeBlast&&s.charge>=.95&&relicBag.axe_core&&!s.chargeBurst){s.chargeBurst=true;const furnace=activeSynergies().some(item=>item.key==='axe_core_ember'),radius=58+(furnace?22:0),blast=hitDamage*(.34+.1*(relicBag.axe_core-1))*(furnace?1.35:1);burst(s.x,s.y,'#ffc06a',10);for(const nearby of [...enemies])if(nearby!==e&&dist(s,nearby)<radius)damageEnemy(nearby,blast,'explosion');}
         if(s.kind==='bolt'&&s.chain&&!s.didChain){s.didChain=true;const target=enemies.filter(other=>other!==e&&!s.hit.has(other)&&!(other.kind==='boss'&&other.invulnerable)&&dist(other,s)<185).sort((a,b)=>dist(a,s)-dist(b,s))[0];if(target){drawLightning(s,target);damageEnemy(target,s.damage*.58,'lightning');}}
-        if(s.upgrade==='wand_prism'&&!s.didSplit){s.didSplit=true;const lattice=player.weaponUpgrade2==='wand_prism_lattice',focus=player.weaponUpgrade2==='wand_prism_focus',directions=lattice?[-.62,-.2,.2,.62]:[-.43,.43],fragmentDamage=s.damage*(lattice ? .38 : focus ? .98 : .58)/1.25;for(const direction of directions){const a=s.angle+direction,speed=weapons.wand.speed*.78;shots.push({kind:'prism',x:s.x,y:s.y,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,angle:a,life:.9,hit:new Set([e]),landedHit:false,damage:fragmentDamage,pierce:1,spin:0,splitAttack:!!s.splitAttack,missState:s.missState});if(s.missState)s.missState.remaining++;}}
+        if(s.upgrade==='wand_prism'&&!s.didSplit){s.didSplit=true;const lattice=player.weaponUpgrade2==='wand_prism_lattice',focus=player.weaponUpgrade2==='wand_prism_focus',directions=lattice?[-.62,-.2,.2,.62]:[-.43,.43],fragmentDamage=s.damage*(lattice ? .38 : focus ? .98 : .58)/1.25;for(const direction of directions){const a=s.angle+direction,speed=weapons.wand.speed*.78;shots.push({kind:'prism',x:s.x,y:s.y,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,angle:a,life:.9,hit:new Set([e]),landedHit:false,damage:fragmentDamage,pierce:1,spin:0,splitAttack:!!s.splitAttack,attackContext:s.attackContext,missState:s.attackContext});retainAttackContext(s.attackContext);}}
         if(s.pierce<999){s.pierce--;if(s.pierce<=0){blocked=true;break;}}
       }}
       const canReturnOffscreen=s.returning&&(s.kind==='axe'||s.kind==='echo');
-      if(blocked||s.life<=0||(!canReturnOffscreen&&(s.x<0||s.x>W||s.y<0||s.y>H))){if(s.missState&&['bolt','prism'].includes(s.kind)){s.missState.remaining=Math.max(0,s.missState.remaining-1);if(!s.missState.remaining&&!s.missState.landed&&!s.missState.paid&&relicBag.abyss_hungry){s.missState.paid=true;player.hp-=3;abyssHitStreak=0;floatText(player.x,player.y-18,'-3','#ff7181',13);}}shots.splice(i,1);}
+      if(blocked||s.life<=0||(!canReturnOffscreen&&(s.x<0||s.x>W||s.y<0||s.y>H)))removeShotAt(i);
     }
   }
   function damageEnemy(e,amount,source,origin=null,attackAngle=null,alreadyScaled=false){
     if(!enemies.includes(e))return;
     if(e.kind==='boss'&&e.invulnerable)return;
+    const attackContext=origin?.attackContext||origin?.missState||null;if(attackContext)attackContext.landed=true;
     if(relicBag.frost&&e.kind!=='boss'&&source!=='burn')e.slowTimer=Math.max(e.slowTimer||0,.72);
     if(relicBag.wildfire&&source!=='burn')e.wildfireTimer=Math.max(e.wildfireTimer||0,1.5);
-    if(!alreadyScaled){if(e.kind==='boss'&&source!=='boss'){if(relicBag.void)amount*=1+.25*relicBag.void;if(relicBag.exp_hunter)amount*=1.35;}if(relicBag.sun)amount*=1+.14*relicBag.sun;amount*=outgoingDamageMultiplier(e,source,attackAngle);}
+    if(!alreadyScaled){if(e.kind==='boss'&&source!=='boss'){if(relicBag.void)amount*=1+.25*relicBag.void;if(relicBag.exp_hunter)amount*=1.35;}if(relicBag.sun)amount*=1+.14*relicBag.sun;amount*=outgoingDamageMultiplier(e,source,attackAngle,attackContext);}
     const inheritedDamage=amount;
     if(e.kind==='boss'&&e.bossKind==='star'&&e.act==='combat'){
       let gate=null;
@@ -861,7 +879,7 @@
     }
     const hpBeforeHit=e.hp;e.hp-=amount;if(balanceRoom)balanceRoom.damageDealt+=Math.max(0,hpBeforeHit-Math.max(0,e.hp));e.flash=.09;
     if(['axe','bolt','prism','echo','orbiter','cleave','rift','rail'].includes(source)&&relicBag.collapse_momentum)momentumHits++;
-    if(['bolt','prism','echo'].includes(source)&&relicBag.abyss_hungry){if(origin?.missState){if(!origin.missState.counted){abyssHitStreak++;origin.missState.counted=true;}}else abyssHitStreak++;}
+    if(['bolt','prism','echo','rail'].includes(source)&&(attackContext?.hungry||!attackContext&&relicBag.abyss_hungry)){if(attackContext){if(!attackContext.counted){abyssHitStreak++;attackContext.counted=true;}}else abyssHitStreak++;}
     if(runRandom()<.22||e.hp<=0)floatText(e.x+rand(-8,8),e.y-14,Math.round(amount),e.kind==='boss'?'#ffe596':'#fff0c0',12);
     if(relicBag.ember&&source!=='burn')e.burn=Math.max(e.burn||0,2.2+(source==='echo'&&activeSynergies().some(s=>s.key==='ember_echo')?1.5:0));
     if(relicBag.thunder&&source!=='lightning'){
@@ -892,8 +910,9 @@
   }
   function updateEnemies(dt){
     for(const e of [...enemies]){
-      e.flash=Math.max(0,e.flash-dt);e.wildfireTimer=Math.max(0,(e.wildfireTimer||0)-dt);if(e.burn>0){e.burn-=dt;e.burnTick=(e.burnTick||0)-dt;if(e.burnTick<=0){e.burnTick=.42;damageEnemy(e,3+relicBag.ember*1.4,'burn');}}
+      if(screen!=='playing')return;e.flash=Math.max(0,e.flash-dt);e.wildfireTimer=Math.max(0,(e.wildfireTimer||0)-dt);if(e.burn>0){e.burn-=dt;e.burnTick=(e.burnTick||0)-dt;if(e.burnTick<=0){e.burnTick=.42;damageEnemy(e,3+relicBag.ember*1.4,'burn');}}
       if(!enemies.includes(e))continue;
+      if(e.kind==='boss')updateBossThresholds(e);
       if(e.stunTimer>0){e.stunTimer=Math.max(0,e.stunTimer-dt);if(e.kind!=='boss'||e.act==='combat'&&!e.invulnerable)continue;}
       if(e.kind==='boss'){updateBoss(e,dt);continue;}
       if(e.kind==='seal'||e.kind==='brother'||e.kind==='maw'){updateFinalAdd(e,dt);continue;}
@@ -976,11 +995,15 @@
     e.eliteTimer-=dt;
     if(e.eliteTimer<=0){e.eliteAim=Math.atan2(dy,dx);e.eliteState='tell';e.eliteTimer=runDifficulty>=3?.52:runDifficulty===2?.62:.78;}
   }
-  function updateBoss(e,dt){
+  function updateBossThresholds(e){
     const pressure=bossPressure(e);
     if(e.bossKind==='star'&&e.act==='combat'&&e.thresholdIndex<3){const gates=[.76,.52,.3];if(e.hp/e.maxHp<=gates[e.thresholdIndex]){beginFinalHell(e,true);return;}}
-    if(e.act==='transition'){e.transitionTimer-=dt;if(e.transitionTimer<=0)beginFinalHell(e,false);return;}
     if(e.bossKind==='star'&&e.finalAct&&!e.lastStand&&e.hp/e.maxHp<=.08+.04*Math.min(1.65,pressure)){e.lastStand=true;e.attack=.2;toast('최종 단계 · 안전 구역 축소');playSound('boss');}
+  }
+  function updateBoss(e,dt){
+    const pressure=bossPressure(e);
+    updateBossThresholds(e);
+    if(e.act==='transition'){e.transitionTimer-=dt;if(e.transitionTimer<=0)beginFinalHell(e,false);return;}
     if(e.chargeTime>0){
       const target=e.chargePath?.[e.chargeLeg+1];
       if(target){const dx=target.x-e.x,dy=target.y-e.y,d=Math.hypot(dx,dy)||1,step=e.chargeSpeed*dt;e.x+=dx/d*Math.min(d,step);e.y+=dy/d*Math.min(d,step);if(d<=step+2){e.chargeLeg++;const burstCount=e.bossKind==='star'?4+Math.floor(2*pressure):6,burstSpeed=e.bossKind==='star'?125+30*pressure:155;for(let i=0;i<burstCount;i++)enemyShot(e,Math.PI*2*i/burstCount+time*.2,burstSpeed,'#ffb46b');if(e.chargeLeg>=e.chargePath.length-1)e.chargeTime=0;}}
@@ -1013,7 +1036,7 @@
       e.attack=e.lastStand ? (pressure===0?.42:Math.max(runDifficulty>=3?.3:.36,.48-pressure*.06)*abyssTempo) : Math.max(runDifficulty>=3?.4:.52,(attackDelay-pressure*.07)*abyssTempo);
     }
     if(e.telegraph){e.telegraph.timer-=dt;if(e.telegraph.timer<=0){fireBossPattern(e,e.telegraph);e.telegraph=null;}}
-    if(e.chargeTime>0&&dist(e,player)<e.r+player.r&&invuln<=0)hurtPlayer(24);
+    if(e.chargeTime>0&&dist(e,player)<e.r+player.r&&invuln<=0)hurtPlayer(24,'돌진');
   }
   function updateTwinAdds(e,dt){
     const pressure=bossPressure(e);
@@ -1134,12 +1157,12 @@
         let hit=false;if(h.kind==='lane')hit=h.axis==='x'?Math.abs(player.x-h.pos)<h.width/2+player.r:Math.abs(player.y-h.pos)<h.width/2+player.r;
         else if(h.kind==='sweep'){const end=rayEnd(h.x,h.y,h.angle),vx=end.x-h.x,vy=end.y-h.y,t=clamp(((player.x-h.x)*vx+(player.y-h.y)*vy)/(vx*vx+vy*vy||1),0,1);hit=Math.hypot(player.x-(h.x+vx*t),player.y-(h.y+vy*t))<h.width/2+player.r;}
         else hit=dist(player,h)<h.r+player.r;
-        if(hit&&invuln<=0)hurtPlayer(h.damage);
+        if(hit&&invuln<=0)hurtPlayer(h.damage,'장판');
       }
       if(h.timer<=0)hazards.splice(i,1);
     }
   }
-  function updateBloodFootsteps(dt){if(!relicBag.abyss_footsteps)return;const speed=Math.hypot(player.moveVX||0,player.moveVY||0);player.trailSpawn=(player.trailSpawn||0)-dt;if(speed>24){player.stationaryTime=0;if(player.trailSpawn<=0){hazards.push({kind:'footprint',x:player.x,y:player.y,r:16,phase:'active',timer:1.35,tick:0,damage:weapons[player.weapon].damage*.4,color:'#bd4b91'});player.trailSpawn=.16;}}else{player.stationaryTime=(player.stationaryTime||0)+dt;if(player.stationaryTime>=1){player.stationaryTime=0;player.hp-=4;floatText(player.x,player.y-18,'-4','#ff7181',14);}}}
+  function updateBloodFootsteps(dt){if(!relicBag.abyss_footsteps)return;const speed=Math.hypot(player.moveVX||0,player.moveVY||0);player.trailSpawn=(player.trailSpawn||0)-dt;if(speed>24){player.stationaryTime=0;if(player.trailSpawn<=0){hazards.push({kind:'footprint',x:player.x,y:player.y,r:16,phase:'active',timer:1.35,tick:0,damage:weapons[player.weapon].damage*.4,color:'#bd4b91'});player.trailSpawn=.16;}}else{player.stationaryTime=(player.stationaryTime||0)+dt;if(player.stationaryTime>=1){player.stationaryTime=0;payHealthCost(4,'피의 발자국');floatText(player.x,player.y-18,'-4','#ff7181',14);}}}
   function rayEnd(x,y,a){const dx=Math.cos(a),dy=Math.sin(a),ts=[];if(dx>0)ts.push((W-30-x)/dx);if(dx<0)ts.push((30-x)/dx);if(dy>0)ts.push((H-30-y)/dy);if(dy<0)ts.push((30-y)/dy);const t=Math.min(...ts.filter(v=>v>0));return{x:x+dx*t,y:y+dy*t};}
   function enemyShot(from,angle,speed,color='#e77d8a'){bullets.push({x:from.x,y:from.y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,r:5,color,damage:12,life:4});if(time-lastEnemyShotSound>.075){lastEnemyShotSound=time;playSound('enemyShot');}}
   function updateBullets(dt){
@@ -1154,10 +1177,10 @@
       if(b.splitAt!==undefined){b.splitAt-=dt;if(b.splitAt<=0){bullets.splice(i,1);const count=b.splitCount||6;for(let j=0;j<count;j++)enemyShot({x:b.x,y:b.y},Math.PI*2*j/count,205,'#ffb3e7');continue;}}
       const blocked=obstacles.some(r=>b.x>r.x&&b.x<r.x+r.w&&b.y>r.y&&b.y<r.y+r.h);
       if(blocked||b.life<=0||b.x<0||b.x>W||b.y<0||b.y>H){bullets.splice(i,1);continue;}
-      if(invuln<=0&&dist(b,player)<b.r+player.r){hurtPlayer(b.damage);bullets.splice(i,1);}
+      if(invuln<=0&&dist(b,player)<b.r+player.r){hurtPlayer(b.damage,'탄환');bullets.splice(i,1);}
     }
   }
-  function hurtPlayer(amount){if(invuln>0)return;if(runDifficulty>=2&&player.adrenalineActive<=0&&player.adrenaline>0){player.adrenaline=0;floatText(player.x,player.y-36,'아드레날린 초기화','#83eaff',11);}let taken=difficultyDamageMultiplier(runDifficulty)*(1-Math.min(.45,(relicBag.guard||0)*.1));if(relicBag.exp_guard)taken*=.8;amount=Math.max(1,Math.round(amount*taken));const hpBefore=player.hp;player.hp-=amount;if(balanceRoom)balanceRoom.damageTaken+=Math.max(0,hpBefore-Math.max(0,player.hp));if(relicBag.collapse_momentum){momentumHits=0;const oldFactor=runStatMultiplier();runStatPenalty=Math.min(1,runStatPenalty+.1);const ratio=oldFactor?runStatMultiplier()/oldFactor:0;player.maxHp=Math.max(1,player.maxHp*ratio);player.hp=Math.max(0,Math.min(player.hp,player.maxHp));if(runStatPenalty>=1)player.hp=0;}invuln=.54;shake=6;burst(player.x,player.y,'#ff7181',7);playSound('hurt');floatText(player.x,player.y-20,`-${amount}`,'#ff8990',15);}
+  function hurtPlayer(amount,cause='접촉'){if(invuln>0)return;if(runDifficulty>=2&&player.adrenalineActive<=0&&player.adrenaline>0){player.adrenaline=0;floatText(player.x,player.y-36,'아드레날린 초기화','#83eaff',11);}let taken=difficultyDamageMultiplier(runDifficulty)*(1-Math.min(.45,(relicBag.guard||0)*.1));if(relicBag.exp_guard)taken*=.8;amount=Math.max(1,Math.round(amount*taken));const hpBefore=player.hp;player.hp-=amount;if(balanceRoom){const loss=Math.max(0,hpBefore-Math.max(0,player.hp));balanceRoom.damageTaken+=loss;const causes=balanceRoom.damageByCause||(balanceRoom.damageByCause={});causes[cause]=(causes[cause]||0)+loss;}if(relicBag.collapse_momentum){momentumHits=0;const oldFactor=runStatMultiplier();runStatPenalty=Math.min(1,runStatPenalty+.1);const ratio=oldFactor?runStatMultiplier()/oldFactor:0;player.maxHp=Math.max(1,player.maxHp*ratio);player.hp=Math.max(0,Math.min(player.hp,player.maxHp));if(runStatPenalty>=1)player.hp=0;}invuln=.54;shake=6;burst(player.x,player.y,'#ff7181',7);playSound('hurt');floatText(player.x,player.y-20,`-${amount}`,'#ff8990',15);if(player.hp<=0){player.hp=0;gameOver();}}
   function updateDrops(dt){for(let i=drops.length-1;i>=0;i--){const d=drops[i];d.life-=dt;if(d.life<=0)drops.splice(i,1);}}
   function updateParticles(dt){for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.95;p.vy*=.95;p.life-=dt;if(p.life<=0)particles.splice(i,1);}}
   function updateTexts(dt){for(let i=texts.length-1;i>=0;i--){const t=texts[i];t.y-=26*dt;t.life-=dt;if(t.life<=0)texts.splice(i,1);}}

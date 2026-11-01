@@ -1,0 +1,225 @@
+{
+  "sourceSha256": "4eced247aeba84efd8e25a98f7c44486b4026b72e37ac068382a6c3c4e881f7e",
+  "runtime": "v24.22.1",
+  "checks": 40,
+  "failed": 0,
+  "combatCases": 1260,
+  "configurations": [
+    {
+      "weapon": "axe",
+      "search": "",
+      "passed": 40,
+      "failed": 0
+    },
+    {
+      "weapon": "axe",
+      "search": "?balanceSeed=0",
+      "passed": 40,
+      "failed": 0
+    },
+    {
+      "weapon": "axe",
+      "search": "?balanceSeed=1",
+      "passed": 40,
+      "failed": 0
+    },
+    {
+      "weapon": "wand",
+      "search": "",
+      "passed": 40,
+      "failed": 0
+    },
+    {
+      "weapon": "wand",
+      "search": "?balanceSeed=0",
+      "passed": 40,
+      "failed": 0
+    },
+    {
+      "weapon": "wand",
+      "search": "?balanceSeed=1",
+      "passed": 40,
+      "failed": 0
+    },
+    {
+      "weapon": "twin",
+      "search": "",
+      "passed": 40,
+      "failed": 0
+    },
+    {
+      "weapon": "twin",
+      "search": "?balanceSeed=0",
+      "passed": 40,
+      "failed": 0
+    },
+    {
+      "weapon": "twin",
+      "search": "?balanceSeed=1",
+      "passed": 40,
+      "failed": 0
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "saved configuration survives load and run setup",
+      "ok": true
+    },
+    {
+      "name": "difficulty 0 shrine route risk skip",
+      "ok": true
+    },
+    {
+      "name": "difficulty 0 shrine route risk take",
+      "ok": true
+    },
+    {
+      "name": "difficulty 0 elite route risk skip",
+      "ok": true
+    },
+    {
+      "name": "difficulty 0 elite route risk take",
+      "ok": true
+    },
+    {
+      "name": "difficulty 0 loot stack cap and uniqueness",
+      "ok": true
+    },
+    {
+      "name": "difficulty 1 shrine route risk skip",
+      "ok": true
+    },
+    {
+      "name": "difficulty 1 shrine route risk take",
+      "ok": true
+    },
+    {
+      "name": "difficulty 1 elite route risk skip",
+      "ok": true
+    },
+    {
+      "name": "difficulty 1 elite route risk take",
+      "ok": true
+    },
+    {
+      "name": "difficulty 1 loot stack cap and uniqueness",
+      "ok": true
+    },
+    {
+      "name": "difficulty 2 shrine route risk skip",
+      "ok": true
+    },
+    {
+      "name": "difficulty 2 shrine route risk take",
+      "ok": true
+    },
+    {
+      "name": "difficulty 2 elite route risk skip",
+      "ok": true
+    },
+    {
+      "name": "difficulty 2 elite route risk take",
+      "ok": true
+    },
+    {
+      "name": "difficulty 2 loot stack cap and uniqueness",
+      "ok": true
+    },
+    {
+      "name": "difficulty 3 shrine route risk skip",
+      "ok": true
+    },
+    {
+      "name": "difficulty 3 shrine route risk take",
+      "ok": true
+    },
+    {
+      "name": "difficulty 3 elite route risk skip",
+      "ok": true
+    },
+    {
+      "name": "difficulty 3 elite route risk take",
+      "ok": true
+    },
+    {
+      "name": "difficulty 3 loot stack cap and uniqueness",
+      "ok": true
+    },
+    {
+      "name": "void charge pauses while move input is held at wall",
+      "ok": true
+    },
+    {
+      "name": "void wave reset does not retrigger from stale full charge",
+      "ok": true
+    },
+    {
+      "name": "void stun does not hold a star boss below its scripted threshold",
+      "ok": true
+    },
+    {
+      "name": "burst timer pauses during invulnerability and while paused",
+      "ok": true
+    },
+    {
+      "name": "cannon room cost and timer do not trigger hurt or clear adrenaline",
+      "ok": true
+    },
+    {
+      "name": "telemetry records actual HP damage, healing, resource use, and completed rooms",
+      "ok": true
+    },
+    {
+      "name": "mobile movement and aim pointers operate simultaneously",
+      "ok": true
+    },
+    {
+      "name": "mobile dash, rage, adrenaline, pointer cancel, and blur handlers",
+      "ok": true
+    },
+    {
+      "name": "seeded run randomness repeats and default randomness remains opt-in",
+      "ok": true
+    },
+    {
+      "name": "Prism echo shares resolved Gambler damage and attack identity",
+      "ok": true
+    },
+    {
+      "name": "Hungry waits for deferred echo and charges entire missed family once",
+      "ok": true
+    },
+    {
+      "name": "Discarding a missed attack on new room or run does not charge the next player",
+      "ok": true
+    },
+    {
+      "name": "Multiple reflected Split bolts pay reflect cost only once per attack",
+      "ok": true
+    },
+    {
+      "name": "Twin Abyss risk candidates are two compatible risks plus one safe item",
+      "ok": true
+    },
+    {
+      "name": "empty elite stack pool offers uncapped extra loot",
+      "ok": true
+    },
+    {
+      "name": "void partial charge survives room boundary without firing early",
+      "ok": true
+    },
+    {
+      "name": "cannon self cost can kill and does not trigger momentum penalty",
+      "ok": true
+    },
+    {
+      "name": "final victory continues into endless reward and fourth zone",
+      "ok": true
+    },
+    {
+      "name": "axe storm snapshots its initial 1.6x boost",
+      "ok": true
+    }
+  ]
+}

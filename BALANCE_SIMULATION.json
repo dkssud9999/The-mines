@@ -1,0 +1,2426 @@
+{
+  "sourceSha256": "4eced247aeba84efd8e25a98f7c44486b4026b72e37ac068382a6c3c4e881f7e",
+  "note": "Diagnostic bot only: not a human win-rate estimate or balance acceptance measurement.",
+  "results": [
+    {
+      "seed": 123,
+      "difficulty": 0,
+      "weapon": "axe",
+      "archetype": "attack",
+      "route": "shrine",
+      "outcome": "victory",
+      "time": 64.6,
+      "kills": 35,
+      "zone": 3,
+      "phase": "boss",
+      "hp": 43,
+      "maxHp": 100,
+      "upgrades": [
+        "axe_rethrow",
+        "axe_rethrow_split"
+      ],
+      "relics": {
+        "razor": 1,
+        "keen": 1,
+        "ember": 1,
+        "wildfire": 1,
+        "split": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 283,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 3.87
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 780,
+          "damageTaken": 39,
+          "healed": 10,
+          "resourceUses": 0,
+          "damageByCause": {
+            "돌진": 24,
+            "장판": 15
+          },
+          "elapsed": 10.75
+        },
+        {
+          "number": 1,
+          "stage": 2,
+          "phase": "wave",
+          "damageDealt": 418.8800000000001,
+          "damageTaken": 0,
+          "healed": 29,
+          "resourceUses": 0,
+          "elapsed": 5.78
+        },
+        {
+          "number": 2,
+          "stage": 2,
+          "phase": "boss",
+          "damageDealt": 1021.8000000000001,
+          "damageTaken": 12,
+          "healed": 10,
+          "resourceUses": 0,
+          "damageByCause": {
+            "탄환": 12
+          },
+          "elapsed": 4.5
+        },
+        {
+          "number": 1,
+          "stage": 3,
+          "phase": "wave",
+          "damageDealt": 596.16,
+          "damageTaken": 0,
+          "healed": 2,
+          "resourceUses": 0,
+          "elapsed": 4.58
+        },
+        {
+          "number": 2,
+          "stage": 3,
+          "phase": "boss",
+          "damageDealt": 1876.800000000001,
+          "damageTaken": 57,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "장판": 45,
+            "탄환": 12
+          },
+          "elapsed": 35.12
+        }
+      ],
+      "steps": 3881
+    },
+    {
+      "seed": 123,
+      "difficulty": 0,
+      "weapon": "axe",
+      "archetype": "balanced",
+      "route": "shrine",
+      "outcome": "victory",
+      "time": 70.88,
+      "kills": 35,
+      "zone": 3,
+      "phase": "boss",
+      "hp": 3,
+      "maxHp": 100,
+      "upgrades": [
+        "axe_rethrow",
+        "axe_rethrow_split"
+      ],
+      "relics": {
+        "razor": 2,
+        "keen": 1,
+        "wildfire": 1,
+        "ember": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 283,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 3.87
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 780,
+          "damageTaken": 39,
+          "healed": 10,
+          "resourceUses": 0,
+          "damageByCause": {
+            "돌진": 24,
+            "장판": 15
+          },
+          "elapsed": 10.75
+        },
+        {
+          "number": 1,
+          "stage": 2,
+          "phase": "wave",
+          "damageDealt": 418.8800000000001,
+          "damageTaken": 0,
+          "healed": 29,
+          "resourceUses": 0,
+          "elapsed": 5.78
+        },
+        {
+          "number": 2,
+          "stage": 2,
+          "phase": "boss",
+          "damageDealt": 1021.8000000000002,
+          "damageTaken": 12,
+          "healed": 10,
+          "resourceUses": 0,
+          "damageByCause": {
+            "탄환": 12
+          },
+          "elapsed": 4.5
+        },
+        {
+          "number": 1,
+          "stage": 3,
+          "phase": "wave",
+          "damageDealt": 596.16,
+          "damageTaken": 0,
+          "healed": 2,
+          "resourceUses": 0,
+          "elapsed": 6.77
+        },
+        {
+          "number": 2,
+          "stage": 3,
+          "phase": "boss",
+          "damageDealt": 1876.800000000001,
+          "damageTaken": 97,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "장판": 78,
+            "탄환": 19
+          },
+          "elapsed": 39.22
+        }
+      ],
+      "steps": 4258
+    },
+    {
+      "seed": 123,
+      "difficulty": 0,
+      "weapon": "axe",
+      "archetype": "risk",
+      "route": "shrine",
+      "outcome": "victory",
+      "time": 64.6,
+      "kills": 35,
+      "zone": 3,
+      "phase": "boss",
+      "hp": 43,
+      "maxHp": 100,
+      "upgrades": [
+        "axe_rethrow",
+        "axe_rethrow_split"
+      ],
+      "relics": {
+        "razor": 1,
+        "keen": 1,
+        "ember": 1,
+        "wildfire": 1,
+        "split": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 283,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 3.87
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 780,
+          "damageTaken": 39,
+          "healed": 10,
+          "resourceUses": 0,
+          "damageByCause": {
+            "돌진": 24,
+            "장판": 15
+          },
+          "elapsed": 10.75
+        },
+        {
+          "number": 1,
+          "stage": 2,
+          "phase": "wave",
+          "damageDealt": 418.8800000000001,
+          "damageTaken": 0,
+          "healed": 29,
+          "resourceUses": 0,
+          "elapsed": 5.78
+        },
+        {
+          "number": 2,
+          "stage": 2,
+          "phase": "boss",
+          "damageDealt": 1021.8000000000001,
+          "damageTaken": 12,
+          "healed": 10,
+          "resourceUses": 0,
+          "damageByCause": {
+            "탄환": 12
+          },
+          "elapsed": 4.5
+        },
+        {
+          "number": 1,
+          "stage": 3,
+          "phase": "wave",
+          "damageDealt": 596.16,
+          "damageTaken": 0,
+          "healed": 2,
+          "resourceUses": 0,
+          "elapsed": 4.58
+        },
+        {
+          "number": 2,
+          "stage": 3,
+          "phase": "boss",
+          "damageDealt": 1876.800000000001,
+          "damageTaken": 57,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "장판": 45,
+            "탄환": 12
+          },
+          "elapsed": 35.12
+        }
+      ],
+      "steps": 3881
+    },
+    {
+      "seed": 123,
+      "difficulty": 0,
+      "weapon": "wand",
+      "archetype": "attack",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 27.72,
+      "kills": 7,
+      "zone": 1,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [],
+      "relics": {
+        "wand_arc": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 283,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 6.2
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 714,
+          "damageTaken": 100,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "탄환": 48,
+            "돌진": 48,
+            "장판": 4
+          },
+          "elapsed": 21.52
+        }
+      ],
+      "steps": 1664
+    },
+    {
+      "seed": 123,
+      "difficulty": 0,
+      "weapon": "wand",
+      "archetype": "balanced",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 27.72,
+      "kills": 7,
+      "zone": 1,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [],
+      "relics": {
+        "wand_arc": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 283,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 6.2
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 714,
+          "damageTaken": 100,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "탄환": 48,
+            "돌진": 48,
+            "장판": 4
+          },
+          "elapsed": 21.52
+        }
+      ],
+      "steps": 1664
+    },
+    {
+      "seed": 123,
+      "difficulty": 0,
+      "weapon": "wand",
+      "archetype": "risk",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 27.72,
+      "kills": 7,
+      "zone": 1,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [],
+      "relics": {
+        "wand_arc": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 283,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 6.2
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 714,
+          "damageTaken": 100,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "탄환": 48,
+            "돌진": 48,
+            "장판": 4
+          },
+          "elapsed": 21.52
+        }
+      ],
+      "steps": 1664
+    },
+    {
+      "seed": 123,
+      "difficulty": 0,
+      "weapon": "twin",
+      "archetype": "attack",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 18.28,
+      "kills": 7,
+      "zone": 1,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [],
+      "relics": {
+        "wildfire": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 283,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 6.33
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 660,
+          "damageTaken": 100,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "돌진": 48,
+            "장판": 45,
+            "탄환": 7
+          },
+          "elapsed": 11.95
+        }
+      ],
+      "steps": 1098
+    },
+    {
+      "seed": 123,
+      "difficulty": 0,
+      "weapon": "twin",
+      "archetype": "balanced",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 18.28,
+      "kills": 7,
+      "zone": 1,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [],
+      "relics": {
+        "wildfire": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 283,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 6.33
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 660,
+          "damageTaken": 100,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "돌진": 48,
+            "장판": 45,
+            "탄환": 7
+          },
+          "elapsed": 11.95
+        }
+      ],
+      "steps": 1098
+    },
+    {
+      "seed": 123,
+      "difficulty": 0,
+      "weapon": "twin",
+      "archetype": "risk",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 18.28,
+      "kills": 7,
+      "zone": 1,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [],
+      "relics": {
+        "wildfire": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 283,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 6.33
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 660,
+          "damageTaken": 100,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "돌진": 48,
+            "장판": 45,
+            "탄환": 7
+          },
+          "elapsed": 11.95
+        }
+      ],
+      "steps": 1098
+    },
+    {
+      "seed": 123,
+      "difficulty": 1,
+      "weapon": "axe",
+      "archetype": "attack",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 42.65,
+      "kills": 68,
+      "zone": 3,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "axe_rethrow",
+        "axe_rethrow_split"
+      ],
+      "relics": {
+        "split": 2,
+        "exp_spark": 1,
+        "exp_edge": 1,
+        "exp_tempo": 1,
+        "ember": 2,
+        "exp_hunter": 1,
+        "razor": 2,
+        "keen": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 565.2,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 5.2
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 716.4000000000002,
+          "damageTaken": 18,
+          "healed": 18,
+          "resourceUses": 0,
+          "damageByCause": {
+            "탄환": 18
+          },
+          "elapsed": 6.08
+        },
+        {
+          "number": 3,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 1404.0000000000005,
+          "damageTaken": 18,
+          "healed": 10,
+          "resourceUses": 0,
+          "damageByCause": {
+            "탄환": 18
+          },
+          "elapsed": 3.53
+        },
+        {
+          "number": 1,
+          "stage": 2,
+          "phase": "wave",
+          "damageDealt": 852.5159999999998,
+          "damageTaken": 0,
+          "healed": 2,
+          "resourceUses": 1,
+          "elapsed": 7.03
+        },
+        {
+          "number": 2,
+          "stage": 2,
+          "phase": "wave",
+          "damageDealt": 991.7460000000001,
+          "damageTaken": 18,
+          "healed": 24,
+          "resourceUses": 0,
+          "damageByCause": {
+            "탄환": 18
+          },
+          "elapsed": 5.25
+        },
+        {
+          "number": 3,
+          "stage": 2,
+          "phase": "boss",
+          "damageDealt": 1839.24,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 1.67
+        },
+        {
+          "number": 1,
+          "stage": 3,
+          "phase": "wave",
+          "damageDealt": 1169.964,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 3.82
+        },
+        {
+          "number": 2,
+          "stage": 3,
+          "phase": "wave",
+          "damageDealt": 1358.7479999999998,
+          "damageTaken": 18,
+          "healed": 18,
+          "resourceUses": 0,
+          "damageByCause": {
+            "탄환": 18
+          },
+          "elapsed": 6.5
+        },
+        {
+          "number": 3,
+          "stage": 3,
+          "phase": "boss",
+          "damageDealt": 0,
+          "damageTaken": 100,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "장판": 100
+          },
+          "elapsed": 3.57
+        }
+      ],
+      "steps": 2567
+    },
+    {
+      "seed": 123,
+      "difficulty": 1,
+      "weapon": "axe",
+      "archetype": "balanced",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 51.88,
+      "kills": 71,
+      "zone": 3,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 120,
+      "upgrades": [
+        "axe_rethrow",
+        "axe_rethrow_split"
+      ],
+      "relics": {
+        "split": 3,
+        "heart": 1,
+        "exp_tempo": 1,
+        "exp_hunter": 1,
+        "exp_guard": 1,
+        "razor": 1,
+        "thunder": 1,
+        "keen": 1,
+        "exp_spark": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 565.2,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 5.2
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 716.4000000000002,
+          "damageTaken": 18,
+          "healed": 38,
+          "resourceUses": 0,
+          "damageByCause": {
+            "탄환": 18
+          },
+          "elapsed": 6.08
+        },
+        {
+          "number": 3,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 1404.0000000000002,
+          "damageTaken": 18,
+          "healed": 10,
+          "resourceUses": 0,
+          "damageByCause": {
+            "탄환": 18
+          },
+          "elapsed": 3.63
+        },
+        {
+          "number": 1,
+          "stage": 2,
+          "phase": "wave",
+          "damageDealt": 852.5159999999998,
+          "damageTaken": 0,
+          "healed": 2,
+          "resourceUses": 1,
+          "elapsed": 6.08
+        },
+        {
+          "number": 2,
+          "stage": 2,
+          "phase": "wave",
+          "damageDealt": 991.7460000000001,
+          "damageTaken": 0,
+          "healed": 6,
+          "resourceUses": 0,
+          "elapsed": 5.57
+        },
+        {
+          "number": 3,
+          "stage": 2,
+          "phase": "boss",
+          "damageDealt": 1839.2400000000007,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 2.32
+        },
+        {
+          "number": 1,
+          "stage": 3,
+          "phase": "wave",
+          "damageDealt": 1169.9640000000002,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 4.88
+        },
+        {
+          "number": 2,
+          "stage": 3,
+          "phase": "wave",
+          "damageDealt": 1358.7480000000007,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 5.43
+        },
+        {
+          "number": 3,
+          "stage": 3,
+          "phase": "boss",
+          "damageDealt": 803.8656000000001,
+          "damageTaken": 120,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "장판": 120
+          },
+          "elapsed": 12.68
+        }
+      ],
+      "steps": 3121
+    },
+    {
+      "seed": 123,
+      "difficulty": 1,
+      "weapon": "axe",
+      "archetype": "risk",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 42.65,
+      "kills": 68,
+      "zone": 3,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "axe_rethrow",
+        "axe_rethrow_split"
+      ],
+      "relics": {
+        "split": 2,
+        "exp_spark": 1,
+        "exp_edge": 1,
+        "exp_tempo": 1,
+        "ember": 2,
+        "exp_hunter": 1,
+        "razor": 2,
+        "keen": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 565.2,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 5.2
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 716.4000000000002,
+          "damageTaken": 18,
+          "healed": 18,
+          "resourceUses": 0,
+          "damageByCause": {
+            "탄환": 18
+          },
+          "elapsed": 6.08
+        },
+        {
+          "number": 3,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 1404.0000000000005,
+          "damageTaken": 18,
+          "healed": 10,
+          "resourceUses": 0,
+          "damageByCause": {
+            "탄환": 18
+          },
+          "elapsed": 3.53
+        },
+        {
+          "number": 1,
+          "stage": 2,
+          "phase": "wave",
+          "damageDealt": 852.5159999999998,
+          "damageTaken": 0,
+          "healed": 2,
+          "resourceUses": 1,
+          "elapsed": 7.03
+        },
+        {
+          "number": 2,
+          "stage": 2,
+          "phase": "wave",
+          "damageDealt": 991.7460000000001,
+          "damageTaken": 18,
+          "healed": 24,
+          "resourceUses": 0,
+          "damageByCause": {
+            "탄환": 18
+          },
+          "elapsed": 5.25
+        },
+        {
+          "number": 3,
+          "stage": 2,
+          "phase": "boss",
+          "damageDealt": 1839.24,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 1.67
+        },
+        {
+          "number": 1,
+          "stage": 3,
+          "phase": "wave",
+          "damageDealt": 1169.964,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 3.82
+        },
+        {
+          "number": 2,
+          "stage": 3,
+          "phase": "wave",
+          "damageDealt": 1358.7479999999998,
+          "damageTaken": 18,
+          "healed": 18,
+          "resourceUses": 0,
+          "damageByCause": {
+            "탄환": 18
+          },
+          "elapsed": 6.5
+        },
+        {
+          "number": 3,
+          "stage": 3,
+          "phase": "boss",
+          "damageDealt": 0,
+          "damageTaken": 100,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "장판": 100
+          },
+          "elapsed": 3.57
+        }
+      ],
+      "steps": 2567
+    },
+    {
+      "seed": 123,
+      "difficulty": 1,
+      "weapon": "wand",
+      "archetype": "attack",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 34.57,
+      "kills": 18,
+      "zone": 1,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "wand_prism"
+      ],
+      "relics": {
+        "exp_hunter": 1,
+        "exp_spark": 1,
+        "wand_arc": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 565.2,
+          "damageTaken": 15,
+          "healed": 2,
+          "resourceUses": 0,
+          "damageByCause": {
+            "접촉": 15
+          },
+          "elapsed": 11.27
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 716.4000000000001,
+          "damageTaken": 45,
+          "healed": 31,
+          "resourceUses": 1,
+          "damageByCause": {
+            "접촉": 45
+          },
+          "elapsed": 10
+        },
+        {
+          "number": 3,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 805.6125,
+          "damageTaken": 73,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "탄환": 50,
+            "장판": 23
+          },
+          "elapsed": 13.3
+        }
+      ],
+      "steps": 2077
+    },
+    {
+      "seed": 123,
+      "difficulty": 1,
+      "weapon": "wand",
+      "archetype": "balanced",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 96.83,
+      "kills": 71,
+      "zone": 3,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 160,
+      "upgrades": [
+        "wand_prism",
+        "wand_prism_lattice"
+      ],
+      "relics": {
+        "exp_hunter": 1,
+        "exp_spark": 1,
+        "exp_heart": 2,
+        "exp_tempo": 1,
+        "thunder": 1,
+        "wildfire": 1,
+        "ember": 1,
+        "split": 1,
+        "exp_edge": 1,
+        "keen": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 565.2,
+          "damageTaken": 15,
+          "healed": 2,
+          "resourceUses": 0,
+          "damageByCause": {
+            "접촉": 15
+          },
+          "elapsed": 11.27
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 716.4000000000001,
+          "damageTaken": 45,
+          "healed": 61,
+          "resourceUses": 1,
+          "damageByCause": {
+            "접촉": 45
+          },
+          "elapsed": 10
+        },
+        {
+          "number": 3,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 1404.0000000000002,
+          "damageTaken": 77,
+          "healed": 10,
+          "resourceUses": 0,
+          "damageByCause": {
+            "탄환": 54,
+            "장판": 23
+          },
+          "elapsed": 22.03
+        },
+        {
+          "number": 1,
+          "stage": 2,
+          "phase": "wave",
+          "damageDealt": 852.516,
+          "damageTaken": 0,
+          "healed": 2,
+          "resourceUses": 1,
+          "elapsed": 10.23
+        },
+        {
+          "number": 2,
+          "stage": 2,
+          "phase": "wave",
+          "damageDealt": 991.7460000000001,
+          "damageTaken": 0,
+          "healed": 34,
+          "resourceUses": 0,
+          "elapsed": 8.25
+        },
+        {
+          "number": 3,
+          "stage": 2,
+          "phase": "boss",
+          "damageDealt": 1839.2400000000016,
+          "damageTaken": 66,
+          "healed": 10,
+          "resourceUses": 1,
+          "damageByCause": {
+            "탄환": 36,
+            "장판": 30
+          },
+          "elapsed": 13.27
+        },
+        {
+          "number": 1,
+          "stage": 3,
+          "phase": "wave",
+          "damageDealt": 1169.964000000001,
+          "damageTaken": 0,
+          "healed": 32,
+          "resourceUses": 0,
+          "elapsed": 3.05
+        },
+        {
+          "number": 2,
+          "stage": 3,
+          "phase": "wave",
+          "damageDealt": 1358.7479999999998,
+          "damageTaken": 0,
+          "healed": 37,
+          "resourceUses": 0,
+          "elapsed": 4.05
+        },
+        {
+          "number": 3,
+          "stage": 3,
+          "phase": "boss",
+          "damageDealt": 803.8656000000001,
+          "damageTaken": 85,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "장판": 85
+          },
+          "elapsed": 14.68
+        }
+      ],
+      "steps": 5818
+    },
+    {
+      "seed": 123,
+      "difficulty": 1,
+      "weapon": "wand",
+      "archetype": "risk",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 34.57,
+      "kills": 18,
+      "zone": 1,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "wand_prism"
+      ],
+      "relics": {
+        "exp_hunter": 1,
+        "exp_spark": 1,
+        "wand_arc": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 565.2,
+          "damageTaken": 15,
+          "healed": 2,
+          "resourceUses": 0,
+          "damageByCause": {
+            "접촉": 15
+          },
+          "elapsed": 11.27
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 716.4000000000001,
+          "damageTaken": 45,
+          "healed": 31,
+          "resourceUses": 1,
+          "damageByCause": {
+            "접촉": 45
+          },
+          "elapsed": 10
+        },
+        {
+          "number": 3,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 805.6125,
+          "damageTaken": 73,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "탄환": 50,
+            "장판": 23
+          },
+          "elapsed": 13.3
+        }
+      ],
+      "steps": 2077
+    },
+    {
+      "seed": 123,
+      "difficulty": 1,
+      "weapon": "twin",
+      "archetype": "attack",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 12.88,
+      "kills": 9,
+      "zone": 1,
+      "phase": "wave",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "twin_orbit"
+      ],
+      "relics": {
+        "exp_edge": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 565.2,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 8.5
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 75.60000000000001,
+          "damageTaken": 100,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "접촉": 100
+          },
+          "elapsed": 4.38
+        }
+      ],
+      "steps": 774
+    },
+    {
+      "seed": 123,
+      "difficulty": 1,
+      "weapon": "twin",
+      "archetype": "balanced",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 12.88,
+      "kills": 9,
+      "zone": 1,
+      "phase": "wave",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "twin_orbit"
+      ],
+      "relics": {
+        "exp_edge": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 565.2,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 8.5
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 75.60000000000001,
+          "damageTaken": 100,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "접촉": 100
+          },
+          "elapsed": 4.38
+        }
+      ],
+      "steps": 774
+    },
+    {
+      "seed": 123,
+      "difficulty": 1,
+      "weapon": "twin",
+      "archetype": "risk",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 12.88,
+      "kills": 9,
+      "zone": 1,
+      "phase": "wave",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "twin_orbit"
+      ],
+      "relics": {
+        "exp_edge": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 565.2,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 8.5
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 75.60000000000001,
+          "damageTaken": 100,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "접촉": 100
+          },
+          "elapsed": 4.38
+        }
+      ],
+      "steps": 774
+    },
+    {
+      "seed": 123,
+      "difficulty": 2,
+      "weapon": "axe",
+      "archetype": "attack",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 26.6,
+      "kills": 20,
+      "zone": 1,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "axe_rethrow"
+      ],
+      "relics": {
+        "exp_hunter": 1,
+        "thunder": 1,
+        "exp_spark": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 1139.2,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 11.42
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 1408.0000000000002,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 1,
+          "elapsed": 9.53
+        },
+        {
+          "number": 3,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 1372.9478400000019,
+          "damageTaken": 100,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "장판": 83,
+            "탄환": 17
+          },
+          "elapsed": 5.65
+        }
+      ],
+      "steps": 1599
+    },
+    {
+      "seed": 123,
+      "difficulty": 2,
+      "weapon": "axe",
+      "archetype": "balanced",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 28.35,
+      "kills": 20,
+      "zone": 1,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 130,
+      "upgrades": [
+        "axe_rethrow"
+      ],
+      "relics": {
+        "exp_hunter": 1,
+        "thunder": 1,
+        "exp_heart": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 1139.2,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 11.42
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 1408.0000000000002,
+          "damageTaken": 0,
+          "healed": 30,
+          "resourceUses": 1,
+          "elapsed": 9.53
+        },
+        {
+          "number": 3,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 1582.130880000002,
+          "damageTaken": 130,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "장판": 109,
+            "탄환": 21
+          },
+          "elapsed": 7.4
+        }
+      ],
+      "steps": 1704
+    },
+    {
+      "seed": 123,
+      "difficulty": 2,
+      "weapon": "axe",
+      "archetype": "risk",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 26.6,
+      "kills": 20,
+      "zone": 1,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "axe_rethrow"
+      ],
+      "relics": {
+        "exp_hunter": 1,
+        "thunder": 1,
+        "exp_spark": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 1139.2,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 0,
+          "elapsed": 11.42
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 1408.0000000000002,
+          "damageTaken": 0,
+          "healed": 0,
+          "resourceUses": 1,
+          "elapsed": 9.53
+        },
+        {
+          "number": 3,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 1372.9478400000019,
+          "damageTaken": 100,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "장판": 83,
+            "탄환": 17
+          },
+          "elapsed": 5.65
+        }
+      ],
+      "steps": 1599
+    },
+    {
+      "seed": 123,
+      "difficulty": 2,
+      "weapon": "wand",
+      "archetype": "attack",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 42.63,
+      "kills": 20,
+      "zone": 1,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "wand_prism"
+      ],
+      "relics": {
+        "exp_edge": 1,
+        "exp_tempo": 1,
+        "wand_arc": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 1139.2,
+          "damageTaken": 51,
+          "healed": 2,
+          "resourceUses": 1,
+          "damageByCause": {
+            "접촉": 51
+          },
+          "elapsed": 19.23
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 1408.0000000000005,
+          "damageTaken": 0,
+          "healed": 31,
+          "resourceUses": 0,
+          "elapsed": 12.12
+        },
+        {
+          "number": 3,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 754.6875,
+          "damageTaken": 82,
+          "healed": 0,
+          "resourceUses": 1,
+          "damageByCause": {
+            "장판": 40,
+            "돌진": 42
+          },
+          "elapsed": 11.28
+        }
+      ],
+      "steps": 2561
+    },
+    {
+      "seed": 123,
+      "difficulty": 2,
+      "weapon": "wand",
+      "archetype": "balanced",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 40.38,
+      "kills": 20,
+      "zone": 1,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "wand_prism"
+      ],
+      "relics": {
+        "exp_edge": 1,
+        "exp_tempo": 1,
+        "exp_stride": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 1139.2,
+          "damageTaken": 51,
+          "healed": 2,
+          "resourceUses": 1,
+          "damageByCause": {
+            "접촉": 51
+          },
+          "elapsed": 19.23
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 1408.0000000000005,
+          "damageTaken": 0,
+          "healed": 31,
+          "resourceUses": 0,
+          "elapsed": 12.12
+        },
+        {
+          "number": 3,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 459.375,
+          "damageTaken": 82,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "장판": 31,
+            "돌진": 42,
+            "탄환": 9
+          },
+          "elapsed": 9.03
+        }
+      ],
+      "steps": 2426
+    },
+    {
+      "seed": 123,
+      "difficulty": 2,
+      "weapon": "wand",
+      "archetype": "risk",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 42.63,
+      "kills": 20,
+      "zone": 1,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "wand_prism"
+      ],
+      "relics": {
+        "exp_edge": 1,
+        "exp_tempo": 1,
+        "wand_arc": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 1139.2,
+          "damageTaken": 51,
+          "healed": 2,
+          "resourceUses": 1,
+          "damageByCause": {
+            "접촉": 51
+          },
+          "elapsed": 19.23
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 1408.0000000000005,
+          "damageTaken": 0,
+          "healed": 31,
+          "resourceUses": 0,
+          "elapsed": 12.12
+        },
+        {
+          "number": 3,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 754.6875,
+          "damageTaken": 82,
+          "healed": 0,
+          "resourceUses": 1,
+          "damageByCause": {
+            "장판": 40,
+            "돌진": 42
+          },
+          "elapsed": 11.28
+        }
+      ],
+      "steps": 2561
+    },
+    {
+      "seed": 123,
+      "difficulty": 2,
+      "weapon": "twin",
+      "archetype": "attack",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 14.8,
+      "kills": 9,
+      "zone": 1,
+      "phase": "wave",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "twin_orbit"
+      ],
+      "relics": {
+        "exp_edge": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 1139.2,
+          "damageTaken": 34,
+          "healed": 2,
+          "resourceUses": 0,
+          "damageByCause": {
+            "접촉": 34
+          },
+          "elapsed": 12.4
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 22.5,
+          "damageTaken": 68,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "접촉": 68
+          },
+          "elapsed": 2.4
+        }
+      ],
+      "steps": 889
+    },
+    {
+      "seed": 123,
+      "difficulty": 2,
+      "weapon": "twin",
+      "archetype": "balanced",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 14.8,
+      "kills": 9,
+      "zone": 1,
+      "phase": "wave",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "twin_orbit"
+      ],
+      "relics": {
+        "exp_edge": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 1139.2,
+          "damageTaken": 34,
+          "healed": 2,
+          "resourceUses": 0,
+          "damageByCause": {
+            "접촉": 34
+          },
+          "elapsed": 12.4
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 22.5,
+          "damageTaken": 68,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "접촉": 68
+          },
+          "elapsed": 2.4
+        }
+      ],
+      "steps": 889
+    },
+    {
+      "seed": 123,
+      "difficulty": 2,
+      "weapon": "twin",
+      "archetype": "risk",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 14.8,
+      "kills": 9,
+      "zone": 1,
+      "phase": "wave",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "twin_orbit"
+      ],
+      "relics": {
+        "exp_edge": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 1139.2,
+          "damageTaken": 34,
+          "healed": 2,
+          "resourceUses": 0,
+          "damageByCause": {
+            "접촉": 34
+          },
+          "elapsed": 12.4
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 22.5,
+          "damageTaken": 68,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "접촉": 68
+          },
+          "elapsed": 2.4
+        }
+      ],
+      "steps": 889
+    },
+    {
+      "seed": 123,
+      "difficulty": 3,
+      "weapon": "axe",
+      "archetype": "attack",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 29.42,
+      "kills": 22,
+      "zone": 1,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "axe_rethrow"
+      ],
+      "relics": {
+        "razor": 1,
+        "exp_hunter": 1,
+        "split": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 2189,
+          "damageTaken": 40,
+          "healed": 2,
+          "resourceUses": 0,
+          "damageByCause": {
+            "접촉": 40
+          },
+          "elapsed": 14.53
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 2590.5,
+          "damageTaken": 0,
+          "healed": 31,
+          "resourceUses": 1,
+          "elapsed": 8.07
+        },
+        {
+          "number": 3,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 2623.1040000000025,
+          "damageTaken": 93,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "장판": 93
+          },
+          "elapsed": 6.82
+        }
+      ],
+      "steps": 1768
+    },
+    {
+      "seed": 123,
+      "difficulty": 3,
+      "weapon": "axe",
+      "archetype": "balanced",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 29.42,
+      "kills": 22,
+      "zone": 1,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "axe_rethrow"
+      ],
+      "relics": {
+        "razor": 1,
+        "exp_hunter": 1,
+        "split": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 2189,
+          "damageTaken": 40,
+          "healed": 2,
+          "resourceUses": 0,
+          "damageByCause": {
+            "접촉": 40
+          },
+          "elapsed": 14.53
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 2590.5,
+          "damageTaken": 0,
+          "healed": 31,
+          "resourceUses": 1,
+          "elapsed": 8.07
+        },
+        {
+          "number": 3,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 2623.1040000000025,
+          "damageTaken": 93,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "장판": 93
+          },
+          "elapsed": 6.82
+        }
+      ],
+      "steps": 1768
+    },
+    {
+      "seed": 123,
+      "difficulty": 3,
+      "weapon": "axe",
+      "archetype": "risk",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 29.42,
+      "kills": 22,
+      "zone": 1,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "axe_rethrow"
+      ],
+      "relics": {
+        "razor": 1,
+        "exp_hunter": 1,
+        "split": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 2189,
+          "damageTaken": 40,
+          "healed": 2,
+          "resourceUses": 0,
+          "damageByCause": {
+            "접촉": 40
+          },
+          "elapsed": 14.53
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 2590.5,
+          "damageTaken": 0,
+          "healed": 31,
+          "resourceUses": 1,
+          "elapsed": 8.07
+        },
+        {
+          "number": 3,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 2623.1040000000025,
+          "damageTaken": 93,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "장판": 93
+          },
+          "elapsed": 6.82
+        }
+      ],
+      "steps": 1768
+    },
+    {
+      "seed": 123,
+      "difficulty": 3,
+      "weapon": "wand",
+      "archetype": "attack",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 59.7,
+      "kills": 22,
+      "zone": 1,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "wand_prism"
+      ],
+      "relics": {
+        "exp_spark": 1,
+        "exp_tempo": 1,
+        "echo": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 2189,
+          "damageTaken": 40,
+          "healed": 2,
+          "resourceUses": 1,
+          "damageByCause": {
+            "접촉": 40
+          },
+          "elapsed": 30.55
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 2590.4999999999995,
+          "damageTaken": 20,
+          "healed": 31,
+          "resourceUses": 1,
+          "damageByCause": {
+            "접촉": 20
+          },
+          "elapsed": 22.62
+        },
+        {
+          "number": 3,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 567,
+          "damageTaken": 73,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "돌진": 48,
+            "탄환": 24,
+            "장판": 1
+          },
+          "elapsed": 6.53
+        }
+      ],
+      "steps": 3585
+    },
+    {
+      "seed": 123,
+      "difficulty": 3,
+      "weapon": "wand",
+      "archetype": "balanced",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 58.5,
+      "kills": 22,
+      "zone": 1,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "wand_prism"
+      ],
+      "relics": {
+        "exp_spark": 1,
+        "exp_tempo": 1,
+        "guard": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 2189,
+          "damageTaken": 40,
+          "healed": 2,
+          "resourceUses": 1,
+          "damageByCause": {
+            "접촉": 40
+          },
+          "elapsed": 30.55
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 2590.4999999999995,
+          "damageTaken": 20,
+          "healed": 31,
+          "resourceUses": 1,
+          "damageByCause": {
+            "접촉": 20
+          },
+          "elapsed": 22.62
+        },
+        {
+          "number": 3,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 234.5,
+          "damageTaken": 73,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "장판": 73
+          },
+          "elapsed": 5.33
+        }
+      ],
+      "steps": 3513
+    },
+    {
+      "seed": 123,
+      "difficulty": 3,
+      "weapon": "wand",
+      "archetype": "risk",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 59.7,
+      "kills": 22,
+      "zone": 1,
+      "phase": "boss",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "wand_prism"
+      ],
+      "relics": {
+        "exp_spark": 1,
+        "exp_tempo": 1,
+        "echo": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 2189,
+          "damageTaken": 40,
+          "healed": 2,
+          "resourceUses": 1,
+          "damageByCause": {
+            "접촉": 40
+          },
+          "elapsed": 30.55
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 2590.4999999999995,
+          "damageTaken": 20,
+          "healed": 31,
+          "resourceUses": 1,
+          "damageByCause": {
+            "접촉": 20
+          },
+          "elapsed": 22.62
+        },
+        {
+          "number": 3,
+          "stage": 1,
+          "phase": "boss",
+          "damageDealt": 567,
+          "damageTaken": 73,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "돌진": 48,
+            "탄환": 24,
+            "장판": 1
+          },
+          "elapsed": 6.53
+        }
+      ],
+      "steps": 3585
+    },
+    {
+      "seed": 123,
+      "difficulty": 3,
+      "weapon": "twin",
+      "archetype": "attack",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 20.77,
+      "kills": 10,
+      "zone": 1,
+      "phase": "wave",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "twin_orbit"
+      ],
+      "relics": {
+        "exp_hunter": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 2189,
+          "damageTaken": 20,
+          "healed": 2,
+          "resourceUses": 1,
+          "damageByCause": {
+            "접촉": 20
+          },
+          "elapsed": 17.6
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 189,
+          "damageTaken": 82,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "접촉": 82
+          },
+          "elapsed": 3.17
+        }
+      ],
+      "steps": 1247
+    },
+    {
+      "seed": 123,
+      "difficulty": 3,
+      "weapon": "twin",
+      "archetype": "balanced",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 20.77,
+      "kills": 10,
+      "zone": 1,
+      "phase": "wave",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "twin_orbit"
+      ],
+      "relics": {
+        "exp_hunter": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 2189,
+          "damageTaken": 20,
+          "healed": 2,
+          "resourceUses": 1,
+          "damageByCause": {
+            "접촉": 20
+          },
+          "elapsed": 17.6
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 189,
+          "damageTaken": 82,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "접촉": 82
+          },
+          "elapsed": 3.17
+        }
+      ],
+      "steps": 1247
+    },
+    {
+      "seed": 123,
+      "difficulty": 3,
+      "weapon": "twin",
+      "archetype": "risk",
+      "route": "shrine",
+      "outcome": "death",
+      "time": 20.77,
+      "kills": 10,
+      "zone": 1,
+      "phase": "wave",
+      "hp": 0,
+      "maxHp": 100,
+      "upgrades": [
+        "twin_orbit"
+      ],
+      "relics": {
+        "exp_hunter": 1
+      },
+      "rooms": [
+        {
+          "number": 1,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 2189,
+          "damageTaken": 20,
+          "healed": 2,
+          "resourceUses": 1,
+          "damageByCause": {
+            "접촉": 20
+          },
+          "elapsed": 17.6
+        },
+        {
+          "number": 2,
+          "stage": 1,
+          "phase": "wave",
+          "damageDealt": 189,
+          "damageTaken": 82,
+          "healed": 0,
+          "resourceUses": 0,
+          "damageByCause": {
+            "접촉": 82
+          },
+          "elapsed": 3.17
+        }
+      ],
+      "steps": 1247
+    }
+  ]
+}
