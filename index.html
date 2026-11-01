@@ -236,6 +236,7 @@
   const saved=loadSave();
   let selectedWeapon='axe', difficulty=0, soundOn=true, audio=null, musicTimer=0, musicStep=0,lastEnemyShotSound=0;
   let screen='title', previousScreen='playing', lastTime=0, time=0, toastTimer=0, shake=0;
+  let runToken=0, pendingEchoes=[];
   let keys={}, mouse={x:W/2,y:H/2,down:false};
   let touchMode=false;const stickRadius=60,chargeStickScale=1.3,tapMaxMs=260,tapMoveRatio=.3;
   const touchMove={active:false,id:null,x:0,y:0,dx:0,dy:0},touchAim={active:false,id:null,x:0,y:0,dx:0,dy:0,chargeLocked:false,rechargeDelay:0,firedWhileHeld:false,tapCandidate:false,downAt:0,downX:0,downY:0,fallbackAngle:-Math.PI/2};
@@ -272,6 +273,7 @@
   function difficultyName(n){return ['광부','탐험가','심연','붕괴'][n]||'광부';}
   function bossPressure(e){return e.finalPressure??runDifficulty;}
   function startRun(){
+    runToken++;pendingEchoes=[];
     stage=1;phase='wave';roomCount=0;kills=0;xp=0;xpNeed=6;runTime=0;runDifficulty=difficulty;endless=false;boss=null;
     weaponUpgradeUsed=false;
     for(const k of Object.keys(relicBag))delete relicBag[k];
@@ -483,9 +485,24 @@
     }
     if(player.weapon==='twin'&&relicBag.twin_moon&&attackNumber%3===0)fireTwinCleave(angle,damage*(.35+.1*(relicBag.twin_moon-1)));
     player.attackCount=attackNumber;
-    if(relicBag.echo&&player.attackCount%4===0){setTimeout(()=>{if(!player||screen!=='playing')return;const echoDamage=weap.damage*(1+(player.damageBonus||0));if(player.weapon==='twin'){fireTwinSwipes(angle,echoDamage*.7,twinSwipeCount(),.24,'echo');}else shots.push({kind:'echo',x:player.x,y:player.y,ox:player.x,oy:player.y,vx:Math.cos(angle)*weap.speed,vy:Math.sin(angle)*weap.speed,angle,age:0,returnAt:.4,life:1.18,returning:false,hit:new Set(),damage:echoDamage,pierce:999,spin:0,upgrade:player.weaponUpgrade,splitAttack:false});},110);}
+    if(relicBag.echo&&player.attackCount%4===0){
+      const token=runToken,weapon=player.weapon,upgrade=player.weaponUpgrade;
+      pendingEchoes.push({at:performance.now()+110,token,weapon,upgrade,angle,damage:weap.damage});
+    }
     const normalCooldown=weap.cooldown*Math.max(.62,1-(relicBag.echo||0)*.035);
     attackTimer=player.weapon==='axe'?weap.cooldown*(1-.74*clamp(charge,0,1))*Math.max(.62,1-(relicBag.echo||0)*.035):normalCooldown;playSound('shot');
+  }
+  function updatePendingEchoes(){
+    if(screen!=='playing'||!player)return;
+    const now=performance.now();
+    for(let i=pendingEchoes.length-1;i>=0;i--){
+      const echo=pendingEchoes[i];if(echo.token!==runToken){pendingEchoes.splice(i,1);continue;}
+      if(now<echo.at)continue;
+      pendingEchoes.splice(i,1);
+      const echoDamage=echo.damage*(1+(player.damageBonus||0));
+      if(echo.weapon==='twin')fireTwinSwipes(echo.angle,echoDamage*.7,twinSwipeCount(),.24,'echo');
+      else shots.push({kind:'echo',x:player.x,y:player.y,ox:player.x,oy:player.y,vx:Math.cos(echo.angle)*weapons[echo.weapon].speed,vy:Math.sin(echo.angle)*weapons[echo.weapon].speed,angle:echo.angle,age:0,returnAt:.4,life:1.18,returning:false,hit:new Set(),damage:echoDamage,pierce:999,spin:0,upgrade:echo.upgrade,splitAttack:false});
+    }
   }
   function twinSwipeCount(){return 2+(relicBag.split?1+Math.min(2,relicBag.split-1):0);}
   function fireWandRail(angle,damage){
@@ -558,6 +575,7 @@
     time+=dt;frame++;
     if(toastTimer>0){toastTimer-=dt;if(toastTimer<=0)$('toast').classList.remove('visible');}
     if(screen!=='playing')return;
+    updatePendingEchoes();
     runTime+=dt;attackTimer-=dt;dashCooldown-=dt;invuln-=dt;if(shake>0)shake=Math.max(0,shake-dt*24);
     const oldPlayerX=player.x,oldPlayerY=player.y,wasDashing=player.dashing>0;
     let dx=(keys.d||keys.ArrowRight?1:0)-(keys.a||keys.ArrowLeft?1:0)+touchMove.dx,dy=(keys.s||keys.ArrowDown?1:0)-(keys.w||keys.ArrowUp?1:0)+touchMove.dy;const inputLength=Math.hypot(dx,dy);if(inputLength>1){dx/=inputLength;dy/=inputLength;}
