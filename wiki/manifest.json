@@ -1,0 +1,649 @@
+{
+  "gameSourceHash": "403aa1741331",
+  "articles": [
+    {
+      "id": "weapon-axe",
+      "title": "부메랑 도끼",
+      "type": "weapon"
+    },
+    {
+      "id": "weapon-wand",
+      "title": "수정 지팡이",
+      "type": "weapon"
+    },
+    {
+      "id": "weapon-twin",
+      "title": "쌍날 낫",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-axe_rethrow",
+      "title": "추격 재투척",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-axe_rethrow_split",
+      "title": "쌍갈래 추격",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-axe_rethrow_hunt",
+      "title": "사냥의 가속",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-axe_orbit",
+      "title": "쌍도끼 공전",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-axe_orbit_storm",
+      "title": "폭풍 궤도",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-axe_orbit_burst",
+      "title": "귀환 폭발",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-axe_return_cut",
+      "title": "귀환의 단죄",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-axe_return_rend",
+      "title": "회수 절단",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-axe_return_split",
+      "title": "파편 귀환",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-wand_prism",
+      "title": "프리즘 파열",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-wand_prism_lattice",
+      "title": "프리즘 격자",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-wand_prism_focus",
+      "title": "집광 파열",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-wand_rail",
+      "title": "관통 광선",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-wand_rail_wide",
+      "title": "굵은 광선",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-wand_rail_echo",
+      "title": "잔향 광선",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-wand_fan",
+      "title": "별비 산개",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-wand_fan_storm",
+      "title": "별비 확장",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-wand_fan_focus",
+      "title": "수렴 부채",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-twin_orbit",
+      "title": "쌍월 궤도",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-twin_orbit_blades",
+      "title": "추가 궤도 칼날",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-twin_orbit_reach",
+      "title": "넓은 궤도",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-twin_cleave",
+      "title": "균열 베기",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-twin_cleave_long",
+      "title": "장거리 균열",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-twin_cleave_after",
+      "title": "잔상 참격",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-twin_rift",
+      "title": "공간 찢기",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-twin_rift_repeat",
+      "title": "연속 균열",
+      "type": "weapon"
+    },
+    {
+      "id": "upgrade-twin_rift_pierce",
+      "title": "장거리 관통",
+      "type": "weapon"
+    },
+    {
+      "id": "item-parry_edge",
+      "title": "날 선 반격",
+      "type": "item"
+    },
+    {
+      "id": "item-parry_guard",
+      "title": "틈새 방패",
+      "type": "item"
+    },
+    {
+      "id": "item-exp_parry",
+      "title": "수호의 박자",
+      "type": "item"
+    },
+    {
+      "id": "item-exp_edge",
+      "title": "푸른 날의 맹세",
+      "type": "item"
+    },
+    {
+      "id": "item-exp_heart",
+      "title": "탐험가의 심장",
+      "type": "item"
+    },
+    {
+      "id": "item-exp_stride",
+      "title": "바람길 장화",
+      "type": "item"
+    },
+    {
+      "id": "item-exp_tempo",
+      "title": "박동 태엽",
+      "type": "item"
+    },
+    {
+      "id": "item-exp_bounty",
+      "title": "사냥꾼의 부적",
+      "type": "item"
+    },
+    {
+      "id": "item-exp_hunter",
+      "title": "균열 추적자",
+      "type": "item"
+    },
+    {
+      "id": "item-exp_guard",
+      "title": "청동 파수패",
+      "type": "item"
+    },
+    {
+      "id": "item-exp_spark",
+      "title": "잔광 탄환",
+      "type": "item"
+    },
+    {
+      "id": "item-abyss_evasion",
+      "title": "공허의 허물",
+      "type": "item"
+    },
+    {
+      "id": "item-abyss_hungry",
+      "title": "굶주린 탄환",
+      "type": "item"
+    },
+    {
+      "id": "item-abyss_gambler",
+      "title": "도박사의 탄창",
+      "type": "item"
+    },
+    {
+      "id": "item-abyss_axe_storm",
+      "title": "도끼 폭풍",
+      "type": "item"
+    },
+    {
+      "id": "item-abyss_reflect",
+      "title": "반사 결정",
+      "type": "item"
+    },
+    {
+      "id": "item-abyss_footsteps",
+      "title": "피의 발자국",
+      "type": "item"
+    },
+    {
+      "id": "item-collapse_parry",
+      "title": "붕괴의 연속",
+      "type": "item"
+    },
+    {
+      "id": "item-collapse_dash",
+      "title": "무적의 역설",
+      "type": "item"
+    },
+    {
+      "id": "item-collapse_frontal",
+      "title": "정면 승부",
+      "type": "item"
+    },
+    {
+      "id": "item-collapse_burst",
+      "title": "단기 결전",
+      "type": "item"
+    },
+    {
+      "id": "item-collapse_cannon",
+      "title": "피의 포문",
+      "type": "item"
+    },
+    {
+      "id": "item-collapse_momentum",
+      "title": "끝없는 기세",
+      "type": "item"
+    },
+    {
+      "id": "item-ember",
+      "title": "잿불 심장",
+      "type": "item"
+    },
+    {
+      "id": "item-split",
+      "title": "갈라진 송곳니",
+      "type": "item"
+    },
+    {
+      "id": "item-thunder",
+      "title": "폭풍 실타래",
+      "type": "item"
+    },
+    {
+      "id": "item-echo",
+      "title": "메아리 태엽",
+      "type": "item"
+    },
+    {
+      "id": "item-razor",
+      "title": "면도날 고리",
+      "type": "item"
+    },
+    {
+      "id": "item-heart",
+      "title": "광부의 심장",
+      "type": "item"
+    },
+    {
+      "id": "item-dash",
+      "title": "잔상 장화",
+      "type": "item"
+    },
+    {
+      "id": "item-void",
+      "title": "공허 종",
+      "type": "item"
+    },
+    {
+      "id": "item-sun",
+      "title": "태양 파편",
+      "type": "item"
+    },
+    {
+      "id": "item-guard",
+      "title": "현무암 외피",
+      "type": "item"
+    },
+    {
+      "id": "item-gale",
+      "title": "질풍의 깃털",
+      "type": "item"
+    },
+    {
+      "id": "item-blood",
+      "title": "붉은 수확",
+      "type": "item"
+    },
+    {
+      "id": "item-frost",
+      "title": "서리 인장",
+      "type": "item"
+    },
+    {
+      "id": "item-wildfire",
+      "title": "화염 도가니",
+      "type": "item"
+    },
+    {
+      "id": "item-keen",
+      "title": "사냥꾼의 눈",
+      "type": "item"
+    },
+    {
+      "id": "item-axe_core",
+      "title": "귀환의 불씨",
+      "type": "item"
+    },
+    {
+      "id": "item-wand_arc",
+      "title": "연쇄 수정",
+      "type": "item"
+    },
+    {
+      "id": "item-twin_moon",
+      "title": "쌍월 문장",
+      "type": "item"
+    },
+    {
+      "id": "boss-warden",
+      "title": "녹슨 수호자",
+      "type": "boss"
+    },
+    {
+      "id": "boss-moth",
+      "title": "수정 나방",
+      "type": "boss"
+    },
+    {
+      "id": "boss-star",
+      "title": "별의 핵",
+      "type": "boss"
+    },
+    {
+      "id": "pattern-crossfire",
+      "title": "십자 포화",
+      "type": "pattern"
+    },
+    {
+      "id": "pattern-spiral",
+      "title": "나선 탄막",
+      "type": "pattern"
+    },
+    {
+      "id": "pattern-radial",
+      "title": "방사 탄막",
+      "type": "pattern"
+    },
+    {
+      "id": "pattern-ring",
+      "title": "틈 있는 원형 탄막",
+      "type": "pattern"
+    },
+    {
+      "id": "pattern-aimed",
+      "title": "조준 연사",
+      "type": "pattern"
+    },
+    {
+      "id": "pattern-fan",
+      "title": "부채꼴 탄막",
+      "type": "pattern"
+    },
+    {
+      "id": "pattern-target",
+      "title": "표적 폭발",
+      "type": "pattern"
+    },
+    {
+      "id": "pattern-summon",
+      "title": "원거리 적 소환",
+      "type": "pattern"
+    },
+    {
+      "id": "pattern-gigablast",
+      "title": "유도 거대탄",
+      "type": "pattern"
+    },
+    {
+      "id": "pattern-feather",
+      "title": "추적 깃털",
+      "type": "pattern"
+    },
+    {
+      "id": "pattern-split",
+      "title": "분열탄",
+      "type": "pattern"
+    },
+    {
+      "id": "pattern-wall",
+      "title": "가로·세로 장벽",
+      "type": "pattern"
+    },
+    {
+      "id": "pattern-beam",
+      "title": "회전 광선",
+      "type": "pattern"
+    },
+    {
+      "id": "pattern-charge",
+      "title": "연속 돌진",
+      "type": "pattern"
+    },
+    {
+      "id": "enemy-grunt",
+      "title": "일반 추격 적",
+      "type": "enemy"
+    },
+    {
+      "id": "enemy-shooter",
+      "title": "원거리 적",
+      "type": "enemy"
+    },
+    {
+      "id": "enemy-charger",
+      "title": "돌진 적",
+      "type": "enemy"
+    },
+    {
+      "id": "enemy-elite",
+      "title": "정예 적",
+      "type": "enemy"
+    },
+    {
+      "id": "enemy-seal",
+      "title": "봉인",
+      "type": "enemy"
+    },
+    {
+      "id": "enemy-brother",
+      "title": "쌍둥이",
+      "type": "enemy"
+    },
+    {
+      "id": "enemy-maw",
+      "title": "추격자",
+      "type": "enemy"
+    },
+    {
+      "id": "difficulty-0",
+      "title": "광부",
+      "type": "difficulty"
+    },
+    {
+      "id": "difficulty-1",
+      "title": "탐험가",
+      "type": "difficulty"
+    },
+    {
+      "id": "difficulty-2",
+      "title": "심연",
+      "type": "difficulty"
+    },
+    {
+      "id": "difficulty-3",
+      "title": "붕괴",
+      "type": "difficulty"
+    },
+    {
+      "id": "synergy-split_thunder",
+      "title": "폭풍 분열",
+      "type": "synergy"
+    },
+    {
+      "id": "synergy-ember_echo",
+      "title": "영원한 불씨",
+      "type": "synergy"
+    },
+    {
+      "id": "synergy-ember_wildfire",
+      "title": "잿더미 폭발",
+      "type": "synergy"
+    },
+    {
+      "id": "synergy-axe_core_ember",
+      "title": "용광로 귀환",
+      "type": "synergy"
+    },
+    {
+      "id": "system-controls",
+      "title": "조작과 기본 능력치",
+      "type": "system"
+    },
+    {
+      "id": "system-dash",
+      "title": "대시",
+      "type": "system"
+    },
+    {
+      "id": "system-parry",
+      "title": "패리",
+      "type": "system"
+    },
+    {
+      "id": "system-damage",
+      "title": "피해 계산",
+      "type": "system"
+    },
+    {
+      "id": "system-triggers",
+      "title": "피해 소스와 적중 발동",
+      "type": "system"
+    },
+    {
+      "id": "system-burn",
+      "title": "화상과 난이도 보정",
+      "type": "system"
+    },
+    {
+      "id": "system-hazards",
+      "title": "장판·탄환·지형 판정",
+      "type": "system"
+    },
+    {
+      "id": "system-final-hell",
+      "title": "최종 보스 무적 탄막",
+      "type": "system"
+    },
+    {
+      "id": "system-powers",
+      "title": "분노·아드레날린·공허",
+      "type": "system"
+    },
+    {
+      "id": "system-loot",
+      "title": "상자와 보상 추첨",
+      "type": "system"
+    },
+    {
+      "id": "system-progression",
+      "title": "한 판의 진행과 보상",
+      "type": "system"
+    },
+    {
+      "id": "system-save",
+      "title": "영구 해금과 브라우저 저장",
+      "type": "system"
+    },
+    {
+      "id": "system-zone-1",
+      "title": "녹슨 갱도",
+      "type": "system"
+    },
+    {
+      "id": "system-zone-2",
+      "title": "수정층의 심장",
+      "type": "system"
+    },
+    {
+      "id": "system-zone-3",
+      "title": "별똥별 성소",
+      "type": "system"
+    },
+    {
+      "id": "weapons",
+      "title": "무기·진화",
+      "type": "catalog"
+    },
+    {
+      "id": "items",
+      "title": "유물 도감",
+      "type": "catalog"
+    },
+    {
+      "id": "bosses",
+      "title": "보스 도감",
+      "type": "catalog"
+    },
+    {
+      "id": "enemies",
+      "title": "적 도감",
+      "type": "catalog"
+    },
+    {
+      "id": "patterns",
+      "title": "공격 패턴",
+      "type": "catalog"
+    },
+    {
+      "id": "systems",
+      "title": "전투·시스템",
+      "type": "catalog"
+    },
+    {
+      "id": "difficulties",
+      "title": "난이도",
+      "type": "catalog"
+    },
+    {
+      "id": "synergies",
+      "title": "시너지",
+      "type": "catalog"
+    },
+    {
+      "id": "about",
+      "title": "위키 읽는 법과 기록 기준"
+    }
+  ],
+  "counts": {
+    "weapon": 30,
+    "item": 41,
+    "boss": 3,
+    "enemy": 7,
+    "pattern": 14,
+    "system": 15,
+    "difficulty": 4,
+    "synergy": 4
+  }
+}

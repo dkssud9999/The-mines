@@ -92,6 +92,11 @@
     .cardicon { font-size:26px; margin:0 0 8px; }
     .lootPanel { width:min(100%,720px); }
     .lootPanel.fourItems { width:min(100%,900px); }
+    .comboTag { display:block; margin-top:10px; color:#9de8d9; font-size:10px; line-height:1.6; }
+    .synergyDetails { margin-top:14px; padding:10px 12px; border:1px solid #4b6159; border-radius:5px; background:#0e1619; text-align:left; color:#c6ddd3; font-size:11px; line-height:1.8; }
+    .synergyDetails summary { cursor:pointer; color:#a7efbf; }
+    .synergyDetails p { margin:10px 0 0; }
+    .synergyDetails strong { color:#f5dfaa; }
     .relicImage { display:block; width:70px; height:70px; margin:0 auto 8px; object-fit:contain; image-rendering:pixelated; }
     #lootCards .card { min-height:184px; }
     #lootCards.fourCards .relicImage { width:64px; height:64px; }
@@ -148,7 +153,7 @@
       </div></section>
       <section class="overlay" id="lootOverlay"><div class="panel lootPanel" id="lootPanel">
         <div class="kicker" id="lootKicker">상자 개방</div><h2 id="lootTitle">하나를 골라라</h2><p class="subtitle" id="lootSubtitle">획득할 유물을 고르세요.</p>
-        <div class="cards" id="lootCards"></div><div class="smallnote" id="synergyHint"></div>
+        <div class="cards" id="lootCards"></div><div class="smallnote" id="synergyHint"></div><details class="synergyDetails" id="synergyDetails" hidden></details>
       </div></section>
       <section class="overlay" id="weaponUpgradeOverlay"><div class="panel">
         <div class="kicker">무기 각성</div><h2 id="weaponUpgradeTitle">무기의 길을 골라라</h2><p class="subtitle">강화 하나를 고르세요. 이번 탐험 동안 유지됩니다.</p>
@@ -312,8 +317,19 @@
     wand_arc:{name:'연쇄 수정',icon:'⌁',desc:'지팡이의 네 번째 공격이 처음 맞힌 적 주변의 적 하나에게 연쇄된다. 중첩되지 않는다.',color:'#9ee9ff',weapon:'wand',maxStacks:1},
     twin_moon:{name:'쌍월 문장',icon:'☾',desc:'낫의 세 번째 공격에 넓은 추가 참격을 가한다. 중첩 시 피해가 오른다.',color:'#d8b4ff',weapon:'twin'}
   };
-  const synergyText={split_thunder:'폭풍 분열: 갈라진 공격이 번개를 한 번 더 연쇄한다.',ember_echo:'영원한 불씨: 메아리 공격의 화상 지속시간이 늘어난다.',ember_wildfire:'잿더미 폭발: 화염 폭발의 범위와 피해가 늘어난다.',axe_core_ember:'용광로 귀환: 완충 도끼의 폭발 범위와 피해가 커진다.'};
-  const synergyPairs={split_thunder:['split','thunder'],ember_echo:['ember','echo'],ember_wildfire:['ember','wildfire'],axe_core_ember:['axe_core','ember']};
+  const synergyText={
+    split_thunder:'폭풍 분열: 갈라진 공격이 번개를 한 번 더 연쇄한다.',
+    ember_echo:'영원한 불씨: 메아리 공격의 화상 지속시간이 늘어난다.',
+    ember_wildfire:'잿더미 폭발: 화염 폭발의 범위와 피해가 늘어난다.',
+    axe_core_ember:'용광로 귀환: 완충 도끼의 폭발 범위와 피해가 커진다.',
+    frost_thunder:'빙뢰 공명: 번개 피해 +25%. 번개가 일반·정예 적에게도 서리 둔화를 퍼뜨린다.',
+    blood_razor:'핏빛 궤도: 면도날 적중 시 체력 1 회복. 전체 칼날 공통으로 0.6초에 한 번 발동한다.',
+    dash_echo:'잔향 질주: 각 메아리 공격의 첫 적중이 남은 대시 대기시간을 0.35초 줄인다.',
+    guard_parry:'현무암 반격: 패리 성공 후 3초 안에 사용하는 다음 무기 공격의 피해가 50% 증가한다.',
+    ember_keen:'홍련 강타: 매 5번째 공격의 무기 적중이 이미 화상 중인 적에게 30% 더 강해진다.',
+    split_razor:'파쇄 궤도: 면도날 고리의 칼날이 1개 늘고 칼날 피해가 20% 증가한다.'
+  };
+  const synergyPairs={split_thunder:['split','thunder'],ember_echo:['ember','echo'],ember_wildfire:['ember','wildfire'],axe_core_ember:['axe_core','ember'],frost_thunder:['frost','thunder'],blood_razor:['blood','razor'],dash_echo:['dash','echo'],guard_parry:['guard','parry_guard'],ember_keen:['ember','keen'],split_razor:['split','razor']};
   const weaponRelics={axe:'axe_core',wand:'wand_arc',twin:'twin_moon'};
   const saved=loadSave();
   let selectedWeapon=saved.unlockedWeapons.includes(saved.lastWeapon)?saved.lastWeapon:'axe', difficulty=Math.min(3,saved.highestDifficulty,Math.max(0,Number.isInteger(saved.lastDifficulty)?saved.lastDifficulty:0)), soundOn=true, audio=null, musicTimer=0, musicStep=0,lastEnemyShotSound=0;
@@ -575,14 +591,9 @@
   function advanceStage(){stage++;roomCount=0;healPlayer(10);startWave();setScreen('playing');}
   function beginClearTransition(label,onComplete){if(clearTransition)return;clearTransition={label,timer:.9,max:.9,onComplete,cleaned:false};}
   function finishBossEncounter(){const finalStage=stage>=3&&!endless;if(!bossDeathPending||enemies.some(e=>!finalStage||e.kind!=='maw'))return;if(finalStage)enemies=enemies.filter(e=>e.kind!=='maw');bossDeathPending=false;recordBalanceRoom();beginClearTransition('보스 처치',()=>{if(stage>=3&&!endless)showVictory();else openLoot('zone');});}
-  function activeSynergies(){
-    const out=[];const has=(a,b)=>(relicBag[a]||0)>0&&(relicBag[b]||0)>0;
-    if(has('split','thunder'))out.push({key:'split_thunder',name:'폭풍 분열'});
-    if(has('ember','echo'))out.push({key:'ember_echo',name:'영원한 불씨'});
-    if(has('ember','wildfire'))out.push({key:'ember_wildfire',name:'잿더미 폭발'});
-    if(has('axe_core','ember'))out.push({key:'axe_core_ember',name:'용광로 귀환'});
-    return out;
-  }
+  function hasSynergy(key){return !!synergyPairs[key]?.every(id=>(relicBag[id]||0)>0);}
+  function activeSynergies(){return Object.keys(synergyPairs).filter(hasSynergy).map(key=>({key,name:synergyText[key].split(':')[0]}));}
+  function razorBladeCount(){return relicBag.razor?1+Math.min(2,relicBag.razor-1)+(hasSynergy('split_razor')?1:0):0;}
   function showVictory(){
     balanceRunCleared=true;
     saveBalanceRun('클리어','최종 보스 처치');
@@ -655,7 +666,9 @@
     if(player.weaponUpgrade==='wand_prism')damage*=1.25;
     if(relicBag.abyss_axe_storm&&player.weapon==='axe')damage*=1.6;
     if(relicBag.keen&&attackNumber%5===0){damage*=1+.75*relicBag.keen;floatText(player.x,player.y-20,'강타!','#ffe08a',13);}
+    if(player.counterReady>0){damage*=1.5;player.counterReady=0;floatText(player.x,player.y-34,'반격!','#a7efbf',14);}
     const attackContext=newAttackContext(damage);
+    attackContext.heavyStrike=!!relicBag.keen&&attackNumber%5===0;
     if(player.weaponUpgrade==='wand_rail'&&attackNumber%3===0)fireWandRail(angle,damage*2.1,true,true,attackContext);
     else if(player.weaponUpgrade==='twin_rift'&&attackNumber%(player.weaponUpgrade2==='twin_rift_repeat'?3:4)===0)fireTwinRift(angle,damage*(player.weaponUpgrade2==='twin_rift_repeat'?4.8:player.weaponUpgrade2==='twin_rift_pierce'?5.6:3.6),attackContext);
     else if(player.weaponUpgrade==='twin_cleave')fireTwinCleave(angle,damage*2.4*(player.weaponUpgrade2==='twin_cleave_long'?1.15:1),true,attackContext);
@@ -819,6 +832,7 @@
     updatePendingEchoes();if(screen!=='playing')return;
     runTime+=dt;attackTimer-=dt;dashCooldown-=dt;parryCooldown=Math.max(0,parryCooldown-dt);invuln-=dt;if(shake>0)shake=Math.max(0,shake-dt*24);
     updateCombatPowers(dt);
+    player.razorHealCooldown=Math.max(0,(player.razorHealCooldown||0)-dt);player.counterReady=Math.max(0,(player.counterReady||0)-dt);
     if(player.collapseCannonTimer>0)player.collapseCannonTimer=Math.max(0,player.collapseCannonTimer-dt);
     if(phase==='boss'&&boss&&!boss.invulnerable&&relicBag.collapse_burst&&player.collapseBurstTimer>0){player.collapseBurstTimer=Math.max(0,player.collapseBurstTimer-dt);if(player.collapseBurstTimer===0){player.collapseBurstOver=true;toast('폭주 종료 · 공격 속도 감소');}}
     const oldPlayerX=player.x,oldPlayerY=player.y,wasDashing=player.dashing>0;
@@ -851,7 +865,7 @@
     updateShots(dt);if(screen!=='playing')return;
     updateEnemies(dt);if(screen!=='playing')return;updateVoidWaves(dt);
     updateBullets(dt);updateHazards(dt);updateLightningArcs(dt);updateParryWindow(dt);updateWeaponEffects(dt);updateDrops(dt);updateParticles(dt);updateTexts(dt);
-    if(relicBag.razor){player.razorAngle=(player.razorAngle||0)+dt*2.5;const n=1+Math.min(2,relicBag.razor-1);for(let i=0;i<n;i++){const a=player.razorAngle+Math.PI*2*i/n;const p={x:player.x+Math.cos(a)*razorOrbitRadius,y:player.y+Math.sin(a)*razorOrbitRadius,r:8};for(const e of [...enemies]){if(dist(p,e)<p.r+e.r&&runRandom()<dt*3.5)damageEnemy(e,5+relicBag.razor*2,'razor');}}}
+    if(relicBag.razor){player.razorAngle=(player.razorAngle||0)+dt*2.5;const n=razorBladeCount();for(let i=0;i<n;i++){const a=player.razorAngle+Math.PI*2*i/n;const p={x:player.x+Math.cos(a)*razorOrbitRadius,y:player.y+Math.sin(a)*razorOrbitRadius,r:8};for(const e of [...enemies]){if(dist(p,e)<p.r+e.r&&runRandom()<dt*3.5)damageEnemy(e,(5+relicBag.razor*2)*(hasSynergy('split_razor')?1.2:1),'razor');}}}
     if(phase==='boss'&&boss){boss.phase=boss.hp<boss.maxHp*boss.rageAt?2:1;updateHud();}
     if(player.hp<=0){player.hp=0;gameOver();}
     updateHud();
@@ -925,6 +939,9 @@
     if(e.kind==='boss'&&e.invulnerable)return;
     const attackContext=origin?.attackContext||origin?.missState||null;if(attackContext)attackContext.landed=true;
     const triggersOnHit=['axe','bolt','prism','echo','orbiter','cleave','rift','rail','moon'].includes(source);
+    const fireCritical=triggersOnHit&&attackContext?.heavyStrike&&e.burn>0&&hasSynergy('ember_keen');
+    if(fireCritical)amount*=1.3;
+    if(source==='lightning'&&hasSynergy('frost_thunder')){amount*=1.25;if(['grunt','shooter','charger','elite'].includes(e.kind))e.slowTimer=Math.max(e.slowTimer||0,.72);}
     if(triggersOnHit&&relicBag.frost&&e.kind!=='boss')e.slowTimer=Math.max(e.slowTimer||0,.72);
     if(triggersOnHit&&relicBag.wildfire)e.wildfireTimer=Math.max(e.wildfireTimer||0,1.5);
     if(!alreadyScaled){if(e.kind==='boss'&&source!=='boss'){if(relicBag.void)amount*=1+.25*relicBag.void;if(relicBag.exp_hunter)amount*=1.35;}if(relicBag.sun)amount*=1+.14*relicBag.sun;amount*=outgoingDamageMultiplier(e,source,attackAngle,attackContext);}
@@ -937,6 +954,9 @@
       if(gate!==null){amount=Math.min(amount,Math.max(0,e.hp-e.maxHp*gate));if(amount<=0)return;}
     }
     const hpBeforeHit=e.hp;e.hp-=amount;if(balanceRoom)balanceRoom.damageDealt+=Math.max(0,hpBeforeHit-Math.max(0,e.hp));e.flash=.09;
+    if(fireCritical)burst(e.x,e.y,'#ff9868',4);
+    if(source==='razor'&&hpBeforeHit>e.hp&&hasSynergy('blood_razor')&&!(player.razorHealCooldown>0)){player.razorHealCooldown=.6;const healed=healPlayer(1);if(healed>0){floatText(player.x,player.y-18,'+1','#ef7185',12);burst(player.x,player.y,'#ef7185',3);}}
+    if(source==='echo'&&attackContext&&!attackContext.echoDashRefund&&hasSynergy('dash_echo')){attackContext.echoDashRefund=true;const refunded=Math.min(.35,Math.max(0,dashCooldown));dashCooldown=Math.max(0,dashCooldown-.35);if(refunded>0)floatText(player.x,player.y-32,`대시 -${refunded.toFixed(2)}초`,'#8de8d2',11);}
     if(['axe','bolt','prism','echo','orbiter','cleave','rift','rail'].includes(source)&&relicBag.collapse_momentum)momentumHits++;
     if(['bolt','prism','echo','rail'].includes(source)&&(attackContext?.hungry||!attackContext&&relicBag.abyss_hungry)){if(attackContext){if(!attackContext.counted){abyssHitStreak++;attackContext.counted=true;}}else abyssHitStreak++;}
     if(runRandom()<.22||e.hp<=0)floatText(e.x+rand(-8,8),e.y-14,Math.round(amount),e.kind==='boss'?'#ffe596':'#fff0c0',12);
@@ -1465,7 +1485,7 @@
     if(player.dashing>0){ctx.save();ctx.rotate(Math.atan2(player.dashY,player.dashX));ctx.fillStyle='#87f3d5';ctx.fillRect(-31,-3,15,6);ctx.restore();}if(parryWindow>0){ctx.save();const strength=parryWindow/.2;ctx.globalAlpha=.65+.35*strength;ctx.strokeStyle='#e8fdff';ctx.shadowColor='#8cf5ff';ctx.shadowBlur=14;ctx.lineWidth=5;ctx.beginPath();const radius=parryVisualRadius();ctx.arc(0,0,radius,0,Math.PI*2);ctx.stroke();ctx.shadowBlur=0;ctx.strokeStyle='#8cf5ff';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,radius,0,Math.PI*2);ctx.stroke();ctx.restore();}ctx.restore();
     if(player.rageActive>0||player.adrenalineActive>0){ctx.save();ctx.textAlign='center';ctx.font='bold 10px ui-monospace,monospace';if(player.rageActive>0){ctx.fillStyle='#ff9a78';ctx.fillText('분노',player.x,player.y-31);}if(player.adrenalineActive>0){ctx.fillStyle='#9af4ff';ctx.fillText('아드레날린',player.x,player.y-43-(player.rageActive>0?12:0));}ctx.restore();}
     if(player.charging){const charge=clamp(player.chargeTime/axeChargeMax,0,1);ctx.save();ctx.strokeStyle=charge>=1?'#fff0a8':'#eab45d';ctx.lineWidth=3;ctx.globalAlpha=.65+.35*charge;ctx.beginPath();ctx.arc(player.x,player.y,19,-Math.PI/2,-Math.PI/2+Math.PI*2*charge);ctx.stroke();ctx.restore();}
-    if(relicBag.razor){const n=1+Math.min(2,relicBag.razor-1);for(let i=0;i<n;i++){const a=(player.razorAngle||0)+Math.PI*2*i/n;ctx.save();ctx.translate(player.x+Math.cos(a)*razorOrbitRadius,player.y+Math.sin(a)*razorOrbitRadius);ctx.rotate(a);ctx.fillStyle='#a7efbf';ctx.fillRect(-3,-7,6,14);ctx.restore();}}
+    if(relicBag.razor){const n=razorBladeCount();for(let i=0;i<n;i++){const a=(player.razorAngle||0)+Math.PI*2*i/n;ctx.save();ctx.translate(player.x+Math.cos(a)*razorOrbitRadius,player.y+Math.sin(a)*razorOrbitRadius);ctx.rotate(a);ctx.fillStyle=hasSynergy('blood_razor')?'#ef7185':'#a7efbf';ctx.fillRect(-3,-7,6,14);ctx.restore();}}
   }  function drawParticles(){for(const p of particles){ctx.globalAlpha=clamp(p.life*2,0,1);ctx.fillStyle=p.color;ctx.fillRect(p.x-p.size/2,p.y-p.size/2,p.size,p.size);}ctx.globalAlpha=1;}
   function drawTexts(){for(const t of texts){ctx.globalAlpha=clamp(t.life/t.max,0,1);ctx.fillStyle=t.color;ctx.font=`900 ${t.size}px ui-monospace,monospace`;ctx.textAlign='center';ctx.fillText(t.text,t.x,t.y);}ctx.globalAlpha=1;}
   function drawCrosshair(){if(screen!=='playing'||touchMode)return;ctx.strokeStyle='#fff0bc';ctx.lineWidth=1;ctx.beginPath();ctx.arc(mouse.x,mouse.y,7,0,Math.PI*2);ctx.moveTo(mouse.x-11,mouse.y);ctx.lineTo(mouse.x-4,mouse.y);ctx.moveTo(mouse.x+4,mouse.y);ctx.lineTo(mouse.x+11,mouse.y);ctx.moveTo(mouse.x,mouse.y-11);ctx.lineTo(mouse.x,mouse.y-4);ctx.moveTo(mouse.x,mouse.y+4);ctx.lineTo(mouse.x,mouse.y+11);ctx.stroke();}
