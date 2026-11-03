@@ -213,10 +213,10 @@
   // extraEnemies: per reinforcement wave, reinforceGap: wave timer scale, clearHeal: heal per cleared room,
   // charge*: charger tell/dash/speed/recover, finalPressure: final boss pressure (Normal 0, Abyss = old Hard finale).
   const difficultyProfiles=[
-    {name:'광부',  hp:1,  dmg:1,    move:1,   fire:1,   extraEnemies:0,reinforceGap:1,  clearHeal:4,chargeTell:.62,chargeDash:.34,chargeSpeed:520,chargeRecover:.72,finalPressure:0},
-    {name:'탐험가',hp:1.8,dmg:1.5,  move:1,   fire:1,   extraEnemies:1,reinforceGap:1,  clearHeal:3,chargeTell:.44,chargeDash:.30,chargeSpeed:640,chargeRecover:.50,finalPressure:.86},
-    {name:'심연',  hp:3.2,dmg:1.732,move:1.08,fire:1.16,extraEnemies:2,reinforceGap:.85,clearHeal:2,chargeTell:.41,chargeDash:.28,chargeSpeed:685,chargeRecover:.46,finalPressure:1},
-    {name:'붕괴',  hp:5.5,dmg:2,    move:1.16,fire:1.32,extraEnemies:3,reinforceGap:.7, clearHeal:2,chargeTell:.38,chargeDash:.26,chargeSpeed:730,chargeRecover:.42,finalPressure:1.65}
+    {name:'광부',bomberFuse:1.0,mirrorShards:2,mirrorCycle:4.0,  hp:1,  dmg:1,    move:1,   fire:1,   extraEnemies:0,reinforceGap:1,  clearHeal:4,chargeTell:.62,chargeDash:.34,chargeSpeed:520,chargeRecover:.72,finalPressure:0},
+    {name:'탐험가',bomberFuse:0.8,mirrorShards:3,mirrorCycle:3.5,hp:1.8,dmg:1.5,  move:1,   fire:1,   extraEnemies:1,reinforceGap:1,  clearHeal:3,chargeTell:.44,chargeDash:.30,chargeSpeed:640,chargeRecover:.50,finalPressure:.86},
+    {name:'심연',bomberFuse:0.65,mirrorShards:3,mirrorCycle:3.0,  hp:3.2,dmg:1.732,move:1.08,fire:1.16,extraEnemies:2,reinforceGap:.85,clearHeal:2,chargeTell:.41,chargeDash:.28,chargeSpeed:685,chargeRecover:.46,finalPressure:1},
+    {name:'붕괴',bomberFuse:0.55,mirrorShards:4,mirrorCycle:2.6,  hp:5.5,dmg:2,    move:1.16,fire:1.32,extraEnemies:3,reinforceGap:.7, clearHeal:2,chargeTell:.38,chargeDash:.26,chargeSpeed:730,chargeRecover:.42,finalPressure:1.65}
   ];
   function difficultyProfile(level){return difficultyProfiles[Math.max(0,Math.min(3,level|0))];}
   function dp(){return difficultyProfile(runDifficulty);}
@@ -441,17 +441,44 @@
     zoneStep=0;depth=0;upgradeResume='stage';pendingWaves=[];spawnPortals=[];
     setObstacles();startZoneStep();playSound('start');
   }
-  function setObstacles(){
+  // variant 0 is the original layout (bosses, elite rooms); combat rooms alternate variants 1 and 2.
+  function setObstacles(variant=0){
     obstacles=[];
-    const layouts=[[[205,175,54,78],[700,300,54,78],[445,112,70,32]],[[180,285,70,45],[700,160,68,52],[438,330,80,32]],[[300,150,45,80],[615,295,45,80],[460,95,55,38]]];
-    (layouts[(stage-1)%3]||layouts[0]).forEach(r=>obstacles.push({x:r[0],y:r[1],w:r[2],h:r[3]}));
+    const layouts=[
+      [[[205,175,54,78],[700,300,54,78],[445,112,70,32]],[[150,120,60,40],[750,120,60,40],[150,380,60,40],[750,380,60,40]],[[300,262,90,30],[570,262,90,30],[455,130,50,50]]],
+      [[[180,285,70,45],[700,160,68,52],[438,330,80,32]],[[240,190,40,90],[680,190,40,90],[450,425,60,28]],[[130,250,70,40],[760,250,70,40],[440,170,80,30]]],
+      [[[300,150,45,80],[615,295,45,80],[460,95,55,38]],[[200,140,50,50],[710,140,50,50],[200,350,50,50],[710,350,50,50]],[[330,230,40,80],[590,230,40,80],[455,110,50,36]]]
+    ];
+    const zone=layouts[(stage-1)%3]||layouts[0];(zone[variant]||zone[0]).forEach(r=>obstacles.push({x:r[0],y:r[1],w:r[2],h:r[3]}));
+    if(player)resolveEntityFromWalls(player);
   }
   function resetRoomCombat(){
     if(relicBag.collapse_cannon&&player){player.collapseCannonUsed=false;player.collapseCannonTimer=0;}
     if(voidWaves.length&&player)player.voidCharge=0;
     voidWaves=[];spawnPortals=[];pendingWaves=[];
   }
-  function pickWaveKind(i){return stage>=2&&i%5===4?'charger':i%4===3?'shooter':'grunt';}
+  // Room templates: each combat room draws one, never the same twice in a row. zone gives a zone-specific weight bonus.
+  const waveTemplates=[
+    {id:'swarm',label:'포위',mix:{grunt:6,shooter:1}},
+    {id:'snipers',label:'저격선',mix:{shooter:3,grunt:3}},
+    {id:'blast',label:'폭약고',mix:{bomber:3,grunt:3,shooter:1},zone:1},
+    {id:'mixed',label:'혼전',mix:{grunt:3,shooter:1,charger:1,bomber:1}},
+    {id:'stampede',label:'돌진 떼',mix:{charger:3,grunt:2,shooter:1},minStage:2},
+    {id:'prism',label:'수정 회랑',mix:{mirror:2,shooter:2,grunt:2},minStage:2,zone:2},
+    {id:'gauntlet',label:'시험대',mix:{mirror:1,bomber:2,charger:1,shooter:2},minStage:3,zone:3}
+  ];
+  let waveTemplate=waveTemplates[0],lastWaveTemplate=null,waveBag=[];
+  function pickWaveTemplate(){
+    if(stage===1&&zoneStep===0&&!endless)return waveTemplates[0];
+    const options=waveTemplates.filter(t=>(t.minStage||1)<=stage&&t!==lastWaveTemplate).map(t=>({t,w:t.zone===((stage-1)%3)+1?2:1}));
+    let roll=runRandom()*options.reduce((sum,o)=>sum+o.w,0);return (options.find(o=>(roll-=o.w)<=0)||options[0]).t;
+  }
+  function pickWaveKind(i){
+    if(!waveBag.length){for(const [kind,n] of Object.entries(waveTemplate.mix))for(let k=0;k<n;k++)waveBag.push(kind);for(let k=waveBag.length-1;k>0;k--){const j=Math.floor(runRandom()*(k+1));[waveBag[k],waveBag[j]]=[waveBag[j],waveBag[k]];}}
+    let kind=waveBag[i%waveBag.length];
+    if(stage<2&&kind==='charger')kind='grunt';if(stage<2&&kind==='mirror')kind='shooter';
+    return kind;
+  }
   function waveRoomPlan(kind){
     const per=4+Math.min(stage,6)+dp().extraEnemies;
     if(kind==='den')return [per,per+1,per+1];
@@ -460,11 +487,11 @@
   }
   function startWave(kind='wave'){
     resetRoomCombat();
-    roomKind=kind;phase='wave';beginBalanceRoom();boss=null;setObstacles();enemies=[];bullets=[];clearShots(true);hazards=[];
-    pendingWaves=waveRoomPlan(kind);waveTotal=pendingWaves.length;waveIndex=0;
-    if(balanceRoom){balanceRoom.roomKind=kind;balanceRoom.waves=waveTotal;balanceRoom.enemyCountStart=0;balanceRoom.enemyKinds={};}
+    roomKind=kind;phase='wave';beginBalanceRoom();boss=null;setObstacles(1+(zoneStep+stage)%2);enemies=[];bullets=[];clearShots(true);hazards=[];
+    pendingWaves=waveRoomPlan(kind);waveTotal=pendingWaves.length;waveIndex=0;waveTemplate=pickWaveTemplate();lastWaveTemplate=waveTemplate;waveBag=[];
+    if(balanceRoom){balanceRoom.roomKind=kind;balanceRoom.template=waveTemplate.id;balanceRoom.waves=waveTotal;balanceRoom.enemyCountStart=0;balanceRoom.enemyKinds={};}
     spawnNextWave(true);
-    toast(`${zoneName()} · ${kind==='den'?'소굴 진입 · 마지막에 정예':'전투 시작'}`);updateHud();
+    toast(`${zoneName()} · ${kind==='den'?'소굴':waveTemplate.label}${kind==='den'?' · 마지막에 정예':''}`);updateHud();
   }
   function spawnNextWave(immediate=false){
     const count=pendingWaves.shift();if(count===undefined)return;
@@ -506,6 +533,9 @@
     advanceZone();
   }
   function zoneName(){return stage<=3?names[stage]:`무한 구역 ${stage-3}`;}
+  // Zone enemies. bomber: stops, shows a red fuse ring, then explodes; killing it during the fuse turns the blast on enemies.
+  // mirror: periodically glints then reflects direct weapon hits as parryable shards; burn/razor/lightning are not reflected.
+  const extraEnemyDefs={bomber:{hp:34,r:13,speed:84,damage:10,color:'#e0603f'},mirror:{hp:48,r:15,speed:52,damage:10,color:'#9fe6ff'}};
   function pickSpawnPoint(radius,index=0){
     let bestPoint=null,bestDistance=-1;
     for(let attempt=0;attempt<32;attempt++){
@@ -521,14 +551,17 @@
     return bestPoint;
   }
   function spawnEnemy(kind,index=0,preferredPoint=null){
-    const elite=kind==='elite',charger=kind==='charger',baseHp=elite?150:kind==='shooter'?31:charger?38:42;
-    const radius=elite?17:kind==='shooter'?12:charger?15:13;let x,y;
+    const extra=extraEnemyDefs[kind];
+    const elite=kind==='elite',charger=kind==='charger',baseHp=extra?extra.hp:elite?150:kind==='shooter'?31:charger?38:42;
+    const radius=extra?extra.r:elite?17:kind==='shooter'?12:charger?15:13;let x,y;
     if(preferredPoint){const probe={...preferredPoint,r:radius};resolveEntityFromWalls(probe);x=probe.x;y=probe.y;}
     else{const point=pickSpawnPoint(radius,index);x=point.x;y=point.y;}
     const aggression=dp().move,fireRate=dp().fire;
     // Health grows with cleared combat rooms (depth) so longer runs keep pace with relic growth.
     const enemyHp=baseHp*(1+depth*.06)*dp().hp;
-    const enemy={kind,x,y,r:radius,hp:enemyHp,maxHp:enemyHp,burnScale:enemyHp/baseHp,speed:(elite?92:kind==='shooter'?61:charger?68:77)*aggression,damage:elite?16:charger?12:10,fire:rand(.8,2)/fireRate,fireRate,flash:0,phase:0,angle:0,color:elite?'#e6a34c':kind==='shooter'?'#9e83c6':charger?'#e68b4e':'#a9b176'};
+    const enemy={kind,x,y,r:radius,hp:enemyHp,maxHp:enemyHp,burnScale:enemyHp/baseHp,speed:(extra?extra.speed:elite?92:kind==='shooter'?61:charger?68:77)*aggression,damage:extra?extra.damage:elite?16:charger?12:10,fire:rand(.8,2)/fireRate,fireRate,flash:0,phase:0,angle:0,color:extra?extra.color:elite?'#e6a34c':kind==='shooter'?'#9e83c6':charger?'#e68b4e':'#a9b176'};
+    if(kind==='bomber')enemy.bomberState='approach';
+    if(kind==='mirror'){enemy.mirrorState='idle';enemy.mirrorTimer=rand(1.2,dp().mirrorCycle);}
     if(charger){enemy.chargeState='approach';enemy.chargeTimer=0;enemy.chargeCooldown=rand(1.1,1.8);enemy.chargeAim=0;}
     if(elite){enemy.eliteState='approach';enemy.eliteTimer=1.4;enemy.eliteAim=0;}
     resolveEntityFromWalls(enemy);enemies.push(enemy);
@@ -1004,9 +1037,10 @@
     if(e.kind==='boss'&&e.invulnerable)return;
     const attackContext=origin?.attackContext||origin?.missState||null;if(attackContext)attackContext.landed=true;
     const triggersOnHit=['axe','bolt','prism','echo','orbiter','cleave','rift','rail','moon'].includes(source);
+    if(e.kind==='mirror'&&e.mirrorState==='reflect'&&triggersOnHit){amount*=.3;if(!(e.reflectCooldown>time)){e.reflectCooldown=time+.25;const n=dp().mirrorShards,aim=Math.atan2(player.y-e.y,player.x-e.x);for(let i=0;i<n;i++)enemyShot(e,aim+(i-(n-1)/2)*.22,175,'#bfefff');burst(e.x,e.y,'#e8fdff',8);floatText(e.x,e.y-22,'반사!','#bfefff',13);}}
     const fireCritical=triggersOnHit&&attackContext?.heavyStrike&&e.burn>0&&hasSynergy('ember_keen');
     if(fireCritical)amount*=1.3;
-    if(source==='lightning'&&hasSynergy('frost_thunder')){amount*=1.25;if(['grunt','shooter','charger','elite'].includes(e.kind))e.slowTimer=Math.max(e.slowTimer||0,.72);}
+    if(source==='lightning'&&hasSynergy('frost_thunder')){amount*=1.25;if(['grunt','shooter','charger','elite','bomber','mirror'].includes(e.kind))e.slowTimer=Math.max(e.slowTimer||0,.72);}
     if(triggersOnHit&&relicBag.frost&&e.kind!=='boss')e.slowTimer=Math.max(e.slowTimer||0,.72);
     if(triggersOnHit&&relicBag.wildfire)e.wildfireTimer=Math.max(e.wildfireTimer||0,1.5);
     if(!alreadyScaled){if(e.kind==='boss'&&source!=='boss'){if(relicBag.void)amount*=1+.25*relicBag.void;if(relicBag.exp_hunter)amount*=1.35;}if(relicBag.sun)amount*=1+.14*relicBag.sun;amount*=outgoingDamageMultiplier(e,source,attackAngle,attackContext);}
@@ -1036,6 +1070,7 @@
   function killEnemy(e){
     const index=enemies.indexOf(e);if(index<0)return;enemies.splice(index,1);
     if(relicBag.wildfire&&e.wildfireTimer>0&&!resolvingKillBurst){resolvingKillBurst=true;const ashfire=activeSynergies().some(s=>s.key==='ember_wildfire'),radius=82+(ashfire?28:0),blastDamage=24*relicBag.wildfire*(ashfire?1.4:1);burst(e.x,e.y,'#ff9b60',20);for(const other of [...enemies])if(dist(e,other)<radius)damageEnemy(other,blastDamage*(other.burnScale||1),'burn');resolvingKillBurst=false;}
+    if(e.kind==='bomber'&&e.bomberState==='fuse'&&!e.selfDetonated&&!resolvingKillBurst){resolvingKillBurst=true;burst(e.x,e.y,'#ffb36a',24);shake=Math.max(shake,4);floatText(e.x,e.y-20,'역폭발!','#ffcf7a',15);for(const other of [...enemies])if(other.kind!=='boss'&&dist(e,other)<70+other.r)damageEnemy(other,30*(other.burnScale||1),'burn');resolvingKillBurst=false;}
     burst(e.x,e.y,e.color,12);kills++;playSound(e.kind==='boss'?'bossDown':'kill');
     if(relicBag.exp_bounty){const healed=healPlayer(2*relicBag.exp_bounty);if(healed>0)floatText(player.x,player.y-18,`+${Math.round(healed)}`,'#9ff1c3',13);}
     if(relicBag.blood){const healed=healPlayer((e.kind==='boss'?8:2)*relicBag.blood);if(healed>0)floatText(player.x,player.y-18,`+${Math.round(healed)}`,'#ff9ba9',13);}
@@ -1065,6 +1100,14 @@
       e.slowTimer=Math.max(0,(e.slowTimer||0)-dt);const moveSpeed=e.speed*(e.slowTimer>0?Math.max(.42,.64-.055*((relicBag.frost||1)-1)):1),advancedSteps=Math.max(0,runDifficulty-1);
       if(e.kind==='elite'){
         updateElite(e,dt,dx,dy,d,moveSpeed);
+      } else if(e.kind==='bomber'){
+        if(e.bomberState==='approach'){moveEntityWithWalls(e,dx/d*moveSpeed*dt,dy/d*moveSpeed*dt);if(d<70){e.bomberState='fuse';e.fuse=dp().bomberFuse;e.fuseMax=e.fuse;playSound('charge');}}
+        else{e.fuse-=dt;if(e.fuse<=0){e.selfDetonated=true;burst(e.x,e.y,'#ff7a4a',22);shake=Math.max(shake,5);if(dist(e,player)<58+parryHitRadius()&&invuln<=0)hurtPlayer(14,'폭발',e);killEnemy(e);continue;}}
+      } else if(e.kind==='mirror'){
+        e.mirrorTimer-=dt;
+        if(e.mirrorState==='idle'){if(d>170)moveEntityWithWalls(e,dx/d*moveSpeed*dt,dy/d*moveSpeed*dt);else if(d<120)moveEntityWithWalls(e,-dx/d*moveSpeed*dt,-dy/d*moveSpeed*dt);if(e.mirrorTimer<=0){e.mirrorState='glint';e.mirrorTimer=.38;}}
+        else if(e.mirrorState==='glint'){if(e.mirrorTimer<=0){e.mirrorState='reflect';e.mirrorTimer=.55;}}
+        else if(e.mirrorTimer<=0){e.mirrorState='idle';e.mirrorTimer=dp().mirrorCycle;}
       } else if(e.kind==='charger'){
         if(e.chargeState==='approach'){
           if(d>205)moveEntityWithWalls(e,dx/d*moveSpeed*dt,dy/d*moveSpeed*dt);
@@ -1445,7 +1488,7 @@
   }
   function enemyPixelSize(e){return e.kind==='boss'?56:e.kind==='elite'?42:e.kind==='charger'?36:e.kind==='seal'?34:e.kind==='maw'?40:e.kind==='brother'?38:32;}
   // Integer draw sizes keep nearest-neighbor pixels uniform; collision radii stay unchanged.
-  function enemyRenderSize(e){if(e.kind==='boss')return 120;if(e.kind==='elite')return 68;if(e.kind==='charger')return 60;if(e.kind==='seal')return 54;if(e.kind==='maw')return 62;if(e.kind==='brother')return 60;return 54;}
+  function enemyRenderSize(e){if(e.kind==='boss')return 120;if(e.kind==='mirror')return 50;if(e.kind==='bomber')return 46;if(e.kind==='elite')return 68;if(e.kind==='charger')return 60;if(e.kind==='seal')return 54;if(e.kind==='maw')return 62;if(e.kind==='brother')return 60;return 54;}
   function getEnemyPixelSprite(column,row,pixelSize,regular=false){
     const key=`${regular?'minion':'enemy'}:${column}:${row}:${pixelSize}`;if(enemyPixelSprites.has(key))return enemyPixelSprites.get(key);
     const sprite=document.createElement('canvas');sprite.width=sprite.height=pixelSize;const spriteCtx=sprite.getContext('2d');spriteCtx.imageSmoothingEnabled=true;
@@ -1460,7 +1503,7 @@
     enemyPixelSprites.set(key,sprite);return sprite;
   }
   function enemyAnimationAssetKey(e){
-    if(e.kind==='grunt')return'enemy-slime';if(e.kind==='shooter')return'enemy-mushroom';if(e.kind==='charger')return'enemy-beetle';if(e.kind==='elite')return'enemy-geode';
+    if(e.kind==='grunt')return'enemy-slime';if(e.kind==='shooter')return'enemy-mushroom';if(e.kind==='charger')return'enemy-beetle';if(e.kind==='elite'||e.kind==='mirror')return'enemy-geode';if(e.kind==='bomber')return'enemy-slime';
     if(e.kind==='boss')return`boss-${e.bossKind}`;if(e.kind==='seal')return'enemy-seal';if(e.kind==='brother')return`enemy-brother-${e.side<0?'left':'right'}`;if(e.kind==='maw')return'enemy-maw';return null;
   }
   function getEnemyAnimationFrame(e){
@@ -1516,10 +1559,13 @@
       if(e.kind==='boss'&&e.bossKind==='star')ctx.rotate(Math.sin(time*1.3)*.035);
       ctx.scale(sx,sy);
       if(e.kind==='charger'&&e.chargeState==='tell'){ctx.strokeStyle='#ffd18b';ctx.lineWidth=3;ctx.setLineDash([8,6]);ctx.beginPath();ctx.moveTo(-size*.55,0);ctx.lineTo(230,0);ctx.stroke();ctx.setLineDash([]);}
+      if(e.kind==='bomber'&&e.bomberState==='fuse'){const k=1-e.fuse/e.fuseMax;ctx.save();ctx.globalAlpha=.18+.22*k;ctx.fillStyle='#ff5a3c';ctx.beginPath();ctx.arc(0,0,58*k,0,Math.PI*2);ctx.fill();ctx.globalAlpha=.55+.45*Math.sin(time*(14+20*k))**2;ctx.strokeStyle='#ff5a3c';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,0,58,0,Math.PI*2);ctx.stroke();ctx.restore();}
+      if(e.kind==='mirror'&&e.mirrorState!=='idle'){ctx.save();ctx.globalAlpha=e.mirrorState==='glint'?.5+.5*Math.sin(time*30)**2:.9;ctx.strokeStyle='#e8fdff';ctx.lineWidth=e.mirrorState==='reflect'?4:2;ctx.beginPath();ctx.arc(0,0,e.r+9,0,Math.PI*2);ctx.stroke();ctx.restore();}
       if(e.kind==='elite'&&(e.eliteState==='tell'||e.eliteState==='followTell')){ctx.save();ctx.rotate(e.eliteAim);ctx.globalAlpha=.65+.3*Math.sin(time*24);ctx.strokeStyle=e.eliteState==='followTell'?'#ff9e7a':'#ffe29a';ctx.lineWidth=4;ctx.setLineDash([10,7]);ctx.beginPath();ctx.moveTo(size*.35,0);ctx.lineTo(270,0);ctx.stroke();ctx.setLineDash([]);ctx.restore();}
-      const regular=e.kind==='grunt'||e.kind==='shooter'||e.kind==='charger'||e.kind==='elite',atlas=regular?regularEnemySpriteAtlas:enemySpriteAtlas;
-      if(atlas.complete&&atlas.naturalWidth){const pixelSize=enemyPixelSize(e),animationFrame=getEnemyAnimationFrame(e);ctx.filter=e.flash>0?'brightness(1.8)':e.stunTimer>0?'hue-rotate(235deg) saturate(1.8)':e.slowTimer>0?'hue-rotate(150deg) saturate(1.35)':'none';ctx.imageSmoothingEnabled=false;if(animationFrame){const scale=(size-2)/Math.max(animationFrame.sw,animationFrame.sh),drawW=Math.round(animationFrame.sw*scale),drawH=Math.round(animationFrame.sh*scale),drawY=animationFrame.grounded?Math.floor(size/2)-drawH:-Math.floor(drawH/2);ctx.drawImage(animationFrame.atlas,animationFrame.sx,animationFrame.sy,animationFrame.sw,animationFrame.sh,-Math.floor(drawW/2),drawY,drawW,drawH);}else{const pixelSprite=getEnemyPixelSprite(column,row,pixelSize,regular);ctx.drawImage(pixelSprite,-size/2,-size/2,size,size);}ctx.filter='none';}
+      const regular=['grunt','shooter','charger','elite','bomber','mirror'].includes(e.kind),atlas=regular?regularEnemySpriteAtlas:enemySpriteAtlas;
+      if(atlas.complete&&atlas.naturalWidth){const pixelSize=enemyPixelSize(e),animationFrame=getEnemyAnimationFrame(e);ctx.filter=e.flash>0||e.mirrorState==='reflect'?'brightness(1.8)':e.stunTimer>0?'hue-rotate(235deg) saturate(1.8)':e.slowTimer>0?'hue-rotate(150deg) saturate(1.35)':e.kind==='bomber'?'sepia(1) saturate(4) hue-rotate(-25deg)':e.kind==='mirror'?'hue-rotate(170deg) brightness(1.15)':'none';ctx.imageSmoothingEnabled=false;if(animationFrame){const scale=(size-2)/Math.max(animationFrame.sw,animationFrame.sh),drawW=Math.round(animationFrame.sw*scale),drawH=Math.round(animationFrame.sh*scale),drawY=animationFrame.grounded?Math.floor(size/2)-drawH:-Math.floor(drawH/2);ctx.drawImage(animationFrame.atlas,animationFrame.sx,animationFrame.sy,animationFrame.sw,animationFrame.sh,-Math.floor(drawW/2),drawY,drawW,drawH);}else{const pixelSprite=getEnemyPixelSprite(column,row,pixelSize,regular);ctx.drawImage(pixelSprite,-size/2,-size/2,size,size);}ctx.filter='none';}
       else{ctx.fillStyle=e.color;ctx.fillRect(-e.r,-e.r,e.r*2,e.r*2);}
+      if(e.kind==='bomber'){ctx.fillStyle='#2a1d22';ctx.fillRect(-6,-size*.62-6,12,11);ctx.fillStyle='#6b4148';ctx.fillRect(-4,-size*.62-4,3,3);ctx.fillStyle='#2a1d22';ctx.fillRect(0,-size*.62-9,2,4);ctx.fillStyle=Math.sin(time*(e.bomberState==='fuse'?40:12))>0?'#ffd36a':'#ff6a3c';ctx.fillRect(1,-size*.62-13,3,4);}
       if(e.kind==='boss'&&e.invulnerable){ctx.strokeStyle='#fff2ad';ctx.lineWidth=3;ctx.setLineDash([5,5]);ctx.beginPath();ctx.arc(0,0,e.r+12+Math.sin(time*5)*3,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);}
       ctx.restore();
       if(e.kind==='boss'&&relicBag.collapse_frontal){const face=e.facingAngle||0;ctx.save();ctx.translate(e.x,e.y);ctx.rotate(face);ctx.fillStyle='#ffe08a';ctx.beginPath();ctx.moveTo(e.r+18,0);ctx.lineTo(e.r+7,-7);ctx.lineTo(e.r+7,7);ctx.closePath();ctx.fill();ctx.restore();}
