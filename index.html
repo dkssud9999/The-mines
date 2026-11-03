@@ -144,7 +144,7 @@
         <h1>The Mine</h1>
         <div class="weaponrow" id="weaponSelect"></div>
         <div class="controls"><span class="key" id="moveHelp">W A S D 이동</span><span class="key" id="aimHelp">마우스 조준</span><span class="key" id="attackHelp">도끼: 눌러 모으고 놓기 · 지팡이/낫: 누르고 공격</span><span class="key" id="dashHelp">SPACE 대시</span><span class="key" id="pauseHelp">ESC 일시정지</span></div>
-        <div class="smallnote" id="unlockNote"></div>
+        <div class="smallnote" id="unlockNote"></div><div class="smallnote" id="difficultyNote"></div>
         <div class="actions"><button class="btn" id="startButton" type="button">광산에 들어가기</button><button class="btn secondary" id="difficultyButton" type="button">난이도 · 광부</button></div>
         <button class="btn secondary" id="balanceExportButton" type="button" hidden>판 기록 JSON 내려받기</button>
       </div></section>
@@ -436,6 +436,7 @@
     $('difficultyButton').textContent=`난이도 · ${difficultyName(difficulty)}`;
     $('difficultyButton').className=`btn secondary difficultyButton difficulty-${difficulty}`;
     $('difficultyButton').disabled=difficulty>saved.highestDifficulty;
+    $('difficultyNote').textContent=['광부 · 보스 기본 패턴, 긴 경고','탐험가 · 보스 전체 패턴, 정예 추가 공격','심연 · 광폭화 후 공격 진화·연계, 빠른 템포','붕괴 · 재설계된 보스 기술과 필사 단계'][difficulty]||'';
     updateBalanceRecordNote();
   }
   function difficultyName(n){return ['광부','탐험가','심연','붕괴'][n]||'광부';}
