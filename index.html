@@ -208,15 +208,17 @@
     abyss:{warden:['wall','aimed','charge','radial','wall','charge','aimed','radial','target','charge'],moth:['target','split','beam','feather','ring','target','fan','beam','summon','split','target'],star:['wall','spiral','charge','aimed','beam','fan','wall','gigablast','spiral','charge']},
     collapse:{warden:['crossfire','charge','wall','aimed','radial','target','charge','crossfire','wall','radial','aimed'],moth:['target','beam','split','crossfire','feather','ring','target','fan','beam','summon','split','crossfire'],star:['crossfire','spiral','wall','charge','beam','gigablast','target','fan','crossfire','wall','charge']}
   };
+  // Ladder: Explorer adds the full pattern list, Abyss evolves attacks after rage (evolvedPatterns) and adds combos,
+  // Collapse redesigns bosses (collapse kits). Numbers stay secondary to pattern breadth.
   // Every difficulty knob lives here. Pattern breadth is layered separately (bossPatterns + runDifficulty checks in boss code).
   // hp: enemy/elite/boss health, dmg: damage taken, move/fire: normal-enemy speed and shooter cadence,
   // extraEnemies: per reinforcement wave, reinforceGap: wave timer scale, clearHeal: heal per cleared room,
   // charge*: charger tell/dash/speed/recover, finalPressure: final boss pressure (Normal 0, Abyss = old Hard finale).
   const difficultyProfiles=[
     {name:'광부',bomberFuse:1.0,mirrorShards:2,mirrorCycle:4.0,  hp:1,  dmg:1,    move:1,   fire:1,   extraEnemies:0,reinforceGap:1,  clearHeal:4,chargeTell:.62,chargeDash:.34,chargeSpeed:520,chargeRecover:.72,finalPressure:0},
-    {name:'탐험가',bomberFuse:0.8,mirrorShards:3,mirrorCycle:3.5,hp:1.8,dmg:1.5,  move:1,   fire:1,   extraEnemies:1,reinforceGap:1,  clearHeal:3,chargeTell:.44,chargeDash:.30,chargeSpeed:640,chargeRecover:.50,finalPressure:.86},
-    {name:'심연',bomberFuse:0.65,mirrorShards:3,mirrorCycle:3.0,  hp:3.2,dmg:1.732,move:1.08,fire:1.16,extraEnemies:2,reinforceGap:.85,clearHeal:2,chargeTell:.41,chargeDash:.28,chargeSpeed:685,chargeRecover:.46,finalPressure:1},
-    {name:'붕괴',bomberFuse:0.55,mirrorShards:4,mirrorCycle:2.6,  hp:5.5,dmg:2,    move:1.16,fire:1.32,extraEnemies:3,reinforceGap:.7, clearHeal:2,chargeTell:.38,chargeDash:.26,chargeSpeed:730,chargeRecover:.42,finalPressure:1.65}
+    {name:'탐험가',bomberFuse:0.8,mirrorShards:3,mirrorCycle:3.5,hp:1.3,dmg:1.15, move:1,   fire:1,   extraEnemies:1,reinforceGap:1,  clearHeal:3,chargeTell:.52,chargeDash:.32,chargeSpeed:580,chargeRecover:.60,finalPressure:.75},
+    {name:'심연',bomberFuse:0.65,mirrorShards:3,mirrorCycle:3.0,  hp:2.4,dmg:1.6,  move:1.08,fire:1.16,extraEnemies:2,reinforceGap:.85,clearHeal:2,chargeTell:.41,chargeDash:.28,chargeSpeed:685,chargeRecover:.46,finalPressure:1},
+    {name:'붕괴',bomberFuse:0.55,mirrorShards:4,mirrorCycle:2.6,  hp:3.5,dmg:2,    move:1.16,fire:1.32,extraEnemies:3,reinforceGap:.7, clearHeal:2,chargeTell:.38,chargeDash:.26,chargeSpeed:730,chargeRecover:.42,finalPressure:1.65}
   ];
   function difficultyProfile(level){return difficultyProfiles[Math.max(0,Math.min(3,level|0))];}
   function dp(){return difficultyProfile(runDifficulty);}
@@ -1189,7 +1191,7 @@
           e.chargeTimer-=dt;if(e.chargeTimer<=0){e.chargeState='dash';e.chargeTimer=dp().chargeDash;}
         } else if(e.chargeState==='dash'){
           const dashSpeed=dp().chargeSpeed;moveEntityWithWalls(e,Math.cos(e.chargeAim)*dashSpeed*dt,Math.sin(e.chargeAim)*dashSpeed*dt);
-          e.chargeTimer-=dt;if(e.chargeTimer<=0){e.chargeState='recover';e.chargeTimer=dp().chargeRecover;}
+          e.chargeTimer-=dt;if(e.chargeTimer<=0){if(runDifficulty>=2&&!e.secondDash){e.secondDash=true;e.chargeAim=Math.atan2(player.y-e.y,player.x-e.x);e.chargeState='tell';e.chargeTimer=dp().chargeTell+.08;}else{e.secondDash=false;e.chargeState='recover';e.chargeTimer=dp().chargeRecover;}}
         } else {
           e.chargeTimer-=dt;if(e.chargeTimer<=0){e.chargeState='approach';e.chargeCooldown=rand(1.1,1.6);}
         }
@@ -1197,7 +1199,8 @@
         e.attackAnim=Math.max(0,(e.attackAnim||0)-dt);
         if(d<190)moveEntityWithWalls(e,-dx/d*moveSpeed*dt,-dy/d*moveSpeed*dt);else if(d>300)moveEntityWithWalls(e,dx/d*moveSpeed*.55*dt,dy/d*moveSpeed*.55*dt);
         e.x=clamp(e.x,e.r,W-e.r);e.y=clamp(e.y,e.r,H-e.r);
-        e.fire-=dt*(e.slowTimer>0?.72:1);if(e.fire<=0){enemyShot(e,Math.atan2(dy,dx),phase==='elite'?180:150);e.attackAnim=.48;e.fire=(rand(1.25,2.0)-Math.min(.45,stage*.07))/(e.fireRate||1);}
+        e.fire-=dt*(e.slowTimer>0?.72:1);if(e.burstLeft>0){e.burstTimer-=dt;if(e.burstTimer<=0){e.burstLeft--;e.burstTimer=.13;enemyShot(e,Math.atan2(dy,dx),phase==='elite'?180:150);}}
+        if(e.fire<=0){enemyShot(e,Math.atan2(dy,dx),phase==='elite'?180:150);if(runDifficulty>=2){e.burstLeft=2;e.burstTimer=.13;}e.attackAnim=.48;e.fire=(rand(1.25,2.0)-Math.min(.45,stage*.07))/(e.fireRate||1);}
       } else moveEntityWithWalls(e,dx/d*moveSpeed*dt,dy/d*moveSpeed*dt);
       const travel=Math.hypot(e.x-oldX,e.y-oldY);e.walkDistance=(e.walkDistance||0)+travel;e.moveSpeed=dt?travel/dt:0;
       e.spawnGrace=Math.max(0,(e.spawnGrace||0)-dt);
@@ -1267,7 +1270,7 @@
     if(e.act==='transition'){e.transitionTimer-=dt;if(e.transitionTimer<=0)beginFinalHell(e,false);return;}
     if(e.chargeTime>0){
       const target=e.chargePath?.[e.chargeLeg+1];
-      if(target){const dx=target.x-e.x,dy=target.y-e.y,d=Math.hypot(dx,dy)||1,step=e.chargeSpeed*dt;e.x+=dx/d*Math.min(d,step);e.y+=dy/d*Math.min(d,step);if(d<=step+2){e.chargeLeg++;const burstCount=e.bossKind==='star'?4+Math.floor(2*pressure):6,burstSpeed=e.bossKind==='star'?125+30*pressure:155;for(let i=0;i<burstCount;i++)enemyShot(e,Math.PI*2*i/burstCount+time*.2,burstSpeed,'#ffb46b');if(e.chargeLeg>=e.chargePath.length-1)e.chargeTime=0;}}
+      if(target){const dx=target.x-e.x,dy=target.y-e.y,d=Math.hypot(dx,dy)||1,step=e.chargeSpeed*dt;e.x+=dx/d*Math.min(d,step);e.y+=dy/d*Math.min(d,step);if(d<=step+2){e.chargeLeg++;const burstCount=e.bossKind==='star'?4+Math.floor(2*pressure):6,burstSpeed=e.bossKind==='star'?125+30*pressure:155;for(let i=0;i<burstCount;i++)enemyShot(e,Math.PI*2*i/burstCount+time*.2,burstSpeed,'#ffb46b');if(e.chargeLeg>=e.chargePath.length-1){e.chargeTime=0;if(e.chargeEvolved)hazards.push({kind:'target',x:e.x,y:e.y,r:72,phase:'warn',timer:.5,activeTime:.2,damage:16,burstCount:runDifficulty>=3?10:8,color:'#ffae63',life:1});}}}
       e.chargeTime-=dt;e.trail-=dt;
       if(e.trail<=0){e.trail=.16;hazards.push({kind:'target',x:e.x,y:e.y,r:22,phase:'warn',timer:.22,activeTime:.88,damage:15,burstCount:0,color:'#ffae63',life:1.1});}
       e.x=clamp(e.x,55,W-55);e.y=clamp(e.y,60,H-55);
@@ -1283,11 +1286,12 @@
     if(!e.telegraph&&e.attack<=0){
       const patterns=runDifficulty===0?bossPatterns.starter:runDifficulty===1?bossPatterns.full:runDifficulty===2?bossPatterns.abyss:bossPatterns.collapse;
       const sequence=patterns[e.bossKind]||patterns.warden;
-      const idx=e.patternIndex||0;e.patternIndex=idx+1;const pattern=sequence[idx%sequence.length];
+      const forced=e.forcedPattern;e.forcedPattern=null;const idx=e.patternIndex||0;if(!forced)e.patternIndex=idx+1;const pattern=forced||sequence[idx%sequence.length];
       const telegraphTime=pressure===0?(e.phase===2 ? .82 : .9):(e.introBoss?(e.phase===2 ? .68 : .82):(e.phase===2 ? .48 : .62));
       const abyssTempo=runDifficulty>=3?.78:runDifficulty===2?.9:1,telegraphFloor=runDifficulty>=3?.28:.34;
       if(relicBag.collapse_frontal)e.facingAngle=Math.atan2(player.y-e.y,player.x-e.x);
-      const tele={pattern,timer:Math.max(telegraphFloor,(telegraphTime-pressure*.035)*abyssTempo),aim:Math.atan2(player.y-e.y,player.x-e.x),safeAngle:Math.atan2(player.y-e.y,player.x-e.x)+Math.PI};
+      const tele={pattern,timer:Math.max(telegraphFloor,(telegraphTime-pressure*.035)*abyssTempo),aim:Math.atan2(player.y-e.y,player.x-e.x),safeAngle:Math.atan2(player.y-e.y,player.x-e.x)+Math.PI,evolved:evolvedPatterns(e),combo:!!forced};
+      if(pattern==='aimed'&&tele.evolved){const lead=.42;tele.leadAim=Math.atan2(player.y+(player.moveVY||0)*lead-e.y,player.x+(player.moveVX||0)*lead-e.x);}
       if(pattern==='wall'){tele.axis=(idx%2?'x':'y');const span=tele.axis==='x'?W:H,count=(tele.axis==='x'?(e.introBoss?6:8):5)+(runDifficulty>=2?1:0)+(runDifficulty>=3?1:0),gap=clamp((tele.axis==='x'?player.x:player.y)+rand(-55,55),105,span-105);tele.positions=[];for(let i=0;i<count;i++){const p=(i+1)*span/(count+1);if(Math.abs(p-gap)>(tele.axis==='x'?95:70))tele.positions.push(p);}}
       if(pattern==='target'){tele.targets=[];const spots=(e.phase===2?3:2)+(runDifficulty===2&&e.phase===2?1:0)+(runDifficulty>=3?1:0);for(let i=0;i<spots;i++){const sign=i-(spots-1)/2;tele.targets.push({x:clamp(player.x+sign*78+rand(-20,20),55,W-55),y:clamp(player.y+rand(-65,65),65,H-55)});}}
       if(pattern==='summon'){const count=2+Math.min(2,Math.max(0,runDifficulty-1))+(e.phase===2&&runDifficulty>=2?1:0),farX=player.x<W/2?W-70:70,nearX=farX===70?W-70:70;tele.spawnPoints=[];for(let i=0;i<count;i++){const point={x:i%2===0?farX:nearX,y:clamp(H/2+(i-Math.floor((count-1)/2))*68,78,H-78),r:12};resolveEntityFromWalls(point);tele.spawnPoints.push({x:point.x,y:point.y});}}
@@ -1297,7 +1301,10 @@
       const attackDelay=e.introBoss ? (e.phase===2 ? .9 : 1.08) : (e.finalAct ? .62 : (e.phase===2 ? .76 : .92));
       e.attack=e.lastStand ? (pressure===0?.42:Math.max(runDifficulty>=3?.3:.36,.48-pressure*.06)*abyssTempo) : Math.max(runDifficulty>=3?.4:.52,(attackDelay-pressure*.07)*abyssTempo);
     }
-    if(e.telegraph){e.telegraph.timer-=dt;if(e.telegraph.timer<=0){fireBossPattern(e,e.telegraph);e.telegraph=null;}}
+    if(e.telegraph){e.telegraph.timer-=dt;if(e.telegraph.timer<=0){const fired=e.telegraph;fireBossPattern(e,fired);e.telegraph=null;
+      // Abyss+ combo: every third evolved attack is followed by its paired attack with its own telegraph.
+      if(fired.evolved&&!fired.combo&&e.patternIndex%3===0&&bossComboPairs[fired.pattern]&&e.chargeTime<=0){e.forcedPattern=bossComboPairs[fired.pattern];e.attack=Math.min(e.attack,.4);floatText(e.x,e.y-e.r-26,'연계!','#ffb0c8',15);}}}
+    updateBossFollowUps(e,dt);
     if(e.chargeTime>0&&dist(e,player)<e.r+parryHitRadius()&&invuln<=0)hurtPlayer(24,undefined,e);
   }
   function updateTwinAdds(e,dt){
@@ -1324,6 +1331,11 @@
     e.twinAttack={brother,pattern,aim,target,timer:pressure===0?.68:Math.max(.28,.68-.22*pressure)};
     brother.attackTell={pattern,aim,target};
   }
+  // Abyss and above: after the rage threshold, a boss's existing attacks evolve. The pattern list itself is unchanged.
+  const bossComboPairs={aimed:'target',fan:'wall',feather:'target',radial:'aimed',split:'target',ring:'aimed',wall:'aimed'};
+  function evolvedPatterns(e){return runDifficulty>=2&&e.phase===2&&!e.introBoss;}
+  function scheduleBossFollowUp(e,delay,run){(e.followUps||(e.followUps=[])).push({timer:delay,run});}
+  function updateBossFollowUps(e,dt){if(!e.followUps?.length)return;for(let i=e.followUps.length-1;i>=0;i--){const f=e.followUps[i];f.timer-=dt;if(f.timer<=0){e.followUps.splice(i,1);f.run();}}}
   function fireBossPattern(e,t){
     const pressure=bossPressure(e),density=runDifficulty>=3?4:runDifficulty===2?2:0,n=(e.phase===2?(e.introBoss?12:14):(e.introBoss?8:10))+(e.finalAct?(pressure===0?2:2+Math.floor(2*pressure)):0)+(e.lastStand?(pressure===0?2:2+Math.floor(3*pressure)):0)+density;
     if(t.pattern==='crossfire'){
@@ -1336,10 +1348,13 @@
     } else if(t.pattern==='radial'||t.pattern==='ring'){
       const num=t.pattern==='ring'?n+8:n,step=Math.PI*2/num,rotation=time*(t.pattern==='spiral'?1:.3),gap=t.safeAngle+rotation;
       for(let i=0;i<num;i++){const a=i*step+rotation;if(t.pattern==='ring'&&Math.abs(Math.atan2(Math.sin(a-gap),Math.cos(a-gap)))<.34)continue;enemyShot(e,a,t.pattern==='ring'?210:185,t.pattern==='ring'?'#f6d778':e.color);}
+      if(t.evolved&&t.pattern==='radial')scheduleBossFollowUp(e,.35,()=>{if(!enemies.includes(e))return;for(let i=0;i<num;i++)enemyShot(e,(i+.5)*step+rotation,160,'#ffd0a8');});
     } else if(t.pattern==='aimed'){
       const count=e.phase===2?5:3;for(let i=0;i<count;i++)enemyShot(e,t.aim+(i-(count-1)/2)*.16,e.finalAct?285:245,e.color);
+      if(t.evolved&&t.leadAim!==undefined)for(let i=-1;i<=1;i++)enemyShot(e,t.leadAim+i*.07,e.finalAct?300:265,'#ffb36a');
     } else if(t.pattern==='fan'){
       const {count,spread}=bossVolleyShape(e,t.pattern);for(let i=0;i<count;i++)enemyShot(e,t.aim+(i-(count-1)/2)*spread,e.phase===2?260:220,e.color);
+      if(t.evolved)scheduleBossFollowUp(e,.4,()=>{if(!enemies.includes(e))return;const aim=Math.atan2(player.y-e.y,player.x-e.x)+spread/2;for(let i=0;i<count;i++)enemyShot(e,aim+(i-(count-1)/2)*spread,230,'#ffc3a0');});
     } else if(t.pattern==='target'){
       for(const p of t.targets||[]){hazards.push({kind:'target',x:p.x,y:p.y,r:44,phase:'warn',timer:Math.max(.42,.78-.16*pressure),activeTime:.28,damage:pressure===0?15:15+Math.ceil(3*pressure),burstCount:pressure===0?7:7+Math.floor(3*pressure),color:'#ef78a3',life:1.1});}
     } else if(t.pattern==='summon'){
@@ -1356,7 +1371,7 @@
     } else if(t.pattern==='beam'){
       const {count}=bossVolleyShape(e,t.pattern);for(let i=0;i<count;i++){const a=t.aim+i*Math.PI*2/count;hazards.push({kind:'sweep',x:e.x,y:e.y,angle:a,direction:i%2?-1:1,speed:e.lastStand?1.95:e.finalAct?1.45:1.35,phase:'warn',timer:.62,activeTime:e.finalAct?2.3:1.8,width:e.lastStand?24:e.finalAct?22:18,damage:20,color:'#f3c7ff',life:2.5});}e.attack=e.finalAct?1.65:1.45;
     } else if(t.pattern==='charge'){
-      t.path[0]={x:e.x,y:e.y};e.chargePath=t.path;e.chargeLeg=0;e.chargeSpeed=(e.finalAct?760:e.phase===2?680:600)+(runDifficulty===2?70:runDifficulty>=3?140:0);let pathLength=0;for(let i=1;i<t.path.length;i++)pathLength+=dist(t.path[i-1],t.path[i]);e.chargeTime=pathLength/e.chargeSpeed+.18;e.trail=.06;e.attack=e.chargeTime+.4;
+      t.path[0]={x:e.x,y:e.y};e.chargePath=t.path;e.chargeLeg=0;e.chargeSpeed=(e.finalAct?760:e.phase===2?680:600)+(runDifficulty===2?70:runDifficulty>=3?140:0);let pathLength=0;for(let i=1;i<t.path.length;i++)pathLength+=dist(t.path[i-1],t.path[i]);e.chargeTime=pathLength/e.chargeSpeed+.18;e.chargeEvolved=!!t.evolved;e.trail=.06;e.attack=e.chargeTime+.4;
     }
   }
   function bossVolleyShape(e,pattern){
@@ -1534,6 +1549,7 @@
     else if(t.pattern==='crossfire'){ctx.fillRect(t.crossX-14,35,28,H-70);ctx.fillRect(35,t.crossY-14,W-70,28);if(t.crossTarget){ctx.beginPath();ctx.arc(t.crossTarget.x,t.crossTarget.y,42,0,Math.PI*2);ctx.stroke();}}
     else if(t.pattern==='target'){for(const p of t.targets||[]){ctx.beginPath();ctx.arc(p.x,p.y,44,0,Math.PI*2);ctx.fill();ctx.stroke();}}
     else if(t.pattern==='summon'){ctx.strokeStyle='#d5b2ff';ctx.fillStyle='rgba(177,126,255,.18)';for(const p of t.spawnPoints||[]){ctx.beginPath();ctx.arc(p.x,p.y,15+Math.sin(time*18)*2,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.beginPath();ctx.moveTo(p.x-9,p.y);ctx.lineTo(p.x+9,p.y);ctx.moveTo(p.x,p.y-9);ctx.lineTo(p.x,p.y+9);ctx.stroke();}ctx.fillStyle='#ead8ff';ctx.font='bold 11px ui-monospace,monospace';ctx.textAlign='center';ctx.fillText('원거리 적 소환',e.x,e.y-e.r-22);}
+    else if(t.pattern==='aimed'){ctx.globalAlpha=.55;ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(e.x+Math.cos(t.aim)*740,e.y+Math.sin(t.aim)*740);ctx.stroke();if(t.leadAim!==undefined){ctx.strokeStyle='#ffb36a';ctx.setLineDash([10,6]);ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(e.x+Math.cos(t.leadAim)*740,e.y+Math.sin(t.leadAim)*740);ctx.stroke();ctx.setLineDash([]);}}
     else if(t.pattern==='gigablast'){ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(e.x+Math.cos(t.aim)*850,e.y+Math.sin(t.aim)*850);ctx.stroke();}
     else if(t.pattern==='charge'){ctx.beginPath();(t.path||[{x:e.x,y:e.y},{x:e.x+Math.cos(t.aim)*1000,y:e.y+Math.sin(t.aim)*1000}]).forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke();}
     else if(t.pattern==='beam'){const {count}=bossVolleyShape(e,t.pattern);for(let i=0;i<count;i++){const a=t.aim+i*Math.PI*2/count,end=rayEnd(e.x,e.y,a);ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(end.x,end.y);ctx.lineWidth=8;ctx.stroke();}}
