@@ -64,6 +64,15 @@
     .routeCard:focus-visible { outline:3px solid #fff; outline-offset:3px; }
     .routeCard.elite { background:#ee5962; border-color:#ffb0a3; }
     .routeCard.shrine { background:#5ba8e8; border-color:#b5e4ff; }
+    .routeCard.shop { background:#e8c25b; border-color:#fff0b5; }
+    .routeCard.event { background:#a77fe0; border-color:#e2cfff; }
+    .routeCard.vein { background:#62c99a; border-color:#c4f5dc; }
+    .routeChoices.three { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .routeChoices.three .routeCard { grid-template-columns:1fr; justify-items:center; text-align:center; gap:8px; }
+    .oreText { color:#ffd98a; }
+    .card.sold { opacity:.4; pointer-events:none; }
+    .card .price { display:block; margin-top:8px; color:#ffd98a; font-weight:bold; }
+    .card.cantAfford .price { color:#ff8f8f; }
     .routeIcon { display:grid; place-items:center; width:100px; height:100px; border:3px solid #211b23; background:#f3a52d; box-shadow:3px 3px #211b23; }
     .shrine .routeIcon { background:#75bbf0; }
     .routeIcon svg { display:block; width:76px; height:76px; shape-rendering:crispEdges; }
@@ -126,7 +135,7 @@
       <canvas id="game" width="960" height="540" aria-label="지하 유적 보스 로그라이크 게임 화면"></canvas>
       <button class="exitfullscreen" id="exitFullscreenButton" type="button">화면 복귀</button>
       <div class="hud" id="hud">
-        <div class="hudleft"><div class="hudlabel">체력 <span id="hpText">100 / 100</span></div><div class="healthbar"><div class="healthfill" id="healthFill"></div></div><div class="hudval" id="weaponHud">부메랑 도끼</div><div class="hudlabel" id="xpText">유물 경험치 0 / 6</div></div>
+        <div class="hudleft"><div class="hudlabel">체력 <span id="hpText">100 / 100</span></div><div class="healthbar"><div class="healthfill" id="healthFill"></div></div><div class="hudval" id="weaponHud">부메랑 도끼</div><div class="hudlabel" id="xpText">유물 경험치 0 / 6</div><div class="hudlabel oreText" id="oreText">광석 0</div></div>
         <div class="hudright"><div class="difficultyBadge" id="difficultyHud">난이도 · 광부</div><div class="hudlabel" id="zoneHud">구역 1 · 갱도의 입구</div><div class="hudval" id="roomHud">전투</div><div class="relics" id="relicHud"></div><div class="hudlabel" id="recordHud"></div></div>
       </div>
       <div class="bossbar" id="bossbar"><div class="bossname" id="bossName"></div><div class="bosshealth"><div class="bossfill" id="bossFill"></div></div></div>
@@ -140,20 +149,11 @@
         <button class="btn secondary" id="balanceExportButton" type="button" hidden>판 기록 JSON 내려받기</button>
       </div></section>
       <section class="overlay" id="choiceOverlay"><div class="panel">
-        <div class="routeChoices">
-          <button class="routeCard elite" id="eliteButton" type="button" aria-label="정예 전투: 정예 적을 처치하고 유물 4개 중 선택, 체력 회복 없음">
-            <span class="routeIcon" aria-hidden="true"><svg viewBox="0 0 16 16"><path fill="#17131b" d="M1 2h2v3h2v2h2v1h2V7h2V5h2V2h2v5h-2v2h2v4h-3v2H5v-2H2V9h2V8H2V5H1z"/><path fill="#f3a52d" d="M6 8h1v1H6zm3 0h1v1H9z"/></svg></span>
-            <span class="routeText"><span class="routeTitle">정예 전투</span><span class="routeDesc">정예 적 처치<br>유물 4개 선택 · 회복 없음</span></span>
-          </button>
-          <button class="routeCard shrine" id="shrineButton" type="button" aria-label="회복 제단: 체력을 회복하고 유물 3개 중 선택">
-            <span class="routeIcon" aria-hidden="true"><svg viewBox="0 0 16 16"><path fill="#17131b" d="M2 2h4v2h4V2h4v2h2v4h-2v2h-2v2h-2v2H8v-2H6v-2H4v-2H2V8H0V4h2z"/></svg></span>
-            <span class="routeText"><span class="routeTitle">회복 제단</span><span class="routeDesc">체력 회복<br>유물 3개 선택</span></span>
-          </button>
-        </div>
+        <div class="routeChoices" id="routeChoices"></div>
       </div></section>
       <section class="overlay" id="lootOverlay"><div class="panel lootPanel" id="lootPanel">
         <div class="kicker" id="lootKicker">상자 개방</div><h2 id="lootTitle">하나를 골라라</h2><p class="subtitle" id="lootSubtitle">획득할 유물을 고르세요.</p>
-        <div class="cards" id="lootCards"></div><div class="smallnote" id="synergyHint"></div><details class="synergyDetails" id="synergyDetails" hidden></details>
+        <div class="cards" id="lootCards"></div><div class="actions" id="lootActions"></div><div class="smallnote" id="synergyHint"></div><details class="synergyDetails" id="synergyDetails" hidden></details>
       </div></section>
       <section class="overlay" id="weaponUpgradeOverlay"><div class="panel">
         <div class="kicker">무기 각성</div><h2 id="weaponUpgradeTitle">무기의 길을 골라라</h2><p class="subtitle">강화 하나를 고르세요. 이번 탐험 동안 유지됩니다.</p>
@@ -353,6 +353,7 @@
   const stickHomes={left:{x:112,y:H-112},right:{x:W-112,y:H-112}},defaultStickHomes={left:{x:112,y:H-112},right:{x:W-112,y:H-112}},touchDashHome={x:W-78,y:H-220,r:50},touchParryHome={x:W-220,y:H-220,r:38},touchPauseHome={x:W/2,y:31,r:21};
   let player, enemies=[], bullets=[], shots=[], particles=[], texts=[], obstacles=[], drops=[], hazards=[], lightningArcs=[], weaponEffects=[], voidWaves=[];
   let stage=1, phase='wave', roomCount=0, kills=0, xp=0, xpNeed=6, runTime=0, runDifficulty=0, endless=false, boss=null, bossDeathPending=false, clearTransition=null;
+  let ore=0, oreEarned=0, oreSpent=0, shopRerolls=0, nextRoomBonus=false, seenEvents=[];
   let zoneStep=0, roomKind='wave', pendingWaves=[], spawnPortals=[], waveIndex=0, waveTotal=0, waveTimer=0, depth=0, upgradeResume='stage';
   let lootAfter='', lootPool=[], attackTimer=0, dashTimer=0, dashCooldown=0, parryCooldown=0, parryWindow=0, invuln=0, bossAttack=0, frame=0, weaponUpgradeUsed=false, weaponUpgrade2Used=false, resolvingKillBurst=false, runStatPenalty=0, momentumHits=0, abyssHitStreak=0;
   const relicBag={};
@@ -372,7 +373,7 @@
   function saveBalanceRun(result,cause=''){
     if(!balanceLocalOnly||!balanceRunStartedAt||balanceRunSaved)return;
     recordBalanceRoom();const rooms=balanceRooms.map(room=>({...room}));
-    const record={schema:1,startedAt:balanceRunStartedAt,endedAt:new Date().toISOString(),result,cause:cause||null,clearedFinalBoss:balanceRunCleared,difficulty:runDifficulty,difficultyName:difficultyName(runDifficulty),weapon:player?.weapon||selectedWeapon,upgrade:player?.weaponUpgrade||null,upgrade2:player?.weaponUpgrade2||null,stage,roomsReached:rooms.length,kills,elapsed:+runTime.toFixed(2),hpAtEnd:+Math.max(0,player?.hp||0).toFixed(1),maxHpAtEnd:+(player?.maxHp||0).toFixed(1),relics:{...relicBag},events:balanceEvents,rooms,seed:balanceSeed};
+    const record={schema:1,startedAt:balanceRunStartedAt,endedAt:new Date().toISOString(),result,cause:cause||null,clearedFinalBoss:balanceRunCleared,difficulty:runDifficulty,difficultyName:difficultyName(runDifficulty),weapon:player?.weapon||selectedWeapon,upgrade:player?.weaponUpgrade||null,upgrade2:player?.weaponUpgrade2||null,stage,roomsReached:rooms.length,kills,oreEarned,oreSpent,elapsed:+runTime.toFixed(2),hpAtEnd:+Math.max(0,player?.hp||0).toFixed(1),maxHpAtEnd:+(player?.maxHp||0).toFixed(1),relics:{...relicBag},events:balanceEvents,rooms,seed:balanceSeed};
     const records=loadBalanceRecords();records.push(record);try{localStorage.setItem(balanceRecordKey,JSON.stringify(records.slice(-100)));balanceRunSaved=true;updateBalanceRecordNote();}catch{balanceRunSaved=false;}
   }
   function exportBalanceRecords(){if(!balanceLocalOnly)return;const data=JSON.stringify({exportedAt:new Date().toISOString(),records:loadBalanceRecords()},null,2),url=URL.createObjectURL(new Blob([data],{type:'application/json'})),link=document.createElement('a');link.href=url;link.download=`the-mine-playtest-${new Date().toISOString().slice(0,10)}.json`;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
@@ -438,7 +439,7 @@
     for(const k of Object.keys(relicBag))delete relicBag[k];
     player={x:W/2,y:H*.68,r:11,hp:100,maxHp:100,speed:205,weapon:selectedWeapon,attackCount:0,weaponUpgrade:null,weaponUpgrade2:null,charging:false,chargeTime:0,rage:0,rageActive:0,adrenaline:0,adrenalineActive:0,voidCharge:0};
     enemies=[];bullets=[];clearShots(true);particles=[];texts=[];drops=[];hazards=[];lightningArcs=[];weaponEffects=[];voidWaves=[];attackTimer=.25;dashTimer=0;dashCooldown=0;parryCooldown=0;parryWindow=0;invuln=0;shake=0;
-    zoneStep=0;depth=0;upgradeResume='stage';pendingWaves=[];spawnPortals=[];
+    zoneStep=0;depth=0;upgradeResume='stage';pendingWaves=[];spawnPortals=[];ore=0;oreEarned=0;oreSpent=0;nextRoomBonus=false;seenEvents=[];
     setObstacles();startZoneStep();playSound('start');
   }
   // variant 0 is the original layout (bosses, elite rooms); combat rooms alternate variants 1 and 2.
@@ -481,7 +482,9 @@
   }
   function waveRoomPlan(kind){
     const per=4+Math.min(stage,6)+dp().extraEnemies;
-    if(kind==='den')return [per,per+1,per+1];
+    const bonus=nextRoomBonus&&kind==='den'?1.5:1;
+    if(kind==='den')return [per,per+1,per+1].map(n=>Math.ceil(n*bonus));
+    if(kind==='vein')return [per,per+1];
     const waves=zoneStep===0?2:3;
     return Array.from({length:waves},(_,w)=>per+(w===waves-1?1:0));
   }
@@ -491,7 +494,7 @@
     pendingWaves=waveRoomPlan(kind);waveTotal=pendingWaves.length;waveIndex=0;waveTemplate=pickWaveTemplate();lastWaveTemplate=waveTemplate;waveBag=[];
     if(balanceRoom){balanceRoom.roomKind=kind;balanceRoom.template=waveTemplate.id;balanceRoom.waves=waveTotal;balanceRoom.enemyCountStart=0;balanceRoom.enemyKinds={};}
     spawnNextWave(true);
-    toast(`${zoneName()} · ${kind==='den'?'소굴':waveTemplate.label}${kind==='den'?' · 마지막에 정예':''}`);updateHud();
+    toast(`${zoneName()} · ${kind==='den'?'소굴':kind==='vein'?'광맥 · 광석 2배':waveTemplate.label}${kind==='den'?' · 마지막에 정예':''}`);updateHud();
   }
   function spawnNextWave(immediate=false){
     const count=pendingWaves.shift();if(count===undefined)return;
@@ -521,11 +524,14 @@
     const step=zoneFlow[zoneStep];
     if(step==='wave'||step==='den'){startWave(step);setScreen('playing');}
     else if(step==='chest')openLoot('chest');
-    else if(step==='route'){setScreen('choice','choiceOverlay');playSound('chest');}
+    else if(step==='route')openRoute();
     else startBoss();
   }
   function advanceZone(){zoneStep=Math.min(zoneFlow.length-1,zoneStep+1);startZoneStep();}
+  function gainOre(amount,x=null,y=null){amount=Math.round(amount);if(amount<=0)return;ore+=amount;oreEarned+=amount;if(x!==null)floatText(x,y,`+${amount} 광석`,'#ffd98a',12);updateHud();}
+  function spendOre(amount){if(ore<amount)return false;ore-=amount;oreSpent+=amount;updateHud();return true;}
   function finishCombatRoom(){
+    if(roomKind==='den'&&nextRoomBonus){nextRoomBonus=false;gainOre(25,player.x,player.y-36);}
     depth++;const healed=healPlayer(dp().clearHeal);if(healed>0)floatText(player.x,player.y-22,`+${Math.round(healed)}`,'#9ff1c3',13);
   }
   function afterWaveRoom(){
@@ -585,19 +591,81 @@
     if(relicBag.collapse_frontal)boss.facingAngle=Math.atan2(player.y-boss.y,player.x-boss.x);
     enemies.push(boss);setScreen('playing');playSound('boss');toast(def.name);if(def.kind==='star')beginFinalHell(boss,false);updateHud();
   }
+  const routeSvgs={
+    elite:'<path fill="#17131b" d="M1 2h2v3h2v2h2v1h2V7h2V5h2V2h2v5h-2v2h2v4h-3v2H5v-2H2V9h2V8H2V5H1z"/><path fill="#f3a52d" d="M6 8h1v1H6zm3 0h1v1H9z"/>',
+    shrine:'<path fill="#17131b" d="M2 2h4v2h4V2h4v2h2v4h-2v2h-2v2h-2v2H8v-2H6v-2H4v-2H2V8H0V4h2z"/>',
+    shop:'<path fill="#17131b" d="M4 1h8v2h2v3h-2v1h2v8H2V7h2V6H2V3h2zm2 4v2h4V5z"/><path fill="#e8c25b" d="M6 9h4v4H6z"/>',
+    event:'<path fill="#17131b" d="M5 1h6v2h2v4h-2v2H9v2H7V8h2V6h2V3H5v2H3V3h2zm2 12h2v2H7z"/>',
+    vein:'<path fill="#17131b" d="M2 12h3V9h3V6h3V3h3v3h-2v3H9v3H6v3H2z"/><path fill="#62c99a" d="M11 4h2v1h-2zM8 7h2v1H8zM5 10h2v1H5z"/>'
+  };
+  function routeNodeInfo(id){
+    if(id==='elite')return {title:'정예 전투',desc:`정예 적 처치<br>유물 4개 선택 · 회복 없음`};
+    if(id==='shrine')return {title:'회복 제단',desc:`체력 ${26+stage*3} 회복<br>유물 3개 선택`};
+    if(id==='shop')return {title:'광석 상인',desc:`보유 광석 ${ore}<br>유물·회복 구매`};
+    if(id==='event')return {title:'수상한 갱도',desc:'알 수 없는 사건<br>거절할 수 있음'};
+    return {title:'광맥',desc:'짧은 전투<br>광석 2배 · 유물 없음'};
+  }
+  // Route: shrine and elite are always offered; the third card is a shop, an event or an ore vein.
+  function openRoute(){
+    const extras=[{id:'shop',w:ore>=40?2:1},{id:'vein',w:1}];if(stage>=2&&seenEvents.length<routeEvents.length)extras.push({id:'event',w:1.5});
+    let roll=runRandom()*extras.reduce((sum,o)=>sum+o.w,0);const third=(extras.find(o=>(roll-=o.w)<=0)||extras[0]).id;
+    const root=$('routeChoices');root.innerHTML='';root.classList.add('three');
+    for(const id of ['elite','shrine',third]){const info=routeNodeInfo(id),button=document.createElement('button');button.type='button';button.className=`routeCard ${id}`;button.setAttribute('aria-label',`${info.title}: ${info.desc.replace('<br>',', ')}`);button.innerHTML=`<span class="routeIcon" aria-hidden="true"><svg viewBox="0 0 16 16">${routeSvgs[id]}</svg></span><span class="routeText"><span class="routeTitle">${info.title}</span><span class="routeDesc">${info.desc}</span></span>`;button.addEventListener('click',()=>chooseRoute(id));root.appendChild(button);}
+    setScreen('choice','choiceOverlay');playSound('chest');
+  }
   function chooseRoute(route){
-    balanceEvents.push({t:+runTime.toFixed(2),type:'route',stage,choice:route});
+    balanceEvents.push({t:+runTime.toFixed(2),type:'route',stage,choice:route,ore});
     if(route==='shrine'){
       const heal=healPlayer(26+stage*3);
       floatText(W/2,250,heal>0?`+${Math.round(heal)} 체력`:'체력이 가득합니다','#9ff1c3',20);playSound('heal');
       openLoot('route');
-    } else startElite();
+    } else if(route==='shop'){shopRerolls=0;openShop(makeLoot(3));}
+    else if(route==='event')openEvent();
+    else if(route==='vein'){startWave('vein');setScreen('playing');}
+    else startElite();
+  }
+  // Generic card panel on the loot overlay, used by the shop and events.
+  function showCardPanel({kicker,title,subtitle,cards,buttons=[]}){
+    $('lootKicker').textContent=kicker;$('lootTitle').textContent=title;$('lootSubtitle').textContent=subtitle;$('synergyHint').textContent='';$('synergyDetails').hidden=true;
+    const four=cards.length===4;$('lootPanel').classList.toggle('fourItems',four);$('lootCards').classList.toggle('fourCards',four);const root=$('lootCards');root.innerHTML='';$('lootActions').innerHTML='';
+    cards.forEach((card,index)=>{const el=document.createElement('button');el.type='button';el.className=`card revealCard${card.cls?` ${card.cls}`:''}`;el.style.setProperty('--reveal-delay',`${index*.12}s`);el.innerHTML=card.html;el.disabled=!!card.disabled;el.addEventListener('animationend',()=>el.classList.remove('revealCard'),{once:true});if(!card.disabled)el.addEventListener('click',card.onClick);root.appendChild(el);});
+    for(const b of buttons){const el=document.createElement('button');el.type='button';el.className='btn secondary';el.textContent=b.text;el.disabled=!!b.disabled;el.addEventListener('click',b.onClick);$('lootActions').appendChild(el);}
+    setScreen('loot','lootOverlay');
+  }
+  function relicArt(item){return item.image?`<img class="relicImage" src="${item.image}" alt="">`:item.tier?`<span class="cardicon">${item.icon}</span>`:`<img class="relicImage" src="assets/relic-icons/${item.id}.png" alt="">`;}
+  function shopPrice(item){const base=item.tier?36:item.weapon?52:45;return Math.round(base*(runDifficulty>=3?1.2:runDifficulty===2?1.1:1));}
+  function openShop(stock){
+    lootAfter='shop';const healCost=20,rerollCost=shopRerolls?20:12;
+    const cards=stock.map(item=>{const price=shopPrice(item),sold=item.sold;return {cls:sold?'sold':ore<price?'cantAfford':'',disabled:sold||ore<price,html:`${relicArt(item)}<span class="cardname">${item.name}${relicBag[item.id]?` ×${relicBag[item.id]+1}`:''}</span><span class="carddesc">${item.desc}</span><span class="price">${sold?'구매함':`⛏ ${price}`}</span>`,onClick:()=>{if(!spendOre(price))return;item.sold=true;balanceEvents.push({t:+runTime.toFixed(2),type:'shop-buy',stage,item:item.id,price});grantRelic(item.id);openShop(stock);}};});
+    cards.push({cls:player.hp>=player.maxHp?'sold':ore<healCost?'cantAfford':'',disabled:ore<healCost||player.hp>=player.maxHp,html:`<span class="cardicon">✚</span><span class="cardname">응급 처치</span><span class="carddesc">체력 25 회복</span><span class="price">⛏ ${healCost}</span>`,onClick:()=>{if(!spendOre(healCost))return;healPlayer(25);playSound('heal');openShop(stock);}});
+    showCardPanel({kicker:'광석 상인',title:'무엇을 사겠나?',subtitle:`보유 광석 ⛏ ${ore}`,cards,buttons:[{text:`진열 바꾸기 · ⛏ ${rerollCost}`,disabled:ore<rerollCost,onClick:()=>{if(!spendOre(rerollCost))return;shopRerolls++;openShop(makeLoot(3));}},{text:'떠나기',onClick:()=>advanceZone()}]});
+    playSound('chest');
+  }
+  const swapSafeRelics=id=>!['heart','exp_heart','dash','gale','exp_stride'].includes(id);
+  // Events: every option is optional and its cost is shown before choosing.
+  const routeEvents=[
+    {id:'cursed_altar',title:'저주받은 제단',text:'붉은 제단이 피를 요구한다.',options:()=>[
+      {name:'피를 바친다',desc:'최대 체력 -10 → 유물 3개 중 선택',run:()=>{player.maxHp=Math.max(30,player.maxHp-10);player.hp=Math.min(player.hp,player.maxHp);openLoot('eventLoot');}}]},
+    {id:'collapsed_tunnel',title:'무너진 갱도',text:'잔해 너머로 광석이 반짝인다.',options:()=>[
+      {name:'잔해를 파낸다',desc:'체력 -15 → 광석 +30',run:()=>{player.hp=Math.max(1,player.hp-15);gainOre(30);advanceZone();}},
+      {name:'광석으로 지름길',desc:'광석 -20 → 체력 35 회복',disabled:ore<20,run:()=>{spendOre(20);healPlayer(35);playSound('heal');advanceZone();}}]},
+    {id:'echo_pool',title:'잔향 웅덩이',text:'유물을 던지면 다른 메아리가 돌아온다.',options:()=>{const owned=Object.keys(relicBag).filter(id=>relicBag[id]>0&&swapSafeRelics(id));return [
+      {name:'유물을 던진다',desc:owned.length?'무작위 보유 유물 1개(중첩 1)를 잃고 → 유물 3개 중 선택':'던질 수 있는 유물이 없다',disabled:!owned.length,run:()=>{const id=choice(owned);relicBag[id]--;if(!relicBag[id])delete relicBag[id];toast(`${relics[id].name}을(를) 잃었다`);openLoot('eventLoot');}}];}},
+    {id:'unstable_vein',title:'불안정한 광맥',text:'벽 안에서 무언가가 꿈틀거린다.',options:()=>[
+      {name:'파고든다',desc:'다음 소굴의 적 +50% → 정리 시 광석 +25',run:()=>{nextRoomBonus=true;advanceZone();}}]}
+  ];
+  function openEvent(){
+    const event=choice(routeEvents.filter(e=>!seenEvents.includes(e.id)));seenEvents.push(event.id);lootAfter='event';
+    const options=event.options();
+    const cards=options.map(o=>({disabled:o.disabled,cls:o.disabled?'cantAfford':'',html:`<span class="cardicon">❖</span><span class="cardname">${o.name}</span><span class="carddesc">${o.desc}</span>`,onClick:()=>{balanceEvents.push({t:+runTime.toFixed(2),type:'event',stage,event:event.id,choice:o.name});o.run();}}));
+    cards.push({html:`<span class="cardicon">→</span><span class="cardname">지나친다</span><span class="carddesc">아무 일도 일어나지 않는다</span>`,onClick:()=>{balanceEvents.push({t:+runTime.toFixed(2),type:'event',stage,event:event.id,choice:'skip'});advanceZone();}});
+    showCardPanel({kicker:'사건',title:event.title,subtitle:event.text,cards});playSound('chest');
   }
   function openLoot(after){
-    lootAfter=after;lootPool=after==='riskPick'?makeTierLoot(2,3):after==='eliteBonus'?makeOwnedStackLoot():makeLoot(phase==='elite'?4:3);const fourItems=lootPool.length===4;$('lootPanel').classList.toggle('fourItems',fourItems);$('lootCards').classList.toggle('fourCards',fourItems);$('lootCards').innerHTML='';
+    lootAfter=after;lootPool=after==='riskPick'?makeTierLoot(2,3):after==='eliteBonus'?makeOwnedStackLoot():makeLoot(phase==='elite'?4:3);const fourItems=lootPool.length===4;$('lootPanel').classList.toggle('fourItems',fourItems);$('lootCards').classList.toggle('fourCards',fourItems);$('lootCards').innerHTML='';$('lootActions').innerHTML='';
     if(after==='eliteBonus'&&!lootPool.length){$('lootTitle').textContent='추가 유물이 없습니다';$('lootSubtitle').textContent='대신 유물 3개 중 하나를 더 고르세요.';lootAfter='eliteExtra';lootPool=makeLoot(3);}
     balanceEvents.push({t:+runTime.toFixed(2),type:'loot-offer',stage,room:roomCount+1,source:lootAfter,options:lootPool.map(item=>item.id)});
-    $('lootKicker').textContent=phase==='boss'?'보스 상자':phase==='elite'?'정예 보상':'유물 상자';
+    $('lootKicker').textContent=after==='eventLoot'?'사건 보상':phase==='boss'?'보스 상자':phase==='elite'?'정예 보상':'유물 상자';
     $('lootTitle').textContent=lootAfter==='eliteBonus'?'유물 하나를 강화하세요':lootAfter==='eliteExtra'?'추가 유물 보상':after==='riskPick'?'위험을 선택하세요':'상자가 열렸다';$('lootSubtitle').textContent=lootAfter==='eliteBonus'?'보유 유물 하나를 한 번 중첩합니다.':lootAfter==='eliteExtra'?'중첩할 유물이 없어 새 유물 하나를 받습니다.':after==='riskPick'?'대가를 확인하고 선택하세요. 건너뛸 수 있습니다.':'획득할 유물을 고르세요.';
     lootPool.forEach((item,index)=>{
       const card=document.createElement('button');card.type='button';card.className=`card revealCard${item.tier?` tier-${['','explorer','abyss','collapse'][item.tier]}`:''}`;card.style.setProperty('--reveal-delay',`${index*.18}s`);
@@ -638,9 +706,7 @@
     }
     return picked.map(id=>({id,...relics[id]}));
   }
-  function takeLoot(id){
-    const relic=relics[id];if(!relic||relic.maxStacks&&(relicBag[id]||0)>=relic.maxStacks)return;
-    balanceEvents.push({t:+runTime.toFixed(2),type:'loot-pick',stage,room:roomCount+1,source:lootAfter,item:id});
+  function grantRelic(id){
     const oldSynergies=new Set(activeSynergies().map(item=>item.key));
     relicBag[id]=(relicBag[id]||0)+1;
     if(id==='heart'){player.maxHp+=20*runStatMultiplier();healPlayer(25);}
@@ -649,11 +715,16 @@
     if(id==='exp_heart'){player.maxHp+=30*runStatMultiplier();healPlayer(30);}
     if(id==='exp_stride')player.speed+=30;
     const found=activeSynergies().find(item=>!oldSynergies.has(item.key));if(found)toast(`시너지 발동 · ${synergyText[found.key]}`);
-    playSound('relic');
+    playSound('relic');updateHud();
+  }
+  function takeLoot(id){
+    const relic=relics[id];if(!relic||relic.maxStacks&&(relicBag[id]||0)>=relic.maxStacks)return;
+    balanceEvents.push({t:+runTime.toFixed(2),type:'loot-pick',stage,room:roomCount+1,source:lootAfter,item:id});
+    grantRelic(id);
     if(lootAfter==='elite'){if(runDifficulty===0){advanceZone();return;}openLoot('eliteBonus');return;}
     if(lootAfter==='eliteBonus'||lootAfter==='eliteExtra'){if(lootAfter==='eliteExtra'||lootAfter==='eliteBonus'){if(lootAfter==='eliteBonus'&&!relicBag[id])relicBag[id]=1;}advanceZone();return;}
     if(lootAfter==='riskPick'){finishBossLoot();return;}
-    if(lootAfter==='chest'||lootAfter==='route'){advanceZone();return;}
+    if(lootAfter==='chest'||lootAfter==='route'||lootAfter==='eventLoot'){advanceZone();return;}
     else if(lootAfter==='boss')startBoss();
     else if(lootAfter==='zone'){
       if(runDifficulty>=2&&stage<=2&&!endless){openLoot('riskPick');return;}
@@ -741,7 +812,7 @@
     $('zoneHud').textContent=endless?zoneName():`구역 ${stage} · ${zoneName()}`;
     $('difficultyHud').textContent=`난이도 · ${difficultyName(runDifficulty)}`;
     $('difficultyHud').className=`difficultyBadge difficulty-${runDifficulty}`;
-    const nextStep=zoneStepLabels[zoneFlow[zoneStep+1]]||'보상';$('roomHud').textContent=phase==='boss'?'보스전':phase==='elite'?'정예 굴 · 다음: 소굴':`${roomKind==='den'?'소굴':'전투'} · 웨이브 ${waveIndex}/${waveTotal} · 다음: ${nextStep}`;
+    const nextStep=roomKind==='vein'?'소굴':zoneStepLabels[zoneFlow[zoneStep+1]]||'보상';$('oreText').textContent=`광석 ${ore}`;$('roomHud').textContent=phase==='boss'?'보스전':phase==='elite'?'정예 굴 · 다음: 소굴':`${roomKind==='den'?'소굴':roomKind==='vein'?'광맥':'전투'} · 웨이브 ${waveIndex}/${waveTotal} · 다음: ${nextStep}`;
     $('relicHud').innerHTML=Object.entries(relicBag).filter(([,n])=>n>0).map(([id,n])=>`<span class="relicpip" title="${relics[id].name}">${relics[id].icon}${n>1?'×'+n:''}</span>`).join('');
     $('recordHud').textContent=`처치 ${kills} · 최고 구역 ${saved.bestZone}`+(relicBag.collapse_momentum?` · 기세 +${momentumHits}% / 손실 ${Math.round(runStatPenalty*100)}%`:'');
     if(boss){const state=boss.invulnerable?(boss.bossKind==='star'?' · 무적':boss.act==='hell'?' · 탄막 진행 중':boss.act==='transition'?' · 페이즈 전환 중':boss.hellIndex===3?' · 쌍둥이 처치 필요':' · 봉인 파괴 필요'):'';$('bossName').textContent=boss.name+(boss.phase===2?' · 광폭화':'')+state;$('bossFill').style.width=`${clamp(boss.hp/boss.maxHp*100,0,100)}%`;}
@@ -1071,6 +1142,7 @@
     const index=enemies.indexOf(e);if(index<0)return;enemies.splice(index,1);
     if(relicBag.wildfire&&e.wildfireTimer>0&&!resolvingKillBurst){resolvingKillBurst=true;const ashfire=activeSynergies().some(s=>s.key==='ember_wildfire'),radius=82+(ashfire?28:0),blastDamage=24*relicBag.wildfire*(ashfire?1.4:1);burst(e.x,e.y,'#ff9b60',20);for(const other of [...enemies])if(dist(e,other)<radius)damageEnemy(other,blastDamage*(other.burnScale||1),'burn');resolvingKillBurst=false;}
     if(e.kind==='bomber'&&e.bomberState==='fuse'&&!e.selfDetonated&&!resolvingKillBurst){resolvingKillBurst=true;burst(e.x,e.y,'#ffb36a',24);shake=Math.max(shake,4);floatText(e.x,e.y-20,'역폭발!','#ffcf7a',15);for(const other of [...enemies])if(other.kind!=='boss'&&dist(e,other)<70+other.r)damageEnemy(other,30*(other.burnScale||1),'burn');resolvingKillBurst=false;}
+    if(e.kind!=='seal'&&e.kind!=='brother'&&e.kind!=='maw'){const base=e.kind==='boss'?12:e.kind==='elite'?5:1;gainOre(base*(roomKind==='vein'&&phase==='wave'?2:1),e.kind==='boss'||e.kind==='elite'?e.x:null,e.y-24);}
     burst(e.x,e.y,e.color,12);kills++;playSound(e.kind==='boss'?'bossDown':'kill');
     if(relicBag.exp_bounty){const healed=healPlayer(2*relicBag.exp_bounty);if(healed>0)floatText(player.x,player.y-18,`+${Math.round(healed)}`,'#9ff1c3',13);}
     if(relicBag.blood){const healed=healPlayer((e.kind==='boss'?8:2)*relicBag.blood);if(healed>0)floatText(player.x,player.y-18,`+${Math.round(healed)}`,'#ff9ba9',13);}
@@ -1675,7 +1747,7 @@
   function cancelAxeCharge(){if(player){player.charging=false;player.chargeTime=0;}}
   window.addEventListener('keydown',e=>{const key=e.key.length===1?e.key.toLowerCase():e.key;keys[key]=true;if([' ','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key))e.preventDefault();if(e.key===' '&&screen==='playing')tryDash();if(key==='r')activateCombatPower('rage');if(key==='f')activateCombatPower('adrenaline');if(e.key==='Escape'){if(screen==='playing'){cancelAxeCharge();mouse.down=false;previousScreen='playing';setScreen('paused','pauseOverlay');}else if(screen==='paused')setScreen('playing');}});
   window.addEventListener('keyup',e=>{const key=e.key.length===1?e.key.toLowerCase():e.key;keys[key]=false;});
-  $('startButton').addEventListener('click',()=>{if(touchMode)enterFullscreen();startRun();});$('eliteButton').addEventListener('click',()=>chooseRoute('elite'));$('shrineButton').addEventListener('click',()=>chooseRoute('shrine'));
+  $('startButton').addEventListener('click',()=>{if(touchMode)enterFullscreen();startRun();});
   $('balanceExportButton').addEventListener('click',exportBalanceRecords);
   $('resumeButton').addEventListener('click',()=>setScreen('playing'));$('quitButton').addEventListener('click',()=>{saveBalanceRun('중도 종료','일시정지 메뉴에서 나감');updateOverlay('titleOverlay');screen='title';$('hud').classList.remove('visible');$('bossbar').classList.remove('visible');syncWeaponPicker();});
   $('difficultyButton').addEventListener('click',()=>{difficulty=(difficulty+1)%(Math.min(saved.highestDifficulty,3)+1);saved.lastDifficulty=difficulty;save();syncWeaponPicker();});
