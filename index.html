@@ -231,8 +231,8 @@
     {name:'심연',bomberFuse:0.65,mirrorShards:3,mirrorCycle:3.0,  hp:2.4,dmg:1.6,  move:1.08,fire:1.16,extraEnemies:2,reinforceGap:.85,clearHeal:3,chargeTell:.41,chargeDash:.28,chargeSpeed:685,chargeRecover:.46,finalPressure:1},
     {name:'붕괴',bomberFuse:0.55,mirrorShards:4,mirrorCycle:2.6,  hp:3.5,dmg:2,    move:1.16,fire:1.32,extraEnemies:3,reinforceGap:.7, clearHeal:3,chargeTell:.38,chargeDash:.26,chargeSpeed:730,chargeRecover:.42,finalPressure:1.65}
   ];
-  // Room rhythm: clear the field -> short breather -> next wave. If the field is not cleared, the next wave overlaps after `overlap`s.
-  const roomPacing={waves:{wave:[4,5],den:6,vein:3},breather:2.5,overlap:10,lastWaveBonus:2};
+  // Reinforcements begin as the field thins; the overlap timer keeps slow fights moving.
+  const roomPacing={waves:{wave:[4,5],den:6,vein:3},overlap:10,lastWaveBonus:2};
   // Late-run growth so collected relics do not trivialise zones 3-4.
   const growth={depthLinear:.06,depthSquare:.0035,bossPerZone:.4,bossBase:1.5,zoneDamage:.06,shopPerZone:.15};
   function depthHpScale(){return 1+depth*growth.depthLinear+depth*depth*growth.depthSquare;}
@@ -373,7 +373,6 @@
   let player, enemies=[], bullets=[], shots=[], particles=[], texts=[], obstacles=[], drops=[], hazards=[], lightningArcs=[], weaponEffects=[], voidWaves=[];
   let stage=1, phase='wave', roomCount=0, kills=0, xp=0, xpNeed=6, runTime=0, runDifficulty=0, endless=false, boss=null, bossDeathPending=false, clearTransition=null;
   let ore=0, oreEarned=0, oreSpent=0, shopRerolls=0, nextRoomBonus=false, seenEvents=[];
-  let breatherTimer=null;
   let zoneStep=0, roomKind='wave', pendingWaves=[], spawnPortals=[], waveIndex=0, waveTotal=0, waveTimer=0, depth=0, upgradeResume='stage';
   let lootAfter='', lootPool=[], attackTimer=0, dashTimer=0, dashCooldown=0, parryCooldown=0, parryWindow=0, invuln=0, bossAttack=0, frame=0, weaponUpgradeUsed=false, weaponUpgrade2Used=false, resolvingKillBurst=false, runStatPenalty=0, momentumHits=0, abyssHitStreak=0;
   const relicBag={};
@@ -517,39 +516,42 @@
   function startWave(kind='wave'){
     resetRoomCombat();
     roomKind=kind;phase='wave';beginBalanceRoom();boss=null;setObstacles(1+(zoneStep+stage)%2);enemies=[];bullets=[];clearShots(true);hazards=[];
-    pendingWaves=waveRoomPlan(kind);waveTotal=pendingWaves.length;waveIndex=0;breatherTimer=null;waveTemplate=pickWaveTemplate();lastWaveTemplate=waveTemplate;waveBag=[];
+    pendingWaves=waveRoomPlan(kind);waveTotal=pendingWaves.length;waveIndex=0;waveTemplate=pickWaveTemplate();lastWaveTemplate=waveTemplate;waveBag=[];
     if(balanceRoom){balanceRoom.roomKind=kind;balanceRoom.template=waveTemplate.id;balanceRoom.waves=waveTotal;balanceRoom.waveTimes=[];balanceRoom.enemyCountStart=0;balanceRoom.enemyKinds={};}
     spawnNextWave(true);
     toast(`${zoneName()} · ${kind==='den'?'소굴':kind==='vein'?'광맥 · 광석 2배':waveTemplate.label}${kind==='den'?' · 마지막에 정예':''}`);updateHud();
   }
+  function waveSpawnDelay(){
+    // N(0, 1), rejection sampled within two standard deviations.
+    let z;
+    do{z=Math.sqrt(-2*Math.log(Math.max(Number.EPSILON,runRandom())))*Math.cos(2*Math.PI*runRandom());}while(Math.abs(z)>2);
+    return 2.85+z;
+  }
   function spawnNextWave(immediate=false){
     const wave=pendingWaves.shift();if(wave===undefined)return;
     const {count,elites}=wave;
-    waveIndex++;waveTimer=roomPacing.overlap*dp().reinforceGap;breatherTimer=null;
+    waveIndex++;waveTimer=roomPacing.overlap*dp().reinforceGap;
     if(balanceRoom?.active)balanceRoom.waveTimes?.push(+(runTime-balanceRoom.startedAt).toFixed(2));
     const finalDen=roomKind==='den'&&pendingWaves.length===0;
     for(let i=0;i<count;i++){
       const kind=i<elites?'elite':pickWaveKind(i);
       if(balanceRoom?.active){balanceRoom.enemyCountStart++;balanceRoom.enemyKinds[kind]=(balanceRoom.enemyKinds[kind]||0)+1;}
-      if(immediate)spawnEnemy(kind,i);
-      else spawnPortals.push({kind,index:i,point:pickSpawnPoint(kind==='elite'?17:14,i+waveIndex),timer:.85+i*.06,max:.85+i*.06});
+      spawnPortals.push({kind,index:i,point:pickSpawnPoint(kind==='elite'?17:14,i+waveIndex),timer:waveSpawnDelay(),max:.85});
     }
     if(!immediate){toast(finalDen?`최종 증원 · 정예 출현`:elites?`증원 ${waveIndex} / ${waveTotal} · 정예 출현`:`증원 ${waveIndex} / ${waveTotal}`);playSound('charge');}
     updateHud();
   }
-  // Rhythm: clearing the field starts a short breather (HUD countdown) before the next wave's summoning sigils.
-  // If the field is not cleared, the next wave overlaps once the overlap timer runs out.
+  // Finish scheduling this wave before thinning enemies trigger the next one.
   function updateReinforcements(dt){
     if(phase!=='wave')return;
     for(let i=spawnPortals.length-1;i>=0;i--){const portal=spawnPortals[i];portal.timer-=dt;if(portal.timer<=0){spawnPortals.splice(i,1);spawnEnemy(portal.kind,portal.index,portal.point);const spawned=enemies[enemies.length-1];if(spawned)spawned.spawnGrace=.4;burst(portal.point.x,portal.point.y,'#c9a5ff',8);}}
     if(!pendingWaves.length||spawnPortals.length)return;
-    if(!enemies.length){if(breatherTimer===null)breatherTimer=roomPacing.breather*dp().reinforceGap;breatherTimer-=dt;if(breatherTimer<=0)spawnNextWave();return;}
-    breatherTimer=null;waveTimer-=dt;
-    if(waveTimer<=0)spawnNextWave();
+    waveTimer-=dt;
+    if(enemies.length<=3||waveTimer<=0)spawnNextWave();
   }
   function drawCores(){for(const e of enemies){if(e.kind!=='core')continue;ctx.save();ctx.strokeStyle=e.fuse<3?'#ff5a3c':'#ffb36a';ctx.lineWidth=4;ctx.beginPath();ctx.arc(e.x,e.y,e.r+14,-Math.PI/2,-Math.PI/2+Math.PI*2*e.fuse/e.fuseMax);ctx.stroke();ctx.fillStyle='#ffe2b8';ctx.font='bold 12px ui-monospace,monospace';ctx.textAlign='center';ctx.fillText(Math.ceil(e.fuse),e.x,e.y-e.r-20);ctx.restore();}}
   function drawSpawnPortals(){
-    for(const portal of spawnPortals){const progress=1-portal.timer/portal.max,{x,y}=portal.point;ctx.save();ctx.globalAlpha=.35+.45*progress;ctx.strokeStyle=portal.kind==='elite'?'#ffcf6a':'#c9a5ff';ctx.lineWidth=2;ctx.setLineDash([5,4]);ctx.beginPath();ctx.arc(x,y,20,time*3,time*3+Math.PI*2);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=.25+.35*progress;ctx.fillStyle=ctx.strokeStyle;ctx.beginPath();ctx.arc(x,y,20*progress,0,Math.PI*2);ctx.fill();ctx.restore();}
+    for(const portal of spawnPortals){if(portal.timer>portal.max)continue;const progress=1-portal.timer/portal.max,{x,y}=portal.point;ctx.save();ctx.globalAlpha=.35+.45*progress;ctx.strokeStyle=portal.kind==='elite'?'#ffcf6a':'#c9a5ff';ctx.lineWidth=2;ctx.setLineDash([5,4]);ctx.beginPath();ctx.arc(x,y,20,time*3,time*3+Math.PI*2);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=.25+.35*progress;ctx.fillStyle=ctx.strokeStyle;ctx.beginPath();ctx.arc(x,y,20*progress,0,Math.PI*2);ctx.fill();ctx.restore();}
   }
   function startZoneStep(){
     const step=zoneFlow[zoneStep];
@@ -843,7 +845,7 @@
     $('zoneHud').textContent=endless?zoneName():`구역 ${stage} · ${zoneName()}`;
     $('difficultyHud').textContent=`난이도 · ${difficultyName(runDifficulty)}`;
     $('difficultyHud').className=`difficultyBadge difficulty-${runDifficulty}`;
-    const nextStep=roomKind==='vein'?'소굴':zoneStepLabels[zoneFlow[zoneStep+1]]||'보상';$('oreText').textContent=`광석 ${ore}`;$('roomHud').textContent=phase==='boss'?'보스전':phase==='elite'?'정예 굴 · 다음: 소굴':`${roomKind==='den'?'소굴':roomKind==='vein'?'광맥':'전투'} · 웨이브 ${waveIndex}/${waveTotal}${breatherTimer!==null&&pendingWaves.length?` · 다음 웨이브 ${Math.max(0,breatherTimer).toFixed(1)}`:` · 다음: ${nextStep}`}`;
+    const nextStep=roomKind==='vein'?'소굴':zoneStepLabels[zoneFlow[zoneStep+1]]||'보상';$('oreText').textContent=`광석 ${ore}`;$('roomHud').textContent=phase==='boss'?'보스전':phase==='elite'?'정예 굴 · 다음: 소굴':`${roomKind==='den'?'소굴':roomKind==='vein'?'광맥':'전투'} · 웨이브 ${waveIndex}/${waveTotal} · 다음: ${nextStep}`;
     $('relicHud').innerHTML=Object.entries(relicBag).filter(([,n])=>n>0).map(([id,n])=>`<span class="relicpip" title="${relics[id].name}">${relics[id].icon}${n>1?'×'+n:''}</span>`).join('');
     $('recordHud').textContent=`처치 ${kills} · 최고 구역 ${saved.bestZone}`+(relicBag.collapse_momentum?` · 기세 +${momentumHits}% / 손실 ${Math.round(runStatPenalty*100)}%`:'');
     if(boss){const state=boss.desperation?` · 필사 · ${Math.ceil(boss.despTime)}초 버티기`:boss.invulnerable?(boss.bossKind==='star'?' · 무적':boss.act==='hell'?' · 탄막 진행 중':boss.act==='transition'?' · 페이즈 전환 중':boss.hellIndex===3?' · 쌍둥이 처치 필요':' · 봉인 파괴 필요'):'';$('bossName').textContent=boss.name+(boss.phase===2?' · 광폭화':'')+state;$('bossFill').style.width=`${clamp(boss.hp/boss.maxHp*100,0,100)}%`;}
