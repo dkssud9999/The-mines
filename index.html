@@ -347,7 +347,7 @@
     razor:{name:'면도날 고리',icon:'◌',desc:'플레이어 주변 반경 160px를 도는 칼날이 멀리 있는 적도 베어냅니다.',color:'#a7efbf'},
     heart:{name:'광부의 심장',icon:'♥',desc:'최대 체력이 20 늘고 체력을 회복한다.',color:'#ff8e9b'},
     dash:{name:'잔상 장화',icon:'➤',desc:'대시 재사용 시간이 줄어든다. 최대 5회 중첩된다.',color:'#8de8d2',maxStacks:5},
-    void:{name:'공허 종',icon:'◈',desc:'보스에게 주는 피해가 크게 늘어난다. 최대 3회 중첩된다.',color:'#c6a5ff',unlock:1,maxStacks:3},
+    void:{name:'공허 종',icon:'◈',desc:'보스에게 주는 피해가 크게 늘어난다. 중첩 가능.',color:'#c6a5ff',unlock:1},
     sun:{name:'태양 파편',icon:'☼',desc:'모든 공격 피해가 강해진다.',color:'#ffd879',unlock:2},
     guard:{name:'현무암 외피',icon:'⬟',desc:'받는 피해가 10% 감소한다. 최대 5회 중첩되며, 피해 감소는 최대 45%다.',color:'#a9adb8',maxStacks:5},
     gale:{name:'질풍의 깃털',icon:'➶',desc:'이동 속도가 14 증가한다. 중첩 가능.',color:'#9de8d9'},
@@ -383,14 +383,14 @@
   const weaponRelics={bomb:'bomb_core',axe:'axe_core',wand:'wand_arc',twin:'twin_moon',pick:'pick_core'};
   // The Mines II additions. Every relic here touches ore, heat, props or the blast loop so it changes how a room is played.
   Object.assign(relics,{
-    magnet:{glyph:true,name:'광부의 자석',icon:'🧲',desc:'광석 자석 범위가 70 늘어난다. 중첩 가능.',color:'#ffd98a',maxStacks:3},
-    rich_vein:{glyph:true,name:'풍부한 광맥',icon:'💎',desc:'방마다 광맥이 2개 더 나타나고 광맥의 광석이 늘어난다. 중첩 가능.',color:'#ffd98a',maxStacks:3},
-    dynamite:{glyph:true,name:'발파 벨트',icon:'🧨',desc:'대시가 끝난 자리에 나를 다치게 하지 않는 발파통을 남긴다. 재사용 4.5초. 중첩 시 짧아진다.',color:'#ff9a4a',maxStacks:3},
-    hot_core:{glyph:true,name:'과열 심장',icon:'🔥',desc:'열기 3단계에서 피해 +30%. 대신 피격 시 열기를 모두 잃는다.',color:'#ff8a3d',maxStacks:1},
-    overclock:{glyph:true,name:'과부하 장치',icon:'⚙️',desc:'오버드라이브가 3초 더 지속되고 끝날 때 주변을 폭발시킨다.',color:'#ffb36a',maxStacks:1},
-    ore_armor:{glyph:true,name:'광석 갑옷',icon:'🪨',desc:'보유 광석 20개마다 받는 피해 -2% (최대 -24%). 쓸수록 약해진다.',color:'#d6c29a',maxStacks:1},
-    golden_pick:{glyph:true,name:'황금 곡괭이',icon:'⚒️',desc:'광맥·수정·별 파편이 부서질 때 주변 적에게 폭발 피해를 준다. 중첩 시 강해진다.',color:'#ffd36a',maxStacks:3},
-    canary_cage:{glyph:true,name:'카나리아 새장',icon:'🐤',desc:'광석 조각을 주울 때 얻는 열기가 3배가 된다.',color:'#ffe08a',maxStacks:1},
+    magnet:{glyph:true,name:'광부의 자석',icon:'🧲',desc:'광석 자석 범위가 70 늘어난다. 중첩 가능.',color:'#ffd98a'},
+    rich_vein:{glyph:true,name:'풍부한 광맥',icon:'💎',desc:'방마다 광맥이 2개 더 나타나고 광맥의 광석이 늘어난다. 중첩 가능.',color:'#ffd98a'},
+    dynamite:{glyph:true,name:'발파 벨트',icon:'🧨',desc:'대시가 끝난 자리에 나를 다치게 하지 않는 발파통을 남긴다. 재사용 4.5초. 중첩 시 짧아진다.',color:'#ff9a4a'},
+    hot_core:{glyph:true,name:'과열 심장',icon:'🔥',desc:'열기 3단계에서 피해 +30%. 대신 피격 시 열기를 모두 잃는다. 중첩 가능.',color:'#ff8a3d'},
+    overclock:{glyph:true,name:'과부하 장치',icon:'⚙️',desc:'오버드라이브가 3초 더 지속되고 끝날 때 주변을 폭발시킨다. 중첩 가능.',color:'#ffb36a'},
+    ore_armor:{glyph:true,name:'광석 갑옷',icon:'🪨',desc:'보유 광석이 많을수록 받는 피해가 줄어든다. 상한 없이 체감하며, 쓸수록 약해진다. 중첩 가능.',color:'#d6c29a'},
+    golden_pick:{glyph:true,name:'황금 곡괭이',icon:'⚒️',desc:'광맥·수정·별 파편이 부서질 때 주변 적에게 폭발 피해를 준다. 중첩 시 강해진다.',color:'#ffd36a'},
+    canary_cage:{glyph:true,name:'카나리아 새장',icon:'🐤',desc:'광석 조각을 주울 때 얻는 열기가 크게 늘어난다. 중첩 가능.',color:'#ffe08a'},
     pick_core:{glyph:true,name:'진동 심장',icon:'💢',desc:'곡괭이의 세 번째 휘두르기가 더 멀리 땅을 가른다. 중첩 시 피해가 오른다.',color:'#ffc06a',weapon:'pick'}
   });
   Object.assign(relics,{
@@ -399,7 +399,7 @@
     gas_mask:{glyph:true,name:'방독면',icon:'😷',desc:'갱도의 가스 폭발과 용암이 피해를 주지 않는다.',color:'#a8f07a',maxStacks:1},
     cart_wheel:{glyph:true,name:'광차 바퀴',icon:'🛞',desc:'갱도를 탐사할 때 이동 속도 +40%.',color:'#b48a5a',maxStacks:1},
     deep_lantern:{glyph:true,name:'심연의 등불',icon:'🕯️',desc:'갱도에서 더 멀리 보인다.',color:'#d6a6ff',maxStacks:1},
-    bomb_core:{glyph:true,name:'충격 뇌관',icon:'💣',desc:'투척 폭약의 폭발 범위가 커진다. 최대 3회 중첩된다.',color:'#ffb36a',weapon:'bomb',maxStacks:3}
+    bomb_core:{glyph:true,name:'충격 뇌관',icon:'💣',desc:'투척 폭약의 폭발 범위가 커진다. 중첩 가능.',color:'#ffb36a',weapon:'bomb'}
   });
   Object.assign(relics,{
     bone_lantern:{deep:true,glyph:true,name:'뼈 등불',icon:'🦴',desc:'기름이 떨어져도 어둠이 찾아오지 않는다. 얻을 때 최대 체력 -20.',color:'#d6d0c0',maxStacks:1},
@@ -413,7 +413,7 @@
     dynamite_wildfire:'연쇄 발파: 발파통의 폭발 범위 +30%, 피해 +40%.',
     magnet_blood:'흡혈 자철: 광석 조각 8개를 주울 때마다 체력 1 회복.',
     overclock_echo:'잔향 과부하: 오버드라이브 중 메아리 공격이 두 번째 공격마다 발동한다.',
-    ore_armor_guard:'광맥 장갑: 광석 갑옷의 피해 감소 상한이 -40%가 된다.',
+    ore_armor_guard:'광맥 장갑: 광석 갑옷의 피해 감소 효과가 60% 강해진다.',
     golden_thunder:'황금 낙뢰: 황금 곡괭이 폭발이 주변 적에게 번개를 떨어뜨린다.'
   });
   Object.assign(synergyPairs,{dynamite_wildfire:['dynamite','wildfire'],magnet_blood:['magnet','blood'],overclock_echo:['overclock','echo'],ore_armor_guard:['ore_armor','guard'],golden_thunder:['golden_pick','thunder']});
@@ -504,7 +504,7 @@
   function releaseAttackContext(context){if(!context||context.pending<=0)return;if(--context.pending===0&&!context.cancelled&&!context.landed&&context.hungry&&!context.paid){context.paid=true;payHealthCost(3,'굶주린 탄환');abyssHitStreak=0;floatText(player.x,player.y-18,'-3','#ff7181',13);}}
   function clearShots(cancelled=false){for(const shot of shots){if(!shot.attackContext)continue;if(cancelled)shot.attackContext.cancelled=true;releaseAttackContext(shot.attackContext);}shots=[];}
   function clearPendingEchoes(){for(const echo of pendingEchoes){if(echo.attackContext){echo.attackContext.cancelled=true;releaseAttackContext(echo.attackContext);}}pendingEchoes=[];}
-  function outgoingDamageMultiplier(target,source,attackAngle=null,context=null){const direct=['axe','bolt','prism','echo','orbiter','cleave','rift','rail'].includes(source);let mult=runStatMultiplier()*(1+.08*heatTier());if(relicBag.hot_core&&heatTier()===2)mult*=1.3;if(player?.rageActive>0)mult*=1.5;if(player?.adrenalineActive>0)mult*=2.5;if(relicBag.exp_edge)mult*=1.25;if(direct&&relicBag.collapse_momentum)mult*=1+momentumHits*.01;if(direct&&(context?.hungry||!context&&relicBag.abyss_hungry)&&['bolt','prism','echo','rail'].includes(source))mult*=Math.min(2.5,1+abyssHitStreak*.1);if(direct&&relicBag.collapse_cannon&&((player?.collapseCannonTimer||0)>0||context?.cannon))mult*=3;if(relicBag.collapse_burst&&phase==='boss'&&boss&&!boss.invulnerable&&(player?.collapseBurstTimer||0)>0)mult*=4;if(relicBag.collapse_frontal&&target?.kind==='boss'){const toward=Math.atan2(player.y-target.y,player.x-target.x),face=target.facingAngle??0,diff=Math.abs(Math.atan2(Math.sin(toward-face),Math.cos(toward-face)));mult*=diff<Math.PI/3?3:.15;}return mult;}
+  function outgoingDamageMultiplier(target,source,attackAngle=null,context=null){const direct=['axe','bolt','prism','echo','orbiter','cleave','rift','rail'].includes(source);let mult=runStatMultiplier()*(1+.08*heatTier());if(relicBag.hot_core&&heatTier()===2)mult*=1+.3*relicBag.hot_core;if(player?.rageActive>0)mult*=1.5;if(player?.adrenalineActive>0)mult*=2.5;if(relicBag.exp_edge)mult*=1.25;if(direct&&relicBag.collapse_momentum)mult*=1+momentumHits*.01;if(direct&&(context?.hungry||!context&&relicBag.abyss_hungry)&&['bolt','prism','echo','rail'].includes(source))mult*=Math.min(2.5,1+abyssHitStreak*.1);if(direct&&relicBag.collapse_cannon&&((player?.collapseCannonTimer||0)>0||context?.cannon))mult*=3;if(relicBag.collapse_burst&&phase==='boss'&&boss&&!boss.invulnerable&&(player?.collapseBurstTimer||0)>0)mult*=4;if(relicBag.collapse_frontal&&target?.kind==='boss'){const toward=Math.atan2(player.y-target.y,player.x-target.x),face=target.facingAngle??0,diff=Math.abs(Math.atan2(Math.sin(toward-face),Math.cos(toward-face)));mult*=diff<Math.PI/3?3:.15;}return mult;}
   function healPlayer(amount){if(!player)return 0;const healed=Math.max(0,Math.min(player.maxHp-player.hp,amount));player.hp+=healed;if(balanceRoom){balanceRoom.healed+=healed;if(!balanceRoom.active&&balanceRooms.length)balanceRooms[balanceRooms.length-1].healed+=healed;}return healed;}
   window.addEventListener('pointerdown',e=>activePointers.add(e.pointerId),true);
   window.addEventListener('pointerup',e=>{activePointers.delete(e.pointerId);if(blockedOpeningPointers.delete(e.pointerId)){suppressedPointerClicks.add(e.pointerId);setTimeout(()=>suppressedPointerClicks.delete(e.pointerId),0);}},true);
@@ -831,9 +831,9 @@
   }
   // Forge: the run's main ore sink. Weapon levels feed every hit, so it competes directly with buying relics.
   function openForge(){
-    lootAfter='shop';const discount=player.origin==='smith'?.6:1,weaponCost=Math.round((60+38*forgeLevel)*discount),armorCost=Math.round((55+45*forgeBuys.armor)*discount),oilCost=Math.round((30+22*forgeBuys.oil)*discount),armorFull=forgeBuys.armor>=4,weaponFull=forgeLevel>=8;
+    lootAfter='shop';const discount=player.origin==='smith'?.6:1,weaponCost=Math.round((60+38*forgeLevel)*discount),armorCost=Math.round((55+45*forgeBuys.armor)*discount),oilCost=Math.round((30+22*forgeBuys.oil)*discount);
     const card=(icon,name,desc,cost,run,full=false)=>({cls:full?'sold':ore<cost?'cantAfford':'',disabled:full||ore<cost,html:`<span class="cardicon">${icon}</span><span class="cardname">${name}</span><span class="carddesc">${desc}</span><span class="price">⛏ ${cost}</span>`,onClick:()=>{if(!spendOre(cost))return;run();playSound('relic');openForge();}});
-    showCardPanel({kicker:'대장간',title:`무기 단련 Lv ${forgeLevel}`,subtitle:`보유 광석 ⛏ ${ore}`,cards:[card('⚔','무기 단련',`모든 무기 피해 +9% (현재 +${forgeLevel*9}%)`,weaponCost,()=>{forgeLevel++;forgeBuys.weapon++;player.damageBonus=(player.damageBonus||0)+.09;balanceEvents.push({t:+runTime.toFixed(2),type:'forge',stage,item:'weapon',level:forgeLevel,price:weaponCost});},weaponFull),card('🛡',`몸 단련 ${forgeBuys.armor}/4`,'최대 체력 +10, 체력 10 회복. 한 판에 4회까지.',armorCost,()=>{forgeBuys.armor++;player.maxHp+=10;healPlayer(10);balanceEvents.push({t:+runTime.toFixed(2),type:'forge',stage,item:'armor',level:forgeBuys.armor,price:armorCost});},armorFull),card('🛢','등불 기름','이 구역의 기름 +25',oilCost,()=>{forgeBuys.oil++;if(dig)dig.oil=Math.min(dig.oilMax,dig.oil+25);balanceEvents.push({t:+runTime.toFixed(2),type:'forge',stage,item:'oil',level:forgeBuys.oil,price:oilCost});})],buttons:[{text:'떠나기',onClick:()=>advanceZone()}]});
+    showCardPanel({kicker:'대장간',title:`무기 단련 Lv ${forgeLevel}`,subtitle:`보유 광석 ⛏ ${ore}`,cards:[card('⚔','무기 단련',`모든 무기 피해 +9% (현재 +${forgeLevel*9}%)`,weaponCost,()=>{forgeLevel++;forgeBuys.weapon++;player.damageBonus=(player.damageBonus||0)+.09;balanceEvents.push({t:+runTime.toFixed(2),type:'forge',stage,item:'weapon',level:forgeLevel,price:weaponCost});}),card('🛡',`몸 단련 Lv ${forgeBuys.armor}`,'최대 체력 +10, 체력 10 회복',armorCost,()=>{forgeBuys.armor++;player.maxHp+=10;healPlayer(10);balanceEvents.push({t:+runTime.toFixed(2),type:'forge',stage,item:'armor',level:forgeBuys.armor,price:armorCost});}),card('🛢','등불 기름','이 구역의 기름 +25',oilCost,()=>{forgeBuys.oil++;if(dig)dig.oil=Math.min(dig.oilMax,dig.oil+25);balanceEvents.push({t:+runTime.toFixed(2),type:'forge',stage,item:'oil',level:forgeBuys.oil,price:oilCost});})],buttons:[{text:'떠나기',onClick:()=>advanceZone()}]});
   }
   function chooseMapNode(node){
     if(!mapChoices().includes(node))return;
@@ -1242,7 +1242,7 @@
       else for(let i=0;i<count;i++){
         const offset=count===1?0:(i-(count-1)/2)*spread,a=angle+offset;
         const fanDamage=player.weaponUpgrade2==='wand_fan_storm'?.44:player.weaponUpgrade2==='wand_fan_focus'?.9:.58;
-        shots.push({kind:player.weapon==='wand'?'bolt':'axe',x:player.x+Math.cos(a)*13,y:player.y+Math.sin(a)*13,ox:player.x,oy:player.y,vx:Math.cos(a)*weap.speed,vy:Math.sin(a)*weap.speed,angle:a,age:0,returnAt:relicBag.abyss_axe_storm&&player.weapon==='axe' ? .72 : .4,life:player.weapon==='wand'?1.25:1.18,returning:false,hit:new Set(),landedHit:false,damage:(player.weapon==='wand'&&player.weaponUpgrade==='wand_fan'?damage*fanDamage:damage)*(relicBag.split&&i!==Math.floor((count-1)/2)?(player.weapon==='axe'?.55:.75):1),pierce:player.weapon==='wand'?(player.weaponUpgrade==='wand_fan'?1:2)+(relicBag.abyss_hungry?1:0):999,bouncesLeft:relicBag.abyss_reflect&&player.weapon==='wand'?2:0,stormBounces:0,spin:0,upgrade:player.weaponUpgrade,splitAttack:!!relicBag.split&&player.weapon!=='twin',charge:player.weapon==='axe'?clamp(charge,0,1):0,scale:player.weapon==='axe'?1+1.5*clamp(charge,0,1):1,chargeBlast:player.weapon==='axe'&&i===0,chargeBlastPhases:{},chain:player.weapon==='wand'&&!!relicBag.wand_arc&&attackNumber%4===0&&i===0});
+        shots.push({kind:player.weapon==='wand'?'bolt':'axe',x:player.x+Math.cos(a)*13,y:player.y+Math.sin(a)*13,ox:player.x,oy:player.y,vx:Math.cos(a)*weap.speed,vy:Math.sin(a)*weap.speed,angle:a,age:0,returnAt:relicBag.abyss_axe_storm&&player.weapon==='axe' ? .72 : .4,life:player.weapon==='wand'?1.25:1.18,returning:false,hit:new Set(),landedHit:false,damage:(player.weapon==='wand'&&player.weaponUpgrade==='wand_fan'?damage*fanDamage:damage),pierce:player.weapon==='wand'?(player.weaponUpgrade==='wand_fan'?1:2)+(relicBag.abyss_hungry?1:0):999,bouncesLeft:relicBag.abyss_reflect&&player.weapon==='wand'?2:0,stormBounces:0,spin:0,upgrade:player.weaponUpgrade,splitAttack:!!relicBag.split&&player.weapon!=='twin',charge:player.weapon==='axe'?clamp(charge,0,1):0,scale:player.weapon==='axe'?1+1.5*clamp(charge,0,1):1,chargeBlast:player.weapon==='axe'&&i===0,chargeBlastPhases:{},chain:player.weapon==='wand'&&!!relicBag.wand_arc&&attackNumber%4===0&&i===0});
       }
     }
     if(relicBag.abyss_axe_storm&&player.weapon==='axe')player.axeStormOut=true;
@@ -1277,11 +1277,11 @@
   function bombRadius(){const up=player.weaponUpgrade;return (up==='bomb_heavy'?128:up==='bomb_rapid'?62:88)+14*(relicBag.bomb_core||0)+(player.weaponUpgrade2==='bomb_rapid_chain'?(player.bombChain||0)*11:0);}
   function fireBomb(angle,damage){
     const up=player.weaponUpgrade,heavy=up==='bomb_heavy',rapid=up==='bomb_rapid',dx=mouse.x-player.x,dy=mouse.y-player.y,reach=Math.min(380,Math.hypot(dx,dy)),count=1+Math.min(3,relicBag.split||0);
-    for(let i=0;i<count;i++){const a=angle+(i-(count-1)/2)*.28,tx=clamp(player.x+Math.cos(a)*reach,40,W-40),ty=clamp(player.y+Math.sin(a)*reach,52,H-44),flight=Math.max(.14,reach/620);shots.push({kind:'bomb',x:player.x,y:player.y,ox:player.x,oy:player.y,tx,ty,age:0,flight,life:flight+1,hit:new Set(),damage:damage*(heavy?1.55:rapid?.52:1)*(i?.45:1),pierce:999,spin:0,angle:a,radius:bombRadius()});}
+    for(let i=0;i<count;i++){const a=angle+(i-(count-1)/2)*.28,tx=clamp(player.x+Math.cos(a)*reach,40,W-40),ty=clamp(player.y+Math.sin(a)*reach,52,H-44),flight=Math.max(.14,reach/620);shots.push({kind:'bomb',x:player.x,y:player.y,ox:player.x,oy:player.y,tx,ty,age:0,flight,life:flight+1,hit:new Set(),damage:damage*(heavy?1.55:rapid?.52:1),pierce:999,spin:0,angle:a,radius:bombRadius()});}
   }
   function detonateBomb(s,mini=false){
     const radius=mini?46:s.radius,up=player.weaponUpgrade,up2=player.weaponUpgrade2;weaponEffects.push({kind:'blast',x:s.x,y:s.y,radius,color:'#ffb36a',life:.28,maxLife:.28});burst(s.x,s.y,'#ffb36a',mini?5:12);shake=Math.max(shake,mini?1.5:3.5);playSound('mine');
-    let struck=0;for(const e of [...enemies]){if(e.under||(e.kind==='boss'&&e.invulnerable)||dist(e,s)>=radius+e.r)continue;struck++;damageEnemy(e,s.damage*(mini?(up2==='bomb_cluster_hot'?.5:.28):1),'cleave',{attackContext:s.attackContext,x:s.x,y:s.y});if(up2==='bomb_heavy_stun'&&e.kind!=='boss'&&enemies.includes(e))e.stunTimer=Math.max(e.stunTimer||0,.6);}
+    let struck=0;for(const e of [...enemies]){if(e.under||(e.kind==='boss'&&e.invulnerable)||dist(e,s)>=radius+e.r)continue;struck++;damageEnemy(e,s.damage*(mini?(up2==='bomb_cluster_hot'?.72:.4):1),'cleave',{attackContext:s.attackContext,x:s.x,y:s.y});if(up2==='bomb_heavy_stun'&&e.kind!=='boss'&&enemies.includes(e))e.stunTimer=Math.max(e.stunTimer||0,.6);}
     if(screen!=='playing')return;
     if(up2==='bomb_rapid_heat'&&struck)addHeat(1.4*struck);
     if(!mini&&up2==='bomb_rapid_chain')player.bombChain=struck?Math.min(4,(player.bombChain||0)+1):0;
@@ -1308,7 +1308,7 @@
   function twinSwipeCount(){return 2+(relicBag.split?1+Math.min(2,relicBag.split-1):0);}
   function fireWandRail(angle,damage,allowEcho=true,allowSplit=true,attackContext=null){
     let landed=false;
-    if(allowSplit&&relicBag.split){const extra=1+Math.min(2,relicBag.split-1),count=extra+1;for(let i=0;i<count;i++){const rayAngle=angle+(i-(count-1)/2)*.16,rayDamage=damage*(i===Math.floor((count-1)/2)?1:.55);landed=fireWandRail(rayAngle,rayDamage,false,false,attackContext)||landed;if(player.weaponUpgrade2==='wand_rail_echo')landed=fireWandRail(rayAngle+.1,rayDamage*.58,false,false,attackContext)||landed;}return landed;}
+    if(allowSplit&&relicBag.split){const extra=1+Math.min(2,relicBag.split-1),count=extra+1;for(let i=0;i<count;i++){const rayAngle=angle+(i-(count-1)/2)*.16,rayDamage=damage;landed=fireWandRail(rayAngle,rayDamage,false,false,attackContext)||landed;if(player.weaponUpgrade2==='wand_rail_echo')landed=fireWandRail(rayAngle+.1,rayDamage*.58,false,false,attackContext)||landed;}return landed;}
     const start={x:player.x,y:player.y},end=rayEnd(player.x,player.y,angle),length=dist(start,end),dx=end.x-start.x,dy=end.y-start.y,lenSq=dx*dx+dy*dy;
     let clearLength=length;
     for(let d=8;d<length;d+=8){const x=start.x+dx/length*d,y=start.y+dy/length*d;if(obstacles.some(r=>overlapsObstacle(x,y,2,r))){clearLength=d;break;}}
@@ -1398,10 +1398,10 @@
     if(which==='adrenaline'&&runDifficulty>=2&&player.adrenaline>=1&&player.adrenalineActive<=0){player.adrenaline=0;player.adrenalineActive=3.5;if(balanceRoom)balanceRoom.resourceUses++;balanceEvents.push({t:+runTime.toFixed(2),type:'resource',resource:'adrenaline'});toast('아드레날린 · 공격력 2.5배');playSound('relic');burst(player.x,player.y,'#74eaff',18);return true;}
     return false;
   }
-  function overdriveDuration(){return 5+3*(relicBag.overclock?1:0);}
+  function overdriveDuration(){return 5+3*(relicBag.overclock||0);}
   function overdriveEnded(){
     if(!relicBag.overclock)return;
-    const radius=210,damage=weapons[player.weapon].damage*(1+(player.damageBonus||0))*6;weaponEffects.push({kind:'blast',x:player.x,y:player.y,radius,color:'#ffd36a',life:.42,maxLife:.42});burst(player.x,player.y,'#ffd36a',26);shake=Math.max(shake,7);playSound('relicBlast');
+    const radius=210,damage=weapons[player.weapon].damage*(1+(player.damageBonus||0))*6*relicBag.overclock;weaponEffects.push({kind:'blast',x:player.x,y:player.y,radius,color:'#ffd36a',life:.42,maxLife:.42});burst(player.x,player.y,'#ffd36a',26);shake=Math.max(shake,7);playSound('relicBlast');
     for(const e of [...enemies])if(!e.under&&dist(e,player)<radius+e.r)damageEnemy(e,damage,'explosion');
   }
   function updateCombatPowers(dt){
@@ -1994,7 +1994,7 @@
   function parryVisualRadius(){return player.r*2*(1.2+.1*(relicBag.parry_guard||0));}
   function parryHitRadius(){return player.r*(parryWindow>0?2*parryRadiusScale():1);}
   function reflectParryDamage(amount,attacker){const target=enemies.includes(attacker)&&!(attacker.kind==='boss'&&attacker.invulnerable)?attacker:enemies.filter(e=>!(e.kind==='boss'&&e.invulnerable)).sort((a,b)=>dist(a,player)-dist(b,player))[0];if(!target)return false;const reflected=Math.max(1,Math.round(amount*(1.5+.5*(relicBag.parry_edge||0))));burst(target.x,target.y,'#8cf5ff',10);damageEnemy(target,reflected,'parry',null,null,true);floatText(target.x,target.y-target.r-10,String(reflected),'#62dcff',16);return true;}
-  function hurtPlayer(amount,cause='접촉',attacker=null){if(relicBag.abyss_evasion&&runRandom()<.5){invuln=Math.max(invuln,.2);burst(player.x,player.y,'#c69aff',8);floatText(player.x,player.y-24,'\uD68C\uD53C!','#c9a5ff',16);playSound('dash');return;}if(parryWindow>0){parryWindow=0;parryCooldown=.35;invuln=Math.max(invuln,relicBag.exp_parry ? .35 : .2);parryCooldown=relicBag.collapse_parry?0:.35;shake=Math.max(shake,3);weaponEffects.push({kind:'parry',x:player.x,y:player.y,radius:54,life:.24,maxLife:.24,color:'#8cf5ff'});burst(player.x,player.y,'#8cf5ff',16);if(balanceRoom?.active)balanceRoom.parries=(balanceRoom.parries||0)+1;floatText(player.x,player.y-28,'패링!','#aaf7ff',18);{const ring=parryVisualRadius()+60;bullets=bullets.filter(b=>{if(dist(b,player)>=ring)return true;burst(b.x,b.y,'#aaf7ff',2);return false;});}addHeat(14);hitstop(.06,true);flashFx={color:'170,245,255',life:.1,max:.1,alpha:.22};reflectParryDamage(amount,attacker);if(hasSynergy('guard_parry')){player.counterReady=3;floatText(player.x,player.y-44,'반격 준비','#a7efbf',12);}playSound('parryHit');return;}if(invuln>0)return;if(runDifficulty>=2&&player.adrenalineActive<=0&&player.adrenaline>0){player.adrenaline=0;floatText(player.x,player.y-36,'아드레날린 초기화','#83eaff',11);}let taken=difficultyDamageMultiplier(runDifficulty)*(1-Math.min(.45,(relicBag.guard||0)*.1));if(relicBag.exp_guard)taken*=.8;if(relicBag.ore_armor)taken*=1-Math.min(hasSynergy('ore_armor_guard')?.4:.24,Math.floor(ore/20)*.02);if(player.rageActive<=0)player.rage=relicBag.hot_core?0:Math.max(0,player.rage-.3);flashFx={color:'255,60,80',life:.16,max:.16,alpha:.28};amount=Math.max(1,Math.round(amount*taken*zoneScale(growth.zoneDamage)));const hpBefore=player.hp;player.hp-=amount;if(screen==='dig'&&dig){const loss=Math.max(0,hpBefore-Math.max(0,player.hp));dig.stats.damageTaken+=loss;dig.stats.damageByCause[cause]=Math.round((dig.stats.damageByCause[cause]||0)+loss);}else if(balanceRoom){const loss=Math.max(0,hpBefore-Math.max(0,player.hp));balanceRoom.damageTaken+=loss;balanceRoom.hits=(balanceRoom.hits||0)+1;const causes=balanceRoom.damageByCause||(balanceRoom.damageByCause={});causes[cause]=(causes[cause]||0)+loss;}if(relicBag.collapse_momentum){momentumHits=0;const oldFactor=runStatMultiplier();runStatPenalty=Math.min(1,runStatPenalty+.1);const ratio=oldFactor?runStatMultiplier()/oldFactor:0;player.maxHp=Math.max(1,player.maxHp*ratio);player.hp=Math.max(0,Math.min(player.hp,player.maxHp));if(runStatPenalty>=1)player.hp=0;}invuln=.54;shake=6;burst(player.x,player.y,'#ff7181',7);playSound('hurt');floatText(player.x,player.y-20,`-${amount}`,'#ff8990',15);lastHitLog.push({t:+runTime.toFixed(2),cause,amount,hp:Math.round(player.hp)});if(lastHitLog.length>12)lastHitLog.shift();if(player.hp<=0&&relicBag.gold_tooth&&!player.toothUsed&&ore>=80){player.toothUsed=true;balanceEvents.push({t:+runTime.toFixed(2),type:'gold-tooth',ore});spendOre(ore);player.hp=player.maxHp*.5;invuln=1.5;toast('금니가 깨졌다 · 되살아났다');burst(player.x,player.y,'#ffd36a',30);return;}if(player.hp<=0){player.hp=0;gameOver(cause);}}
+  function hurtPlayer(amount,cause='접촉',attacker=null){if(relicBag.abyss_evasion&&runRandom()<.5){invuln=Math.max(invuln,.2);burst(player.x,player.y,'#c69aff',8);floatText(player.x,player.y-24,'\uD68C\uD53C!','#c9a5ff',16);playSound('dash');return;}if(parryWindow>0){parryWindow=0;parryCooldown=.35;invuln=Math.max(invuln,relicBag.exp_parry ? .35 : .2);parryCooldown=relicBag.collapse_parry?0:.35;shake=Math.max(shake,3);weaponEffects.push({kind:'parry',x:player.x,y:player.y,radius:54,life:.24,maxLife:.24,color:'#8cf5ff'});burst(player.x,player.y,'#8cf5ff',16);if(balanceRoom?.active)balanceRoom.parries=(balanceRoom.parries||0)+1;floatText(player.x,player.y-28,'패링!','#aaf7ff',18);{const ring=parryVisualRadius()+60;bullets=bullets.filter(b=>{if(dist(b,player)>=ring)return true;burst(b.x,b.y,'#aaf7ff',2);return false;});}addHeat(14);hitstop(.06,true);flashFx={color:'170,245,255',life:.1,max:.1,alpha:.22};reflectParryDamage(amount,attacker);if(hasSynergy('guard_parry')){player.counterReady=3;floatText(player.x,player.y-44,'반격 준비','#a7efbf',12);}playSound('parryHit');return;}if(invuln>0)return;if(runDifficulty>=2&&player.adrenalineActive<=0&&player.adrenaline>0){player.adrenaline=0;floatText(player.x,player.y-36,'아드레날린 초기화','#83eaff',11);}let taken=difficultyDamageMultiplier(runDifficulty)*(1-Math.min(.45,(relicBag.guard||0)*.1));if(relicBag.exp_guard)taken*=.8;if(relicBag.ore_armor)taken/=1+Math.floor(ore/20)*.02*relicBag.ore_armor*(hasSynergy('ore_armor_guard')?1.6:1);if(player.rageActive<=0)player.rage=relicBag.hot_core?0:Math.max(0,player.rage-.3);flashFx={color:'255,60,80',life:.16,max:.16,alpha:.28};amount=Math.max(1,Math.round(amount*taken*zoneScale(growth.zoneDamage)));const hpBefore=player.hp;player.hp-=amount;if(screen==='dig'&&dig){const loss=Math.max(0,hpBefore-Math.max(0,player.hp));dig.stats.damageTaken+=loss;dig.stats.damageByCause[cause]=Math.round((dig.stats.damageByCause[cause]||0)+loss);}else if(balanceRoom){const loss=Math.max(0,hpBefore-Math.max(0,player.hp));balanceRoom.damageTaken+=loss;balanceRoom.hits=(balanceRoom.hits||0)+1;const causes=balanceRoom.damageByCause||(balanceRoom.damageByCause={});causes[cause]=(causes[cause]||0)+loss;}if(relicBag.collapse_momentum){momentumHits=0;const oldFactor=runStatMultiplier();runStatPenalty=Math.min(1,runStatPenalty+.1);const ratio=oldFactor?runStatMultiplier()/oldFactor:0;player.maxHp=Math.max(1,player.maxHp*ratio);player.hp=Math.max(0,Math.min(player.hp,player.maxHp));if(runStatPenalty>=1)player.hp=0;}invuln=.54;shake=6;burst(player.x,player.y,'#ff7181',7);playSound('hurt');floatText(player.x,player.y-20,`-${amount}`,'#ff8990',15);lastHitLog.push({t:+runTime.toFixed(2),cause,amount,hp:Math.round(player.hp)});if(lastHitLog.length>12)lastHitLog.shift();if(player.hp<=0&&relicBag.gold_tooth&&!player.toothUsed&&ore>=80){player.toothUsed=true;balanceEvents.push({t:+runTime.toFixed(2),type:'gold-tooth',ore});spendOre(ore);player.hp=player.maxHp*.5;invuln=1.5;toast('금니가 깨졌다 · 되살아났다');burst(player.x,player.y,'#ffd36a',30);return;}if(player.hp<=0){player.hp=0;gameOver(cause);}}
   // ---- The Mines II: heat, ore chunks and breakable props ----
   function guildLevel(id){return saved.guild?.[id]||0;}
   function deepZone(){return stage===FINAL_STAGE+1&&!endless;}
@@ -2020,7 +2020,7 @@
   function gainOreValue(value){oreFraction+=value;const whole=Math.floor(oreFraction);if(whole>0){oreFraction-=whole;gainOre(whole);}}
   function collectOre(d){
     gainOreValue(d.value);orePickupsThisRoom++;
-    addHeat(relicBag.canary_cage?3.4:1.1);
+    addHeat(1.1+2.3*(relicBag.canary_cage||0));
     if(hasSynergy('magnet_blood')&&++oreMagnetCount>=8){oreMagnetCount=0;healPlayer(1);}
     if(particles.length<420)particles.push({x:d.x,y:d.y,vx:0,vy:-30,life:.18,color:'#ffe9a8',size:3});
     if(time-(collectOre.last||0)>.09){collectOre.last=time;playSound('ore');}
@@ -2119,7 +2119,7 @@
   function hitPropsArc(angle,reach,halfAngle,power=propPower()){for(const p of [...props]){const dx=p.x-player.x,dy=p.y-player.y;if(Math.hypot(dx,dy)>=reach+p.r)continue;const delta=Math.atan2(Math.sin(Math.atan2(dy,dx)-angle),Math.cos(Math.atan2(dy,dx)-angle));if(Math.abs(delta)<halfAngle)hitProp(p,power);}}
   function hitPropsLine(a,b,width,power=propPower()){const dx=b.x-a.x,dy=b.y-a.y,lenSq=dx*dx+dy*dy||1;for(const p of [...props]){const t=clamp(((p.x-a.x)*dx+(p.y-a.y)*dy)/lenSq,0,1);if(Math.hypot(p.x-(a.x+dx*t),p.y-(a.y+dy*t))<width+p.r)hitProp(p,power);}}
   function hitPropsCircle(x,y,radius,power=3){for(const p of [...props])if(dist(p,{x,y})<radius+p.r)hitProp(p,power);}
-  function dropDynamite(){if(!relicBag.dynamite||dynamiteTimer>0||screen!=='playing')return;dynamiteTimer=Math.max(2.2,4.5-.8*(relicBag.dynamite-1));props.push({kind:'tnt',x:player.x,y:player.y,r:14,hp:0,maxHp:1,flash:0,spawn:0,fuse:.55,fuseMax:.55,seed:0,friendly:true});floatText(player.x,player.y-24,'점화!','#ffb36a',12);}
+  function dropDynamite(){if(!relicBag.dynamite||dynamiteTimer>0||screen!=='playing')return;dynamiteTimer=4.5/(1+.4*(relicBag.dynamite-1));props.push({kind:'tnt',x:player.x,y:player.y,r:14,hp:0,maxHp:1,flash:0,spawn:0,fuse:.55,fuseMax:.55,seed:0,friendly:true});floatText(player.x,player.y-24,'점화!','#ffb36a',12);}
   const propSprites=new Map(),propSpriteSize=46;
   function paintProp(g,kind,damage){
     if(kind==='vein'){g.fillStyle='#14111a';g.fillRect(-15,-11,30,24);g.fillRect(-11,-15,22,32);g.fillStyle='#4b4453';g.fillRect(-13,-10,26,20);g.fillRect(-9,-13,18,26);g.fillStyle='#6d6475';g.fillRect(-11,-11,14,6);g.fillRect(-13,-6,6,8);g.fillStyle='#ffc34d';g.fillRect(-6,-6,6,6);g.fillRect(3,-2,6,6);g.fillRect(-3,4,5,5);g.fillStyle='#fff0b0';g.fillRect(-5,-5,2,2);g.fillRect(4,-1,2,2);g.fillRect(-2,5,2,2);if(damage>0){g.fillStyle='#14111a';g.fillRect(-1,-13,2,12);g.fillRect(1,-3,6,2);if(damage>1)g.fillRect(-9,1,8,2);}}
