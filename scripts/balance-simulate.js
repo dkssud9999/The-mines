@@ -186,6 +186,7 @@ function runBalanceSimulation(gameHtml, options = {}) {
         if(miss<danger)score-=((danger-miss)/danger)*7;
       }
       for(const lit of (s.props||[])){if(lit.kind!=='tnt'||!(lit.fuse>0)||lit.friendly)continue;const x=p.x+dx*p.speed*.3,y=p.y+dy*p.speed*.3,gap=hypot(lit.x-x,lit.y-y);if(gap<125)score-=9*(125-gap)/125;}
+      for(const dig of s.enemies){if(dig.digState!=='rise')continue;const x=p.x+dx*p.speed*.3,y=p.y+dy*p.speed*.3,gap=hypot(dig.x-x,dig.y-y);if(gap<80)score-=9*(80-gap)/80;}
       for(const h of s.hazards){
         const hx=(h.x||0)-p.x,hy=(h.y||0)-p.y,hd=hypot(hx,hy);
         if(hd<100)score-=((100-hd)/100)*(h.phase==='active'?4:1.2);
