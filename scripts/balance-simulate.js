@@ -69,7 +69,7 @@ function runBalanceSimulation(gameHtml, options = {}) {
     get extra(){return {seals,ore,oreEarned,heat:player?.rage||0,props:props.length,balanceEvents};},
     setMouse(x,y){mouse.x=x;mouse.y=y;}, setKeys(next){keys=next;}, setFiring(value){mouse.down=value;},
     setDifficulty(value){difficulty=value;}, setWeapon(value){selectedWeapon=value;},
-    get state(){return {screen,phase,stage,roomCount,runTime,kills,player,enemies,bullets,shots,hazards,obstacles,lootPool,lootAfter,boss,saved,relicBag,mouse,keys};},
+    get state(){return {props,screen,phase,stage,roomCount,runTime,kills,player,enemies,bullets,shots,hazards,obstacles,lootPool,lootAfter,boss,saved,relicBag,mouse,keys};},
     get report(){return window.mineBalanceReport;}, get victory(){return $('endKicker').textContent==='RUN COMPLETE';}, skipOptionalLoot,
     lineBlocked(a,b,r=2){return isObstructed(a,b,r);},
     get upgradeOptions(){return player.weaponUpgrade?weaponUpgradeBranches[player.weaponUpgrade]||[]:weaponUpgrades[player.weapon]||[];}
@@ -154,7 +154,7 @@ function runBalanceSimulation(gameHtml, options = {}) {
       return;
     }
     if(s.screen!=='playing'||!s.player)return;
-    const p=s.player, target=targetFor(s), bossTarget=target?.kind==='boss';
+    const p=s.player, liveTarget=targetFor(s), propTarget=!liveTarget?(s.props||[]).filter(x=>x.kind!=='tnt').sort((a,b)=>hypot(a.x-p.x,a.y-p.y)-hypot(b.x-p.x,b.y-p.y))[0]:null, target=liveTarget||propTarget||null, bossTarget=target?.kind==='boss';
     if(target){game.setMouse(target.x,target.y);game.setFiring(true);}else game.setFiring(false);
     if(p.rage>=1&&p.rageActive<=0)game.activateCombatPower('rage');
     if(p.adrenaline>=1&&p.adrenalineActive<=0)game.activateCombatPower('adrenaline');
@@ -185,6 +185,7 @@ function runBalanceSimulation(gameHtml, options = {}) {
         const miss=hypot(rx+vx*t,ry+vy*t),danger=(b.r||5)+p.r+8;
         if(miss<danger)score-=((danger-miss)/danger)*7;
       }
+      for(const lit of (s.props||[])){if(lit.kind!=='tnt'||!(lit.fuse>0)||lit.friendly)continue;const x=p.x+dx*p.speed*.3,y=p.y+dy*p.speed*.3,gap=hypot(lit.x-x,lit.y-y);if(gap<125)score-=9*(125-gap)/125;}
       for(const h of s.hazards){
         const hx=(h.x||0)-p.x,hy=(h.y||0)-p.y,hd=hypot(hx,hy);
         if(hd<100)score-=((100-hd)/100)*(h.phase==='active'?4:1.2);
@@ -205,11 +206,11 @@ function runBalanceSimulation(gameHtml, options = {}) {
     if((close||bulletThreat)&&p.dashing<=0&&s.runTime-lastControlDash>.25){game.tryDash();lastControlDash=s.runTime;}
   }
 
-  let steps=0;
+  let steps=0;const metrics={frames:0,noEnemy:0,deadAir:0};
   while(game.state.runTime<maxSeconds&&steps<Math.ceil(maxSeconds/dt)+10){
     const s=game.state;
     if(s.screen==='end')break;
-    drive();
+    drive();if(s.screen==='playing'){metrics.frames++;const live=s.enemies.some(e=>!e.under&&e.kind!=='seal');if(!live){metrics.noEnemy++;if(!(s.props&&s.props.length))metrics.deadAir++;}}
     mockNow+=dt*1000;
     game.update(dt); steps++;
   }
@@ -220,7 +221,7 @@ function runBalanceSimulation(gameHtml, options = {}) {
     time:+final.runTime.toFixed(2),kills:final.kills,zone:final.stage,phase:final.phase,
     hp:final.player?+final.player.hp.toFixed(1):0,maxHp:final.player?+final.player.maxHp.toFixed(1):0,
     upgrades:final.player?[final.player.weaponUpgrade,final.player.weaponUpgrade2].filter(Boolean):[],
-    relics:{...final.relicBag},rooms:report.rooms,steps,...(game.extra?{extra:game.extra}:{})
+    relics:{...final.relicBag},rooms:report.rooms,metrics,steps,...(game.extra?{extra:game.extra}:{})
   };
 }
 

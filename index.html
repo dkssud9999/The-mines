@@ -431,7 +431,7 @@
   const touchMove={active:false,id:null,x:0,y:0,dx:0,dy:0},touchAim={active:false,id:null,x:0,y:0,dx:0,dy:0,chargeLocked:false,rechargeDelay:0,firedWhileHeld:false,tapCandidate:false,downAt:0,downX:0,downY:0,fallbackAngle:-Math.PI/2};
   const stickHomes={left:{x:112,y:H-112},right:{x:W-112,y:H-112}},defaultStickHomes={left:{x:112,y:H-112},right:{x:W-112,y:H-112}},touchDashHome={x:W-78,y:H-220,r:50},touchParryHome={x:W-220,y:H-220,r:38},touchPauseHome={x:W/2,y:31,r:21};
   let player, enemies=[], bullets=[], shots=[], particles=[], texts=[], obstacles=[], drops=[], hazards=[], lightningArcs=[], weaponEffects=[], voidWaves=[];
-  let stage=1, phase='wave', roomCount=0, kills=0, xp=0, xpNeed=6, runTime=0, runDifficulty=0, endless=false, boss=null, bossDeathPending=false, clearTransition=null;
+  let stage=1, phase='wave', roomCount=0, kills=0, runTime=0, runDifficulty=0, endless=false, boss=null, bossDeathPending=false, clearTransition=null;
   let ore=0, oreEarned=0, oreSpent=0, shopRerolls=0, nextRoomBonus=false, seenEvents=[];
   let zoneStep=0, roomKind='wave', pendingWaves=[], spawnPortals=[], waveIndex=0, waveTotal=0, waveTimer=0, depth=0, upgradeResume='stage';
   let lootAfter='', lootPool=[], attackTimer=0, dashTimer=0, dashCooldown=0, parryCooldown=0, parryWindow=0, invuln=0, bossAttack=0, frame=0, weaponUpgradeUsed=false, weaponUpgrade2Used=false, resolvingKillBurst=false, runStatPenalty=0, momentumHits=0, abyssHitStreak=0;
@@ -515,7 +515,7 @@
     balanceRooms.length=0;balanceRoom={active:false,number:0,stage:1,phase:'wave',startedAt:0,damageDealt:0,damageTaken:0,healed:0,resourceUses:0};balanceRngState=balanceSeed??1;
     balanceEvents=[];balanceRunStartedAt=new Date().toISOString();balanceRunSaved=false;balanceRunCleared=false;
     runToken++;clearPendingEchoes();runStatPenalty=0;momentumHits=0;abyssHitStreak=0;
-    stage=1;phase='wave';roomCount=0;kills=0;xp=0;xpNeed=6;runTime=0;runDifficulty=difficulty;endless=false;boss=null;bossDeathPending=false;clearTransition=null;
+    stage=1;phase='wave';roomCount=0;kills=0;runTime=0;runDifficulty=difficulty;endless=false;boss=null;bossDeathPending=false;clearTransition=null;
     weaponUpgradeUsed=false;weaponUpgrade2Used=false;
     clearShots(true);
     for(const k of Object.keys(relicBag))delete relicBag[k];
@@ -791,7 +791,7 @@
     const def=bosses[biomeIndex()],pressure=def.kind==='star'||def.kind==='echo'?dp().finalPressure:runDifficulty,scale=(1+(stage-1)*growth.bossPerZone)*difficultyHpMultiplier(runDifficulty,'boss');
     const health=(def.kind==='star'||def.kind==='echo'?840:780)*scale*growth.bossBase;
     setupRoomProps('boss');bossIntro=1.25;player.trail=[];
-    boss={kind:'boss',bossKind:def.kind,name:def.name,color:def.color,x:W/2,y:142,r:32,hp:health,maxHp:health,burnScale:scale,speed:40,phase:1,attack:.78,telegraph:null,flash:0,angle:0,damage:18,act:'combat',hellIndex:0,thresholdIndex:0,hellTimer:0,hellAttack:.2,hellWaves:0,invulnerable:false,finalAct:false,finalPressure:pressure,introBoss:stage===1&&runDifficulty===0&&def.kind==='warden',rageAt:(stage===1&&runDifficulty===0&&def.kind==='warden') ? .4 : .5};
+    boss={kind:'boss',bossKind:def.kind,name:def.name,color:def.color,x:W/2,y:142,r:32,hp:health,maxHp:health,burnScale:(1+(stage-1)*growth.bossPerZone*.55)*difficultyHpMultiplier(runDifficulty),speed:40,phase:1,attack:.78,telegraph:null,flash:0,angle:0,damage:18,act:'combat',hellIndex:0,thresholdIndex:0,hellTimer:0,hellAttack:.2,hellWaves:0,invulnerable:false,finalAct:false,finalPressure:pressure,introBoss:stage===1&&runDifficulty===0&&def.kind==='warden',rageAt:(stage===1&&runDifficulty===0&&def.kind==='warden') ? .4 : .5};
     if(balanceRoom){balanceRoom.bossName=def.name;balanceRoom.bossKind=def.kind;balanceRoom.bossHpStart=health;balanceRoom.enemyCountStart=1;balanceRoom.enemyKinds={boss:1};}
     if(relicBag.collapse_frontal)boss.facingAngle=Math.atan2(player.y-boss.y,player.x-boss.x);
     enemies.push(boss);setScreen('playing');playSound('boss');toast(def.name);if(def.kind==='star')beginFinalHell(boss,false);updateHud();
@@ -1246,7 +1246,7 @@
     if(screen!=='playing')return;
     if(hitStop>0){hitStop=Math.max(0,hitStop-dt);if(shake>0)shake=Math.max(0,shake-dt*24);updateParticles(dt);updateTexts(dt);return;}
     if(bossIntro>0){bossIntro=Math.max(0,bossIntro-dt);updateParticles(dt);updateTexts(dt);return;}
-    if(clearTransition){if(!clearTransition.cleaned){clearTransition.cleaned=true;collectAllDrops();props=[];specialRoom=null;clearShots(true);clearPendingEchoes();bullets=[];hazards=[];lightningArcs=[];voidWaves=[];}$('bossbar').classList.remove('visible');clearTransition.timer=Math.max(0,clearTransition.timer-dt);if(clearTransition.timer===0){const next=clearTransition.onComplete;clearTransition=null;next?.();if(screen!=='playing')return;}}
+    if(clearTransition){if(!clearTransition.cleaned){clearTransition.cleaned=true;props=[];specialRoom=null;clearShots(true);clearPendingEchoes();bullets=[];hazards=[];lightningArcs=[];voidWaves=[];}$('bossbar').classList.remove('visible');clearTransition.timer=Math.max(0,clearTransition.timer-dt);if(clearTransition.timer===0){collectAllDrops();const next=clearTransition.onComplete;clearTransition=null;next?.();if(screen!=='playing')return;}}
     updatePendingEchoes();if(screen!=='playing')return;
     runTime+=dt;attackTimer-=dt;dashCooldown-=dt;parryCooldown=Math.max(0,parryCooldown-dt);invuln-=dt;if(shake>0)shake=Math.max(0,shake-dt*24);
     updateCombatPowers(dt);updateReinforcements(dt);
@@ -1810,8 +1810,8 @@
   function updateDrops(dt){
     for(let i=drops.length-1;i>=0;i--){const d=drops[i];
       if(d.kind!=='ore'){d.life-=dt;if(d.life<=0)drops.splice(i,1);continue;}
-      d.age+=dt;const dx=player.x-d.x,dy=player.y-d.y,gap=Math.hypot(dx,dy)||1,reach=magnetRadius();
-      if(d.age>.28&&gap<reach){const pull=300+(1-gap/reach)*640;d.vx=dx/gap*pull;d.vy=dy/gap*pull;}else{d.vx*=.9;d.vy*=.9;}
+      d.age+=dt;const dx=player.x-d.x,dy=player.y-d.y,gap=Math.hypot(dx,dy)||1,vacuum=!!clearTransition,reach=vacuum?9999:magnetRadius();
+      if(d.age>.28&&gap<reach){const pull=vacuum?1100:300+(1-gap/reach)*640;d.vx=dx/gap*pull;d.vy=dy/gap*pull;}else{d.vx*=.9;d.vy*=.9;}
       d.x=clamp(d.x+d.vx*dt,36,W-36);d.y=clamp(d.y+d.vy*dt,50,H-40);
       if(d.age>.18&&gap<player.r+10){collectOre(d);drops.splice(i,1);}
     }
@@ -2233,7 +2233,7 @@
     if(screen!=='playing'||!player)return;
     const powers=[{label:player.rage>=1?'오버드라이브 · R':`열기 ${heatTier()+1}단계`,charge:player.rage,active:player.rageActive,duration:overdriveDuration(),color:player.rage>=.67?'#ff8a3d':player.rage>=.34?'#ffb36a':'#d9a06a'}];if(runDifficulty>=2)powers.push({label:'아드레날린 · F',charge:player.adrenaline,active:player.adrenalineActive,duration:3.5,color:'#78e7ff'});if(runDifficulty>=3)powers.push({label:'공허 · 정지',charge:player.voidCharge,active:0,duration:1,color:'#c98bff'});
     const w=powers.length===3?108:122,gap=powers.length===3?7:20,h=25,total=powers.length*w+(powers.length-1)*gap,x=(W-total)/2,y=22;
-    powers.forEach((power,i)=>{const bx=x+i*(w+gap),active=power.active>0,fill=active?power.active/power.duration:power.charge;ctx.save();ctx.fillStyle='rgba(10,9,17,.9)';ctx.strokeStyle=active?'#fff1c2':power.color;ctx.lineWidth=2;ctx.fillRect(bx,y,w,h);ctx.strokeRect(bx,y,w,h);ctx.fillStyle=power.color;ctx.fillRect(bx+2,y+2,(w-4)*clamp(fill,0,1),h-4);ctx.fillStyle='#111019';ctx.font=`bold ${powers.length===3?8:10}px ui-monospace,monospace`;ctx.textAlign='center';ctx.fillText(`${power.label}  ${active?power.active.toFixed(1)+'초':Math.floor(power.charge*100)+'%'}`,bx+w/2,y+17);ctx.restore();});
+    powers.forEach((power,i)=>{const bx=x+i*(w+gap),active=power.active>0,fill=active?power.active/power.duration:power.charge;ctx.save();ctx.fillStyle='rgba(10,9,17,.9)';ctx.strokeStyle=active?'#fff1c2':power.color;ctx.lineWidth=2;ctx.fillRect(bx,y,w,h);ctx.strokeRect(bx,y,w,h);ctx.fillStyle=power.color;ctx.fillRect(bx+2,y+2,(w-4)*clamp(fill,0,1),h-4);ctx.font=`bold ${powers.length===3?8:10}px ui-monospace,monospace`;ctx.textAlign='center';ctx.lineWidth=3;ctx.strokeStyle='#100d16';ctx.strokeText(`${power.label}  ${active?power.active.toFixed(1)+'초':Math.floor(power.charge*100)+'%'}`,bx+w/2,y+17);ctx.fillStyle='#fff4dc';ctx.fillText(`${power.label}  ${active?power.active.toFixed(1)+'초':Math.floor(power.charge*100)+'%'}`,bx+w/2,y+17);ctx.restore();});
   }
   function loop(now){const dt=Math.min(.033,(now-lastTime)/1000||0);lastTime=now;update(dt);draw();requestAnimationFrame(loop);}
   function setMouse(e){const r=canvas.getBoundingClientRect();mouse.x=(e.clientX-r.left)*W/r.width;mouse.y=(e.clientY-r.top)*H/r.height;}

@@ -73,10 +73,10 @@ function runBalanceChecks(gameHtml, options = {}) {
   const location = { search: options.search || '' };
   const raf = () => 1, cancelRaf = () => {}, timer = () => 1, clearTimer = () => {};
   const exportCode = `window.__balanceApi={
-    finishRoom:()=>{pendingWaves=[];spawnPortals=[];if(specialRoom){specialRoom.timer=0;updateSpecialRoom(0);}for(const enemy of [...enemies])killEnemy(enemy);for(let i=0;i<5&&screen==='playing';i++)update(1);},settle:()=>{for(let i=0;i<5&&screen==='playing';i++)update(1);},chooseWeaponUpgrade,getUpgradeOptions:()=>player.weaponUpgrade?(weaponUpgradeBranches[player.weaponUpgrade]||[]):weaponUpgrades[player.weapon],startRun:()=>startRun(), setDifficulty:n=>{difficulty=n;saved.highestDifficulty=3;},
+    finishRoom:()=>{pendingWaves=[];spawnPortals=[];if(specialRoom){specialRoom.timer=0;updateSpecialRoom(0);}else if(!enemies.length)spawnEnemy('grunt',0);for(let pass=0;pass<8&&enemies.length;pass++)for(const enemy of [...enemies])killEnemy(enemy);for(let i=0;i<5&&screen==='playing';i++)update(1);},settle:()=>{for(let i=0;i<5&&screen==='playing';i++)update(1);},chooseWeaponUpgrade,getUpgradeOptions:()=>player.weaponUpgrade?(weaponUpgradeBranches[player.weaponUpgrade]||[]):weaponUpgrades[player.weapon],startRun:()=>startRun(), setDifficulty:n=>{difficulty=n;saved.highestDifficulty=3;},
     setProgress:(value,room=0)=>{stage=value;roomCount=room;},clickEndAction:text=>{const button=document.getElementById('endActions').children.find(x=>x.textContent===text);if(!button)throw new Error('Missing end action '+text);for(const fn of button.listeners.get('click')||[])fn();},getState:()=>({phase,screen,stage,roomCount,runDifficulty,lootAfter,lootPool:lootPool.map(x=>x.id),player:player&&{...player},boss:boss&&{...boss},enemies:enemies.map(e=>({...e})),shots:shots.map(s=>({...s})),voidWaves:voidWaves.map(w=>({...w})),touchMove:{...touchMove},touchAim:{...touchAim},mouse:{...mouse},attackTimer,dashCooldown,invuln,collapseBurstOver:player?.collapseBurstOver}),
     setRelic:(id,n=1)=>{relicBag[id]=n;}, setEnemyList:list=>{enemies=list;}, setBoss:e=>{boss=e;enemies=e?[e]:[];phase='boss';}, setPlayer:(patch)=>Object.assign(player,patch),
-    chooseMapNode,mapChoices,advanceZone,chooseRoute,openLoot,takeLoot,skipOptionalLoot,makeLoot,makeTierLoot,makeOwnedStackLoot,healPlayer,save,
+    ii:{clickCard:i=>{const kids=document.getElementById('lootCards').children,c=kids[kids.length-2+i];for(const fn of c.listeners.get('click')||[])fn();},props:()=>props,drops:()=>drops,ore:()=>ore,seals:()=>seals,setSeals:v=>{seals=v;},setOre:v=>{ore=v;},heatTier,addHeat,addProp,hitProp,updateProps,collectAllDrops,spawnOre,spawnEnemy,openDeepGate,zoneMap:()=>zoneMap,generateZoneMap,enemies:()=>enemies,bullets:()=>bullets,addBullet:(x,y)=>bullets.push({x,y,vx:0,vy:0,r:5,damage:1,life:9,color:'#fff'}),clearEnemies:()=>{enemies=[];pendingWaves=[];spawnPortals=[];},clearProps:()=>{props=[];},placeProp:(kind,x,y)=>{const p={kind,x,y,r:15,hp:kind==='vein'?3:1,maxHp:3,flash:0,spawn:0,fuse:0,seed:0};props.push(p);return p;},tryParry,playerRef:()=>player,winRecorded:()=>winRecorded,crystals:()=>saved.crystals||0,guild:(id,n)=>{saved.guild={...(saved.guild||{}),[id]:n};},guildLevel,startSpecialRoom,specialRoom:()=>specialRoom,updateSpecialRoom,startElite,firePick:(a)=>firePickSwing(a,32,1,null),giveRelic:grantRelic,setStage:v=>{stage=v;},deepZone,updateEnemies},chooseMapNode,mapChoices,advanceZone,chooseRoute,openLoot,takeLoot,skipOptionalLoot,makeLoot,makeTierLoot,makeOwnedStackLoot,healPlayer,save,
     setWeapon:value=>{selectedWeapon=value;},setAim:(x,y)=>{mouse.x=x;mouse.y=y;},setAttackCount:value=>{player.attackCount=value;},setUpgrade:(one,two=null)=>{player.weaponUpgrade=one;player.weaponUpgrade2=two;},getAttackStats:()=>({momentumHits,abyssHitStreak,pendingEchoes:pendingEchoes.map(e=>({...e}))}),updateShots,updatePendingEchoes,startWave,startElite,startBoss,resetRoomCombat,update,updateEnemies,updateBoss,updateVoidCharge,updateVoidWaves,startAttack,tryDash,activateCombatPower,hurtPlayer,damageEnemy,
     setScreen,recordBalanceRoom,beginBalanceRoom,report:()=>window.mineBalanceReport,
     getRelics:()=>({...relicBag}),getSaved:()=>({...saved}),getWeapons:()=>weapons,getRelicDefs:()=>relics,getUpgradeDefs:()=>weaponUpgrades,getBranchDefs:()=>weaponUpgradeBranches,setBenchmark:(weapon,one,two,bag,count,distance,spread)=>{selectedWeapon=weapon;difficulty=1;startRun();obstacles=[];clearShots(true);enemies=Array.from({length:count},(_,i)=>({kind:'grunt',x:480+distance+(spread?i*30:i%3*8),y:300+(spread?(i-(count-1)/2)*65:Math.floor(i/3)*9),r:13,hp:1e8,maxHp:1e8,speed:0,damage:0,flash:0}));player.x=480;player.y=300;player.weaponUpgrade=one;player.weaponUpgrade2=two;mouse.x=480+distance;mouse.y=300;for(const key of Object.keys(relicBag))delete relicBag[key];Object.assign(relicBag,bag);},benchmarkTick:()=>{mouse.down=true;update(1/60);},benchmarkHP:()=>enemies.reduce((sum,e)=>sum+e.hp,0),
@@ -97,6 +97,7 @@ function runBalanceChecks(gameHtml, options = {}) {
     api.dispatchWindow(type, event);
     api.dispatchCanvas(type, event);
   };
+  if (typeof globalThis.Audio === 'undefined') globalThis.Audio = class { play() { return Promise.resolve(); } };
   const newRun = (difficulty = 0) => { api.setDifficulty(difficulty); api.startRun(); if (api.getState().screen === 'map') api.chooseMapNode(api.mapChoices()[0]); };
   const findId = (id, list) => list.some(item => item.id === id);
 
@@ -130,7 +131,7 @@ function runBalanceChecks(gameHtml, options = {}) {
               else api.skipOptionalLoot();
             }else throw new Error('unexpected progression state '+current.screen);
           }
-          assert(api.getState().screen==='end'&&api.getState().stage===4,'full run did not reach fourth-zone completion');
+          assert(api.getState().screen==='end'&&api.getState().stage===4,`full run did not reach fourth-zone completion: ${api.getState().screen} stage ${api.getState().stage} phase ${api.getState().phase} after ${steps} steps`);
           assert(firstUpgradeSeen,'first upgrade never offered');
         });
       }
@@ -260,6 +261,37 @@ function runBalanceChecks(gameHtml, options = {}) {
     for(let i=0;i<180;i++)api.updateShots(1/60);
     approx(api.getState().player.hp,98,'reflection cost not shared across shots');
   });
+  // The Mines II: every check below exercises a link BETWEEN systems, not one feature alone.
+  const ii=api.ii,freshRoom=(d=0,w='axe')=>{api.setWeapon(w);newRun(d);ii.clearEnemies();ii.clearProps();};
+  check('II vein -> ore chunks -> heat -> Overdrive chain',()=>{
+    freshRoom();const v=ii.placeProp('vein',300,300);ii.hitProp(v,3);assert(!ii.props().includes(v),'vein did not break');assert(ii.drops().length>0,'vein gave no ore chunks');
+    const heat0=ii.playerRef().rage;ii.collectAllDrops();assert(ii.ore()>0,'chunks did not become ore');assert(heat0>0,'breaking a vein gave no heat');
+    ii.addHeat(100);ii.addBullet(ii.playerRef().x+30,ii.playerRef().y);assert(api.activateCombatPower('rage'),'full heat did not allow Overdrive on Miner');assert(ii.bullets().length===0,'Overdrive did not clear nearby bullets');assert(api.getState().player.rageActive>0,'Overdrive not active');
+  });
+  check('II heat tiers multiply ore',()=>{freshRoom();const p=ii.playerRef();p.rage=0;ii.spawnOre(100,100,4);const low=ii.drops().reduce((s,d)=>s+d.value,0);ii.drops().length=0;p.rage=.7;ii.spawnOre(100,100,4);const hi=ii.drops().reduce((s,d)=>s+d.value,0);approx(hi/low,2,'tier 3 ore multiplier');});
+  check('II taking a hit costs heat, hot_core costs all of it',()=>{freshRoom(0);const p=ii.playerRef();p.rage=.8;api.setPlayer({invuln:0});api.hurtPlayer(5,'t');assert(ii.playerRef().rage<.8&&ii.playerRef().rage>0,'normal hit heat loss wrong');freshRoom(0);ii.giveRelic('hot_core');ii.playerRef().rage=.8;api.hurtPlayer(5,'t');approx(ii.playerRef().rage,0,'hot core keeps heat');});
+  check('II parry clears nearby bullets and feeds heat',()=>{freshRoom();const p=ii.playerRef();p.rage=0;ii.addBullet(p.x+20,p.y);ii.tryParry();api.hurtPlayer(10,'t');assert(ii.bullets().length===0,'parry left nearby bullets');assert(ii.playerRef().rage>0,'parry gave no heat');});
+  check('II TNT hurts enemies, chains, spares friendly dash charges',()=>{
+    freshRoom();ii.spawnEnemy('grunt',0,{x:300,y:300});const e=ii.enemies()[0],hp=e.hp;const a=ii.placeProp('tnt',310,300),b=ii.placeProp('tnt',380,300);ii.hitProp(a,1);ii.updateProps(1);assert(e.hp<hp,'TNT did no enemy damage');ii.updateProps(.2);assert(!ii.props().includes(b),'TNT did not chain');
+    freshRoom();const p=ii.playerRef();const hp0=p.hp;const f=ii.placeProp('tnt',p.x,p.y);f.friendly=true;f.fuse=.1;f.fuseMax=.1;ii.updateProps(.2);assert(ii.playerRef().hp===hp0,'friendly TNT hurt the player');
+    freshRoom();const q=ii.playerRef();const hp1=q.hp;const g=ii.placeProp('tnt',q.x,q.y);g.fuse=.1;g.fuseMax=.1;ii.updateProps(.2);assert(ii.playerRef().hp<hp1,'hostile TNT did not hurt the player');
+  });
+  check('II pickaxe breaks a vein in one swing and melee weapons hit props',()=>{freshRoom(0,'pick');const p=ii.playerRef();const v=ii.placeProp('vein',p.x+60,p.y);ii.firePick(0);assert(!ii.props().includes(v),'pickaxe did not one-shot vein');});
+  check('II burrower is untargetable underground, shield blocks the front',()=>{
+    freshRoom();ii.spawnEnemy('burrower',0,{x:500,y:300});const b=ii.enemies()[0],hp=b.hp;api.damageEnemy(b,10,'axe');approx(b.hp,hp,'underground burrower took damage');
+    freshRoom();const p=ii.playerRef();ii.spawnEnemy('shield',0,{x:p.x+150,y:p.y});const s=ii.enemies()[0];s.shieldAngle=Math.PI;const h0=s.hp;api.damageEnemy(s,10,'axe');const front=h0-s.hp;s.shieldAngle=0;const h1=s.hp;api.damageEnemy(s,10,'axe');const back=h1-s.hp;assert(back>front*3,'shield did not reduce frontal damage');
+  });
+  check('II zone map: every layer reachable, every node leads to the boss',()=>{
+    for(let d=0;d<4;d++){newRun(d);for(let z=1;z<=4;z++){ii.setStage(z);ii.generateZoneMap();const layers=ii.zoneMap().layers;assert(layers[layers.length-1][0].type==='boss','map does not end at a boss');layers.forEach((layer,i)=>{layer.forEach(n=>{if(i<layers.length-1)assert(n.next.length>0,`dead end at ${n.type}`);n.next.forEach(k=>assert(layers[i+1][k],'edge out of range'));});if(i)layer.forEach((n,k)=>assert(layers[i-1].some(m=>m.next.includes(k)),`unreachable ${n.type}`));});assert(z>3||layers.flat().some(n=>n.type==='seal'),'seal node missing');assert(new Set(layers.flat().map(n=>n.type)).size>=7,'zone map lacks variety');}}
+  });
+  check('II seal room grants a seal, three seals open the Echo King and the win still counts on loss',()=>{
+    freshRoom(1);ii.startElite(true);ii.setSeals(2);api.finishRoom();assert(ii.seals()===3,'seal not granted');
+    api.setWeapon('axe');newRun(1);api.setProgress(4);ii.setSeals(3);const star={kind:'boss',bossKind:'star',x:500,y:100,r:32,hp:1,maxHp:1,invulnerable:false};api.setBoss(star);api.damageEnemy(star,10,'axe');api.settle();
+    assert(api.getState().lootAfter==='deepGate','three seals did not open the deep gate');const wins=api.getSaved().wins;ii.clickCard(0);assert(api.getState().stage===5&&ii.deepZone(),'deep gate did not descend');assert(api.getSaved().wins===wins+1,'clear not recorded on descent');api.takeLoot(api.getState().lootPool[0]);assert(api.getState().phase==='boss'&&api.getState().boss.bossKind==='echo','Echo King did not start');api.setPlayer({invuln:0,hp:1});api.hurtPlayer(50,'t');assert(api.getState().screen==='end','deep death did not end the run');assert(api.getSaved().wins===wins+1,'clear counted twice');
+  });
+  check('II without seals the Star Core ends the run',()=>{api.setWeapon('axe');newRun(1);api.setProgress(4);ii.setSeals(1);const star={kind:'boss',bossKind:'star',x:500,y:100,r:32,hp:1,maxHp:1,invulnerable:false};api.setBoss(star);api.damageEnemy(star,10,'axe');api.settle();assert(api.getState().screen==='end','run did not end at the Star Core');assert(ii.crystals()>0,'no crystals awarded');});
+  check('II guild upgrades feed the run and old saves still load',()=>{ii.guild('hp',2);ii.guild('ore',1);api.setWeapon('axe');newRun(0);assert(ii.playerRef().maxHp===112,'guild hp not applied');assert(ii.ore()>=20,'guild ore not applied');ii.guild('hp',0);ii.guild('ore',0);});
+  check('II timed rooms end on their own and pay out',()=>{for(const kind of ['vault','cavein']){freshRoom(0);api.setPlayer({hp:1e6,maxHp:1e6});ii.startSpecialRoom(kind);assert(ii.specialRoom(),'special room missing');for(let i=0;i<60&&ii.specialRoom();i++)api.update(.5);assert(!ii.specialRoom(),`${kind} never ended`);api.settle();assert(['map','loot','weaponUpgrade'].includes(api.getState().screen),`${kind} did not resolve: ${api.getState().screen}`);}});
   check('Twin Abyss risk candidates are two compatible risks plus one safe item',()=>{
     api.setWeapon('twin');newRun(2);const pool=api.makeTierLoot(2,3);assert(pool.length===3,'risk fallback did not fill three cards');
     assert(pool.filter(x=>(x.tier||0)>=2).length===3,'compatible twin risk count mismatch');
