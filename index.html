@@ -140,6 +140,7 @@
     .toast.visible { opacity:1; transform:translate(-50%,0); }
     .footer { display:flex; justify-content:space-between; gap:12px; margin:10px 2px 0; color:#89848a; font-size:10px; }
     @media(max-width:620px) { body{padding:6px}.hud{padding:8px}.hudleft,.hudright{min-width:0}.hudval{font-size:11px}.hudlabel{font-size:8px}.bossbar{top:64px;left:13%;right:13%}.cards{gap:5px}.cards.fourCards{grid-template-columns:repeat(2,minmax(0,1fr))}.card{padding:9px 6px;min-height:153px}.carddesc{font-size:9px}.panel{padding:17px 12px}.footer{font-size:9px} }
+    @media(max-height:520px) { .mapPanel{padding:8px 12px}.mapPanel h2{font-size:17px;margin:0}.mapPanel .kicker{display:none}.mapStats{margin:2px 0;font-size:10px}.mapBody{height:clamp(150px,58vh,220px)}.mapLabel{display:none}.mapIcon{width:32px;height:32px;font-size:16px}.mapDesc{margin-top:3px;font-size:11px} }
     @media(max-width:620px) { .mapNode{width:52px}.mapIcon{width:30px;height:30px;font-size:15px;border-width:2px}.mapLabel{font-size:8px}.guildRow{grid-template-columns:minmax(0,1fr) 100px} }
   </style>
 </head>
@@ -2234,7 +2235,7 @@
   }
   function drawCombatPowerHud(){
     if(screen!=='playing'||!player)return;
-    const powers=[{label:player.rage>=1?'오버드라이브 · R':`열기 ${heatTier()+1}단계`,charge:player.rage,active:player.rageActive,duration:overdriveDuration(),color:player.rage>=.67?'#ff8a3d':player.rage>=.34?'#ffb36a':'#d9a06a'}];if(runDifficulty>=2)powers.push({label:'아드레날린 · F',charge:player.adrenaline,active:player.adrenalineActive,duration:3.5,color:'#78e7ff'});if(runDifficulty>=3)powers.push({label:'공허 · 정지',charge:player.voidCharge,active:0,duration:1,color:'#c98bff'});
+    const powers=[{label:player.rageActive>0?'오버드라이브':player.rage>=1?'오버드라이브 · R':`열기 ${heatTier()+1}단계`,charge:player.rage,active:player.rageActive,duration:overdriveDuration(),color:player.rage>=.67?'#ff8a3d':player.rage>=.34?'#ffb36a':'#d9a06a'}];if(runDifficulty>=2)powers.push({label:'아드레날린 · F',charge:player.adrenaline,active:player.adrenalineActive,duration:3.5,color:'#78e7ff'});if(runDifficulty>=3)powers.push({label:'공허 · 정지',charge:player.voidCharge,active:0,duration:1,color:'#c98bff'});
     const w=powers.length===3?108:122,gap=powers.length===3?7:20,h=25,total=powers.length*w+(powers.length-1)*gap,x=(W-total)/2,y=22;
     powers.forEach((power,i)=>{const bx=x+i*(w+gap),active=power.active>0,fill=active?power.active/power.duration:power.charge;ctx.save();ctx.fillStyle='rgba(10,9,17,.9)';ctx.strokeStyle=active?'#fff1c2':power.color;ctx.lineWidth=2;ctx.fillRect(bx,y,w,h);ctx.strokeRect(bx,y,w,h);ctx.fillStyle=power.color;ctx.fillRect(bx+2,y+2,(w-4)*clamp(fill,0,1),h-4);ctx.font=`bold ${powers.length===3?8:10}px ui-monospace,monospace`;ctx.textAlign='center';ctx.lineWidth=3;ctx.strokeStyle='#100d16';ctx.strokeText(`${power.label}  ${active?power.active.toFixed(1)+'초':Math.floor(power.charge*100)+'%'}`,bx+w/2,y+17);ctx.fillStyle='#fff4dc';ctx.fillText(`${power.label}  ${active?power.active.toFixed(1)+'초':Math.floor(power.charge*100)+'%'}`,bx+w/2,y+17);ctx.restore();});
   }
