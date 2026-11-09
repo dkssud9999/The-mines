@@ -792,7 +792,7 @@
     if(relicBag.collapse_burst){player.collapseBurstTimer=20;player.collapseBurstOver=false;}
     const def=bosses[biomeIndex()],pressure=def.kind==='star'||def.kind==='echo'?dp().finalPressure:runDifficulty,scale=(1+(stage-1)*growth.bossPerZone)*difficultyHpMultiplier(runDifficulty,'boss');
     // Bosses gain length gradually so the opening boss stays a teacher; the Star Core is already long because of its gated phases.
-    const health=(def.kind==='star'||def.kind==='echo'?840:780)*scale*growth.bossBase*(1+(dp().bossHp-1)*([.4,.75,1,.4][biomeIndex()]??.4));
+    const health=(def.kind==='star'||def.kind==='echo'?840:780)*scale*growth.bossBase*(1+(dp().bossHp-1)*([.4,1,1.5,.4][biomeIndex()]??.4));
     setupRoomProps('boss');bossIntro=1.25;player.trail=[];
     boss={kind:'boss',bossKind:def.kind,name:def.name,color:def.color,x:W/2,y:142,r:32,hp:health,maxHp:health,burnScale:(1+(stage-1)*growth.bossPerZone*.55)*difficultyHpMultiplier(runDifficulty),speed:40,phase:1,attack:.78,telegraph:null,flash:0,angle:0,damage:18,act:'combat',hellIndex:0,thresholdIndex:0,hellTimer:0,hellAttack:.2,hellWaves:0,invulnerable:false,finalAct:false,finalPressure:pressure,introBoss:stage===1&&runDifficulty===0&&def.kind==='warden',rageAt:(stage===1&&runDifficulty===0&&def.kind==='warden') ? .4 : .5};
     if(balanceRoom){balanceRoom.bossName=def.name;balanceRoom.bossKind=def.kind;balanceRoom.bossHpStart=health;balanceRoom.enemyCountStart=1;balanceRoom.enemyKinds={boss:1};}
@@ -1341,7 +1341,7 @@
       if(s.returning&&(s.kind==='axe'||s.kind==='echo'))blocked=false;
       hitPropsByShot(s);if(screen!=='playing')return;
       if(frame%3===0&&particles.length<420&&!(s.kind==='orbiter'||s.orbiting))particles.push({x:s.x,y:s.y,vx:0,vy:0,life:.14,color:s.kind==='bolt'?'#7fdcff':s.kind==='prism'?'#ffe7a2':s.kind==='echo'?'#c79cff':'#e3c26e',size:3+(s.scale||1)});
-      for(const e of [...enemies]){if(!s.hit.has(e)&&dist(s,e)<e.r+8*(s.scale||1)){s.hit.add(e);s.landedHit=true;if(s.missState)s.missState.landed=true;const hitDamage=s.damage*(s.upgrade==='axe_return_cut'&&s.returning?(player.weaponUpgrade2==='axe_return_rend'?2.5:1.6):1);damageEnemy(e,hitDamage,s.kind,s);
+      for(const e of [...enemies]){if(!s.hit.has(e)&&dist(s,e)<e.r+8*(s.scale||1)){s.hit.add(e);s.landedHit=true;if(s.missState)s.missState.landed=true;const hitDamage=s.damage*(s.upgrade==='axe_return_cut'&&s.returning?(player.weaponUpgrade2==='axe_return_rend'?2.5:1.6):s.kind==='axe'&&s.returning?.7:1);damageEnemy(e,hitDamage,s.kind,s);
         const blastPhase=s.returning?'return':'outbound';
         if(s.chargeBlast&&s.charge>=.95&&relicBag.axe_core&&!s.chargeBlastPhases?.[blastPhase]&&!(e.kind==='boss'&&e.invulnerable)){
           s.chargeBlastPhases||={};s.chargeBlastPhases[blastPhase]=true;
