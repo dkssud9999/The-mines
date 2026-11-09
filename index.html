@@ -93,6 +93,7 @@
     .card.tier-abyss { border-color:#b37aef; box-shadow:inset 0 0 0 1px #b37aef55,0 0 12px #713ca322; }
     .card.tier-collapse { border-color:#ff725f; box-shadow:inset 0 0 0 1px #ff725f66,0 0 16px #ff453322; }
     .card[class*="tier-"] { padding-bottom:28px; }
+    .card.rareCard { border-color:#ffd36a; box-shadow:inset 0 0 0 1px #ffd36a66,0 0 18px #ffb33a33; }
     .card:hover { transform:translateY(-4px); border-color:#f6cf74; background:#302637; }
     .cardicon { font-size:26px; margin:0 0 8px; }
     .lootPanel { width:min(100%,720px); }
@@ -304,7 +305,7 @@
       {id:'wand_fan_focus',icon:'✧',name:'수렴 부채',desc:'탄환이 좁게 모이고 각 탄환의 피해가 증가한다.'}
     ],
     twin_orbit:[
-      {id:'twin_orbit_blades',icon:'✥',name:'추가 궤도 칼날',desc:'궤도 칼날이 하나 더 생긴다. 갈라진 송곳니와 함께 최대 여섯 개까지 늘어난다.'},
+      {id:'twin_orbit_blades',icon:'✥',name:'추가 궤도 칼날',desc:'궤도 칼날이 하나 더 생긴다. 갈라진 송곳니로 계속 늘어난다.'},
       {id:'twin_orbit_reach',icon:'◉',name:'넓은 궤도',desc:'칼날이 더 빠르고 넓게 회전하며 피해가 증가한다.'}
     ],
     twin_cleave:[
@@ -317,46 +318,46 @@
     ]
   };
   const relics={
-    parry_edge:{image:'assets/relic-icons/parry_edge.png',name:'\uB0A0 \uC120 \uBC18\uACA9',icon:'\u2694\uFE0F',desc:'\uBC18\uC0AC \uD53C\uD574\uAC00 1.5\uBC30\uC5D0\uC11C 2\uBC30\uB85C \uC99D\uAC00\uD569\uB2C8\uB2E4.',color:'#8cf5ff',maxStacks:1},
-    parry_guard:{image:'assets/relic-icons/parry_guard.png',name:'\uD2C8\uC0C8 \uBC29\uD328',icon:'\uD83D\uDEE1\uFE0F',desc:'\uD328\uB9C1 \uC911 \uD53C\uACA9 \uD310\uC815 \uBC18\uACBD\uC774 10% \uCD94\uAC00\uB85C \uCEE4\uC9D1\uB2C8\uB2E4.',color:'#8cf5ff',maxStacks:1},
-    exp_parry:{image:'assets/relic-icons/exp_parry.png',name:'\uC218\uD638\uC758 \uBC15\uC790',icon:'\u2726',desc:'\uD328\uB9C1 \uC131\uACF5 \uD6C4 \uBB34\uC801 \uC2DC\uAC04\uC774 0.2\uCD08\uC5D0\uC11C 0.35\uCD08\uB85C \uB298\uC5B4\uB0A9\uB2C8\uB2E4.',color:'#72d9e8',tier:1,maxStacks:1},
-    exp_edge:{name:'푸른 날의 맹세',icon:'⚔️',desc:'주는 피해가 25% 증가합니다.',color:'#72d9e8',tier:1,maxStacks:1},
+    parry_edge:{image:'assets/relic-icons/parry_edge.png',name:'\uB0A0 \uC120 \uBC18\uACA9',icon:'\u2694\uFE0F',desc:'\uBC18\uC0AC \uD53C\uD574\uAC00 1.5\uBC30\uC5D0\uC11C 2\uBC30\uB85C \uC99D\uAC00\uD569\uB2C8\uB2E4.',color:'#8cf5ff'},
+    parry_guard:{image:'assets/relic-icons/parry_guard.png',name:'\uD2C8\uC0C8 \uBC29\uD328',icon:'\uD83D\uDEE1\uFE0F',desc:'\uD328\uB9C1 \uC911 \uD53C\uACA9 \uD310\uC815 \uBC18\uACBD\uC774 10% \uCD94\uAC00\uB85C \uCEE4\uC9D1\uB2C8\uB2E4.',color:'#8cf5ff'},
+    exp_parry:{image:'assets/relic-icons/exp_parry.png',name:'\uC218\uD638\uC758 \uBC15\uC790',icon:'\u2726',desc:'\uD328\uB9C1 \uC131\uACF5 \uD6C4 \uBB34\uC801 \uC2DC\uAC04\uC774 0.2\uCD08\uC5D0\uC11C 0.35\uCD08\uB85C \uB298\uC5B4\uB0A9\uB2C8\uB2E4.',color:'#72d9e8',tier:1},
+    exp_edge:{name:'푸른 날의 맹세',icon:'⚔️',desc:'주는 피해가 25% 증가합니다.',color:'#72d9e8',tier:1},
     exp_heart:{name:'탐험가의 심장',icon:'💠',desc:'최대 체력이 30 증가하고 체력을 30 회복합니다.',color:'#72d9e8',tier:1},
     exp_stride:{name:'바람길 장화',icon:'🥾',desc:'이동 속도가 30 증가합니다.',color:'#72d9e8',tier:1},
-    exp_tempo:{name:'박동 태엽',icon:'⏱️',desc:'공격 속도가 20% 증가합니다.',color:'#72d9e8',tier:1,maxStacks:1},
+    exp_tempo:{name:'박동 태엽',icon:'⏱️',desc:'공격 속도가 20% 증가합니다.',color:'#72d9e8',tier:1},
     exp_bounty:{name:'사냥꾼의 부적',icon:'🪙',desc:'적 처치 시 체력을 2 회복합니다.',color:'#72d9e8',tier:1},
-    exp_hunter:{name:'균열 추적자',icon:'🎯',desc:'보스에게 주는 피해가 35% 증가합니다.',color:'#72d9e8',tier:1,maxStacks:1},
-    exp_guard:{name:'청동 파수패',icon:'🛡️',desc:'받는 피해가 20% 감소합니다.',color:'#72d9e8',tier:1,maxStacks:1},
-    exp_spark:{name:'잔광 탄환',icon:'✨',desc:'매 5번째 공격이 80% 강해집니다.',color:'#72d9e8',tier:1,maxStacks:1},
-    abyss_evasion:{image:'assets/relic-icons/abyss_evasion.png',name:'\uACF5\uD5C8\uC758 \uD5C8\uBB3C',icon:'\u25C8',desc:'\uD328\uB9C1\uC744 \uC0AC\uC6A9\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4. \uB300\uC2E0 \uBAA8\uB4E0 \uD53C\uACA9\uC744 50% \uD655\uB960\uB85C \uD68C\uD53C\uD569\uB2C8\uB2E4.',color:'#c69aff',tier:2,maxStacks:1},
-    abyss_hungry:{name:'굶주린 탄환',icon:'🩸',desc:'추가 관통 1회. 공격이 연속 명중할 때마다 피해 +10%, 최대 +150%. 한 공격이 전부 빗나가면 체력 3을 잃고 누적이 초기화됩니다.',color:'#c69aff',tier:2,weapon:'wand',maxStacks:1},
-    abyss_gambler:{name:'도박사의 탄창',icon:'🎲',desc:'공격마다 20% 확률로 피해가 5배가 됩니다. 발동하지 않은 공격은 피해가 절반입니다.',color:'#c69aff',tier:2,maxStacks:1},
-    abyss_axe_storm:{name:'도끼 폭풍',icon:'🪓',desc:'도끼가 적중 후 다른 적에게 최대 두 번 튕깁니다. 도끼가 돌아오기 전까지 다시 공격할 수 없습니다.',color:'#c69aff',tier:2,weapon:'axe',maxStacks:1},
-    abyss_reflect:{name:'반사 결정',icon:'💠',desc:'지팡이 탄환이 최대 두 번 반사되고 반사마다 피해가 60% 증가합니다. 반사한 공격당 체력 2를 한 번 지불합니다. 즉시 광선은 반사되지 않습니다.',color:'#c69aff',tier:2,weapon:'wand',maxStacks:1},
-    abyss_footsteps:{name:'피의 발자국',icon:'👣',desc:'이동 경로에 기본 무기 피해 40%의 흔적을 남깁니다. 정지 중 초당 체력 4를 잃으므로 공허 충전과 충돌합니다.',color:'#c69aff',tier:2,maxStacks:1},
-    collapse_parry:{image:'assets/relic-icons/collapse_parry.png',name:'\uBD95\uAD34\uC758 \uC5F0\uC18D',icon:'\u26A1',desc:'\uD328\uB9C1 \uC131\uACF5 \uC2DC \uC7AC\uC0AC\uC6A9 \uB300\uAE30\uC2DC\uAC04\uC774 \uC5C6\uC5B4\uC9D1\uB2C8\uB2E4. \uC2E4\uD328\uD558\uBA74 3\uCD08 \uB300\uAE30\uD569\uB2C8\uB2E4.',color:'#ff8573',tier:3,maxStacks:1},
-    collapse_dash:{name:'무적의 역설',icon:'💨',desc:'대시 무적 시간이 3배가 됩니다. 대시가 끝날 때 최대 체력의 10%를 잃습니다.',color:'#ff8573',tier:3,maxStacks:1},
-    collapse_frontal:{name:'정면 승부',icon:'⚔️',desc:'보스 정면에서 주는 피해가 3배가 됩니다. 후면에서는 피해가 85% 감소합니다.',color:'#ff8573',tier:3,maxStacks:1},
-    collapse_burst:{name:'단기 결전',icon:'⌛',desc:'보스에게 피해를 줄 수 있는 누적 20초간 피해가 4배입니다. 이후 공격 속도가 절반이 됩니다.',color:'#ff8573',tier:3,maxStacks:1},
-    collapse_cannon:{name:'피의 포문',icon:'🩸',desc:'각 방의 첫 공격에 최대 체력 20%를 지불하고 4초간 직접 공격 피해가 3배가 됩니다. 비용으로 사망할 수 있습니다.',color:'#ff8573',tier:3,maxStacks:1},
-    collapse_momentum:{name:'끝없는 기세',icon:'🔥',desc:'적중할 때마다 피해가 1%씩 누적 증가합니다. 피격 시 누적이 초기화되고, 이번 판 동안 모든 능력치가 10%p 영구 감소합니다.',color:'#ff8573',tier:3,maxStacks:1},
-    ember:{name:'잿불 심장',icon:'♨',desc:'무기 적중마다 화상 중첩 +1 (최대 100). 중첩당 화상 피해가 0.1배 증가해 100중첩에서 10배가 됩니다. 화상이 꺼지면 중첩도 초기화됩니다. 보스는 화상 피해 20% 저항.',color:'#ff8d5e'},
-    split:{name:'갈라진 송곳니',icon:'⋈',desc:'공격할 때 나가는 투사체나 낫 참격이 늘어난다. 최대 3회 중첩된다.',color:'#e8ca75',maxStacks:3},
-    thunder:{name:'폭풍 실타래',icon:'ϟ',desc:'무기 공격 적중 시 번개가 주변 적에게 연쇄됩니다. 화상이나 번개는 추가 번개를 만들지 않습니다. 중첩되지 않습니다.',color:'#9ee9ff',maxStacks:1},
-    echo:{name:'메아리 태엽',icon:'◉',desc:'네 번째 공격에 메아리 일격을 추가한다. 도끼와 지팡이는 귀환 투사체, 낫은 약한 추가 참격을 만든다. 중첩 시 공격 간격이 짧아진다.',color:'#d6a6ff',maxStacks:11},
+    exp_hunter:{name:'균열 추적자',icon:'🎯',desc:'보스에게 주는 피해가 35% 증가합니다.',color:'#72d9e8',tier:1},
+    exp_guard:{name:'청동 파수패',icon:'🛡️',desc:'받는 피해가 20% 감소합니다.',color:'#72d9e8',tier:1},
+    exp_spark:{name:'잔광 탄환',icon:'✨',desc:'매 5번째 공격이 80% 강해집니다.',color:'#72d9e8',tier:1},
+    abyss_evasion:{image:'assets/relic-icons/abyss_evasion.png',name:'\uACF5\uD5C8\uC758 \uD5C8\uBB3C',icon:'\u25C8',desc:'\uD328\uB9C1\uC744 \uC0AC\uC6A9\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4. \uB300\uC2E0 \uBAA8\uB4E0 \uD53C\uACA9\uC744 50% \uD655\uB960\uB85C \uD68C\uD53C\uD569\uB2C8\uB2E4.',color:'#c69aff',tier:2},
+    abyss_hungry:{name:'굶주린 탄환',icon:'🩸',desc:'추가 관통 1회. 공격이 연속 명중할 때마다 피해 +10%. 한 공격이 전부 빗나가면 체력 3을 잃고 누적이 초기화됩니다.',color:'#c69aff',tier:2,weapon:'wand'},
+    abyss_gambler:{name:'도박사의 탄창',icon:'🎲',desc:'공격마다 20% 확률로 피해가 5배가 됩니다. 발동하지 않은 공격은 피해가 절반입니다.',color:'#c69aff',tier:2},
+    abyss_axe_storm:{name:'도끼 폭풍',icon:'🪓',desc:'도끼가 적중 후 다른 적에게 최대 두 번 튕깁니다. 도끼가 돌아오기 전까지 다시 공격할 수 없습니다.',color:'#c69aff',tier:2,weapon:'axe'},
+    abyss_reflect:{name:'반사 결정',icon:'💠',desc:'지팡이 탄환이 최대 두 번 반사되고 반사마다 피해가 60% 증가합니다. 반사한 공격당 체력 2를 한 번 지불합니다. 즉시 광선은 반사되지 않습니다.',color:'#c69aff',tier:2,weapon:'wand'},
+    abyss_footsteps:{name:'피의 발자국',icon:'👣',desc:'이동 경로에 기본 무기 피해 40%의 흔적을 남깁니다. 정지 중 초당 체력 4를 잃으므로 공허 충전과 충돌합니다.',color:'#c69aff',tier:2},
+    collapse_parry:{image:'assets/relic-icons/collapse_parry.png',name:'\uBD95\uAD34\uC758 \uC5F0\uC18D',icon:'\u26A1',desc:'\uD328\uB9C1 \uC131\uACF5 \uC2DC \uC7AC\uC0AC\uC6A9 \uB300\uAE30\uC2DC\uAC04\uC774 \uC5C6\uC5B4\uC9D1\uB2C8\uB2E4. \uC2E4\uD328\uD558\uBA74 3\uCD08 \uB300\uAE30\uD569\uB2C8\uB2E4.',color:'#ff8573',tier:3},
+    collapse_dash:{name:'무적의 역설',icon:'💨',desc:'대시 무적 시간이 3배가 됩니다. 대시가 끝날 때 최대 체력의 10%를 잃습니다.',color:'#ff8573',tier:3},
+    collapse_frontal:{name:'정면 승부',icon:'⚔️',desc:'보스 정면에서 주는 피해가 3배가 됩니다. 후면에서는 피해가 85% 감소합니다.',color:'#ff8573',tier:3},
+    collapse_burst:{name:'단기 결전',icon:'⌛',desc:'보스에게 피해를 줄 수 있는 누적 20초간 피해가 4배입니다. 이후 공격 속도가 절반이 됩니다.',color:'#ff8573',tier:3},
+    collapse_cannon:{name:'피의 포문',icon:'🩸',desc:'각 방의 첫 공격에 최대 체력 20%를 지불하고 4초간 직접 공격 피해가 3배가 됩니다. 비용으로 사망할 수 있습니다.',color:'#ff8573',tier:3},
+    collapse_momentum:{name:'끝없는 기세',icon:'🔥',desc:'적중할 때마다 피해가 1%씩 누적 증가합니다. 피격 시 누적이 초기화되고, 이번 판 동안 모든 능력치가 10%p 영구 감소합니다.',color:'#ff8573',tier:3},
+    ember:{name:'잿불 심장',icon:'♨',desc:'무기 적중마다 화상 중첩 +1. 중첩당 화상 피해가 0.1배 증가하며 상한은 없습니다. 화상이 꺼지면 중첩도 초기화됩니다. 보스는 화상 피해 20% 저항.',color:'#ff8d5e'},
+    split:{name:'갈라진 송곳니',icon:'⋈',desc:'공격할 때 나가는 투사체나 낫 참격이 늘어난다. 중첩 가능.',color:'#e8ca75'},
+    thunder:{name:'폭풍 실타래',icon:'ϟ',desc:'무기 공격 적중 시 번개가 주변 적에게 연쇄됩니다. 화상이나 번개는 추가 번개를 만들지 않습니다. 중첩하면 번개가 더 많은 적에게 뻗습니다.',color:'#9ee9ff'},
+    echo:{name:'메아리 태엽',icon:'◉',desc:'네 번째 공격에 메아리 일격을 추가한다. 도끼와 지팡이는 귀환 투사체, 낫은 약한 추가 참격을 만든다. 중첩 시 공격 간격이 짧아진다.',color:'#d6a6ff'},
     razor:{name:'면도날 고리',icon:'◌',desc:'플레이어 주변 반경 160px를 도는 칼날이 멀리 있는 적도 베어냅니다.',color:'#a7efbf'},
     heart:{name:'광부의 심장',icon:'♥',desc:'최대 체력이 20 늘고 체력을 회복한다.',color:'#ff8e9b'},
-    dash:{name:'잔상 장화',icon:'➤',desc:'대시 재사용 시간이 줄어든다. 최대 5회 중첩된다.',color:'#8de8d2',maxStacks:5},
+    dash:{name:'잔상 장화',icon:'➤',desc:'대시 재사용 시간이 줄어든다. 중첩 가능.',color:'#8de8d2'},
     void:{name:'공허 종',icon:'◈',desc:'보스에게 주는 피해가 크게 늘어난다. 중첩 가능.',color:'#c6a5ff',unlock:1},
     sun:{name:'태양 파편',icon:'☼',desc:'모든 공격 피해가 강해진다.',color:'#ffd879',unlock:2},
-    guard:{name:'현무암 외피',icon:'⬟',desc:'받는 피해가 10% 감소한다. 최대 5회 중첩되며, 피해 감소는 최대 45%다.',color:'#a9adb8',maxStacks:5},
+    guard:{name:'현무암 외피',icon:'⬟',desc:'받는 피해가 줄어든다. 중첩할수록 체감하며 계속 강해진다.',color:'#a9adb8'},
     gale:{name:'질풍의 깃털',icon:'➶',desc:'이동 속도가 14 증가한다. 중첩 가능.',color:'#9de8d9'},
     blood:{name:'붉은 수확',icon:'♥',desc:'적 처치 시 체력 2, 보스 처치 시 체력 8을 회복한다. 중첩 가능.',color:'#ef7185'},
-    frost:{name:'서리 인장',icon:'❄',desc:'공격에 맞은 일반 적과 정예 적이 잠시 둔화된다. 최대 5회 중첩된다.',color:'#8bdfff',maxStacks:5},
+    frost:{name:'서리 인장',icon:'❄',desc:'공격에 맞은 일반 적과 정예 적이 잠시 둔화된다. 중첩 가능.',color:'#8bdfff'},
     wildfire:{name:'화염 도가니',icon:'♨',desc:'공격 적중 시 1.5초간 표식. 표식 적 처치 시 주변 82px에 화염 도가니 중첩마다 기본 24 피해. 잿불 심장 시 범위 110px, 피해 +40%. 피해는 대상 체력 배율을 따르며 연쇄 폭발하지 않습니다.',color:'#ff9b60'},
     keen:{name:'사냥꾼의 눈',icon:'◎',desc:'매 다섯 번째 공격이 추가 피해를 준다. 중첩 시 강타가 더 세진다.',color:'#ffe08a'},
-    axe_core:{name:'귀환의 불씨',icon:'✹',desc:'완충 도끼가 나아갈 때와 돌아올 때 첫 적중 지점에서 각각 폭발합니다. 주변 다른 적에게 도끼 피해의 85%를 주고, 중첩마다 15%p 증가 (최대 160%). 잿불 심장 시 범위 80px, 피해 +35%.',color:'#ffc06a',weapon:'axe'},
-    wand_arc:{name:'연쇄 수정',icon:'⌁',desc:'지팡이의 네 번째 공격이 처음 맞힌 적 주변의 적 하나에게 연쇄된다. 중첩되지 않는다.',color:'#9ee9ff',weapon:'wand',maxStacks:1},
+    axe_core:{name:'귀환의 불씨',icon:'✹',desc:'완충 도끼가 나아갈 때와 돌아올 때 첫 적중 지점에서 각각 폭발합니다. 주변 다른 적에게 도끼 피해의 85%를 주고, 중첩마다 15%p 증가. 잿불 심장 시 범위 80px, 피해 +35%.',color:'#ffc06a',weapon:'axe'},
+    wand_arc:{name:'연쇄 수정',icon:'⌁',desc:'지팡이의 네 번째 공격이 처음 맞힌 적 주변의 적 하나에게 연쇄된다. 중첩 시 피해가 오른다.',color:'#9ee9ff',weapon:'wand'},
     twin_moon:{name:'쌍월 문장',icon:'☾',desc:'낫의 세 번째 공격에 넓은 추가 참격을 가한다. 중첩 시 피해가 오른다.',color:'#d8b4ff',weapon:'twin'}
   };
   const synergyText={
@@ -374,9 +375,9 @@
   const synergyPairs={split_thunder:['split','thunder'],ember_echo:['ember','echo'],ember_wildfire:['ember','wildfire'],axe_core_ember:['axe_core','ember'],frost_thunder:['frost','thunder'],blood_razor:['blood','razor'],dash_echo:['dash','echo'],guard_parry:['guard','parry_guard'],ember_keen:['ember','keen'],split_razor:['split','razor']};
   // Origins set how a run starts and how the mine itself is worked.
   const origins={
-    miner:{name:'광부',icon:'⛏',desc:'굴착이 빠르고 등불 기름이 15 많다.',filter:'none'},
+    miner:{name:'광부',icon:'⛏',desc:'굴착이 빠르고 갱도에서 위협이 천천히 오른다.',filter:'none'},
     sapper:{name:'폭파공',icon:'🧨',desc:'발파 벨트를 들고 시작. 발파통이 나를 다치게 하지 않고 위력이 30% 높다. 최대 체력 -10.',filter:'hue-rotate(-60deg) saturate(1.3)'},
-    surveyor:{name:'측량사',icon:'🧭',desc:'모든 갱도가 처음부터 보인다. 기름 소모 -30%, 광부의 자석을 들고 시작. 최대 체력 -10.',filter:'hue-rotate(95deg) saturate(1.1)'},
+    surveyor:{name:'측량사',icon:'🧭',desc:'모든 갱도가 처음부터 보인다. 광부의 자석을 들고 시작. 최대 체력 -10.',filter:'hue-rotate(95deg) saturate(1.1)'},
     echoer:{name:'메아리꾼',icon:'♫',desc:'메아리 태엽과 쌍심지를 들고 시작. 처음부터 깊은 곳의 소리를 듣는다.',filter:'hue-rotate(250deg) saturate(1.4)',hidden:true},
     smith:{name:'대장장이',icon:'⚒',desc:'대장간 비용 -40%. 무기 단련 Lv 2로 시작. 상점 유물은 광석이 더 든다.',filter:'hue-rotate(205deg) saturate(1.2)'}
   };
@@ -394,20 +395,36 @@
     pick_core:{glyph:true,name:'진동 심장',icon:'💢',desc:'곡괭이의 세 번째 휘두르기가 더 멀리 땅을 가른다. 중첩 시 피해가 오른다.',color:'#ffc06a',weapon:'pick'}
   });
   Object.assign(relics,{
-    drill_bit:{glyph:true,name:'강철 드릴 날',icon:'🔩',desc:'갱도를 파는 속도가 크게 빨라지고 광맥 타일의 광석이 늘어난다.',color:'#c9d4e0',maxStacks:1},
-    lamp_glass:{glyph:true,name:'심층 유리등',icon:'🏮',desc:'등불 기름 소모 -25%.',color:'#ffb36a',maxStacks:1},
-    gas_mask:{glyph:true,name:'방독면',icon:'😷',desc:'갱도의 가스 폭발과 용암이 피해를 주지 않는다.',color:'#a8f07a',maxStacks:1},
-    cart_wheel:{glyph:true,name:'광차 바퀴',icon:'🛞',desc:'갱도를 탐사할 때 이동 속도 +40%.',color:'#b48a5a',maxStacks:1},
-    deep_lantern:{glyph:true,name:'심연의 등불',icon:'🕯️',desc:'갱도에서 더 멀리 보인다.',color:'#d6a6ff',maxStacks:1},
+    drill_bit:{glyph:true,name:'강철 드릴 날',icon:'🔩',desc:'갱도를 파는 속도가 크게 빨라지고 광맥 타일의 광석이 늘어난다.',color:'#c9d4e0'},
+    lamp_glass:{glyph:true,name:'심층 유리등',icon:'🏮',desc:'갱도에서 위협이 천천히 오른다. 중첩 가능.',color:'#ffb36a'},
+    gas_mask:{glyph:true,maxStacks:1,name:'방독면',icon:'😷',desc:'갱도의 가스 폭발과 용암이 피해를 주지 않는다.',color:'#a8f07a'},
+    cart_wheel:{glyph:true,name:'광차 바퀴',icon:'🛞',desc:'갱도를 탐사할 때 이동 속도 +40%.',color:'#b48a5a'},
+    deep_lantern:{glyph:true,name:'심연의 등불',icon:'🕯️',desc:'갱도에서 더 멀리 보인다.',color:'#d6a6ff'},
     bomb_core:{glyph:true,name:'충격 뇌관',icon:'💣',desc:'투척 폭약의 폭발 범위가 커진다. 중첩 가능.',color:'#ffb36a',weapon:'bomb'}
   });
   Object.assign(relics,{
-    bone_lantern:{deep:true,glyph:true,name:'뼈 등불',icon:'🦴',desc:'기름이 떨어져도 어둠이 찾아오지 않는다. 얻을 때 최대 체력 -20.',color:'#d6d0c0',maxStacks:1},
-    gold_tooth:{deep:true,glyph:true,name:'금니',icon:'🦷',desc:'죽음에 이르면 광석을 전부 바쳐 체력 50%로 한 번 되살아난다. 광석 80개 이상 필요.',color:'#ffd36a',maxStacks:1},
-    sealed_eye:{deep:true,glyph:true,name:'봉인된 눈',icon:'🧿',desc:'아직 열지 않은 비밀 공간의 위치가 보인다.',color:'#d69aff',maxStacks:1},
-    blast_heart:{deep:true,glyph:true,name:'폭심',icon:'💥',desc:'갱도의 가스 폭발이 피해를 주지 않고 열기를 준다.',color:'#a8f07a',maxStacks:1},
-    twin_wick:{deep:true,glyph:true,name:'쌍심지',icon:'🕯️',desc:'오버드라이브를 쓴 직후에도 열기가 50% 남는다.',color:'#ffb36a',maxStacks:1},
-    cracked_compass:{deep:true,glyph:true,name:'금 간 나침반',icon:'🧭',desc:'나침반이 보스의 문 대신 가장 가까운 비밀 공간을 가리킨다.',color:'#c9c2b6',maxStacks:1}
+    bone_lantern:{deep:true,glyph:true,maxStacks:1,name:'뼈 등불',icon:'🦴',desc:'갱도에서 위협이 오르지 않고 어둠도 찾아오지 않는다. 얻을 때 최대 체력 -20.',color:'#d6d0c0'},
+    gold_tooth:{deep:true,glyph:true,name:'금니',icon:'🦷',desc:'죽음에 이르면 광석을 전부 바쳐 체력 50%로 한 번 되살아난다. 광석 80개 이상 필요.',color:'#ffd36a'},
+    sealed_eye:{deep:true,glyph:true,maxStacks:1,name:'봉인된 눈',icon:'🧿',desc:'아직 열지 않은 비밀 공간의 위치가 보인다.',color:'#d69aff'},
+    blast_heart:{deep:true,glyph:true,name:'폭심',icon:'💥',desc:'갱도의 가스 폭발이 피해를 주지 않고 열기를 준다.',color:'#a8f07a'},
+    twin_wick:{deep:true,glyph:true,name:'쌍심지',icon:'🕯️',desc:'오버드라이브를 쓴 직후에도 열기가 50% 남는다.',color:'#ffb36a'},
+    cracked_compass:{deep:true,glyph:true,maxStacks:1,name:'금 간 나침반',icon:'🧭',desc:'나침반이 보스의 문 대신 가장 가까운 비밀 공간을 가리킨다.',color:'#c9c2b6'}
+  });
+  Object.assign(relics,{
+    crit_core:{glyph:true,name:'세공 탄심',icon:'🎯',desc:'치명타 확률 +10%. 100%를 넘으면 치명타가 겹친다.',color:'#ffe08a'},
+    auto_turret:{glyph:true,name:'자동 포탑 회로',icon:'🛰️',desc:'무기 적중 시 12% 확률로 가까운 적에게 광선을 쏜다. 확률이 100%를 넘으면 여러 발.',color:'#9ee9ff'},
+    kill_fuse:{glyph:true,name:'연쇄 도화선',icon:'🧯',desc:'적을 처치하면 주변에 폭발을 일으킨다. 중첩 시 범위와 피해가 오른다.',color:'#ff9a4a'},
+    leech_awl:{glyph:true,name:'거머리 송곳',icon:'🩸',desc:'무기 적중 시 체력을 조금 회복한다.',color:'#ef7185'},
+    shell_crystal:{glyph:true,name:'갑피 결정',icon:'🔷',desc:'방에 들어갈 때마다 최대 체력의 8%만큼 보호막을 얻는다.',color:'#8cf5ff'},
+    rampage_glove:{glyph:true,name:'연타 장갑',icon:'🥊',desc:'적을 처치할 때마다 3초간 공격 속도가 쌓인다.',color:'#ffb36a'},
+    war_horn:{glyph:true,name:'광부의 뿔피리',icon:'📯',desc:'방에 들어간 뒤 6초간 피해 +40%.',color:'#ffd879'},
+    double_tap:{glyph:true,name:'쌍둥이 공이',icon:'🔫',desc:'공격이 15% 확률로 한 번 더 나간다.',color:'#d6a6ff'},
+    ore_tax:{glyph:true,name:'광석 세금',icon:'🪙',desc:'적을 처치할 때 광석이 더 나온다.',color:'#ffd98a'},
+    flame_cloak:{glyph:true,name:'불꽃 망토',icon:'🧥',desc:'주변 적이 계속 불탄다. 중첩 시 범위와 피해가 오른다.',color:'#ff8a3d'},
+    shock_boots:{glyph:true,name:'충격 장화',icon:'👢',desc:'대시가 끝나면 주변에 충격파를 일으킨다.',color:'#8de8d2'},
+    battle_drum:{glyph:true,name:'전장의 북',icon:'🥁',desc:'패링에 성공하면 3초간 공격 속도 +30%.',color:'#8cf5ff'},
+    king_pulse:{rare:true,glyph:true,name:'왕의 박동',icon:'❤️‍🔥',desc:'매 세 번째 공격의 피해가 2배가 된다. 중첩 시 배율이 더 오른다.',color:'#ffd36a'},
+    firework_crown:{rare:true,glyph:true,name:'폭죽 왕관',icon:'👑',desc:'적을 처치할 때 12% 확률로 나를 다치게 하지 않는 발파통을 남긴다.',color:'#ffd36a'}
   });
   Object.assign(synergyText,{
     dynamite_wildfire:'연쇄 발파: 발파통의 폭발 범위 +30%, 피해 +40%.',
@@ -455,7 +472,7 @@
   let lootAfter='', lootPool=[], attackTimer=0, dashTimer=0, dashCooldown=0, parryCooldown=0, parryWindow=0, invuln=0, bossAttack=0, frame=0, weaponUpgradeUsed=false, weaponUpgrade2Used=false, resolvingKillBurst=false, runStatPenalty=0, momentumHits=0, abyssHitStreak=0;
   const relicBag={};
   // The Mines II run state: breakable arena props, hit-stop timing, screen effects, map position and deep-route seals.
-  let props=[],hitStop=0,flashFx=null,bossIntro=0,oreFraction=0,seals=0,bellsRung=0,runSecrets=[],digRun=[],heatSeconds=[0,0,0],fullHeatSeconds=0,overdriveUses=0,forgeBuys={weapon:0,armor:0,oil:0},lastHitLog=[],dig=null,zoneBoss=null,zoneVisited=0,shopBought=0,sealClock=0,forgeLevel=0,zoneCombats=0,specialRoom=null,rerollsLeft=0,crystalsAwarded=0,deepCleared=false,winRecorded=false,dynamiteTimer=0,oreMagnetCount=0,orePickupsThisRoom=0;
+  let props=[],hitStop=0,flashFx=null,bossIntro=0,oreFraction=0,seals=0,threatClock=0,bellsRung=0,runSecrets=[],digRun=[],heatSeconds=[0,0,0],fullHeatSeconds=0,overdriveUses=0,forgeBuys={weapon:0,armor:0,oil:0},lastHitLog=[],dig=null,zoneBoss=null,zoneVisited=0,shopBought=0,sealClock=0,forgeLevel=0,zoneCombats=0,specialRoom=null,rerollsLeft=0,crystalsAwarded=0,deepCleared=false,winRecorded=false,dynamiteTimer=0,oreMagnetCount=0,orePickupsThisRoom=0;
   const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
   const balanceSeedParam=new URLSearchParams(location.search).get('balanceSeed');
   const balanceSeed=balanceSeedParam!==null&&Number.isFinite(Number(balanceSeedParam))?Number(balanceSeedParam)>>>0:null;
@@ -475,8 +492,8 @@
     const record=balanceRecordExtras({schema:2,startedAt:balanceRunStartedAt,endedAt:new Date().toISOString(),result,cause:cause||null,clearedFinalBoss:balanceRunCleared,difficulty:runDifficulty,difficultyName:difficultyName(runDifficulty),weapon:player?.weapon||selectedWeapon,upgrade:player?.weaponUpgrade||null,upgrade2:player?.weaponUpgrade2||null,stage,roomsReached:rooms.length,kills,oreEarned,oreSpent,elapsed:+runTime.toFixed(2),hpAtEnd:+Math.max(0,player?.hp||0).toFixed(1),maxHpAtEnd:+(player?.maxHp||0).toFixed(1),relics:{...relicBag},events:balanceEvents,rooms,seed:balanceSeed});
     const records=loadBalanceRecords();records.push(record);try{localStorage.setItem(balanceRecordKey,JSON.stringify(records.slice(-100)));balanceRunSaved=true;updateBalanceRecordNote();}catch{balanceRunSaved=false;}
   }
-  const BUILD_ID='mines2-dig-secrets-1';
-  function balanceRecordExtras(record){return Object.assign(record,{buildId:BUILD_ID,origin:player?.origin||selectedOrigin,relicCount:Object.values(relicBag).reduce((a,b)=>a+b,0),forgeLevel,forgeBuys:{...forgeBuys},shopBought,oreLeft:ore,seals,bellsRung,secrets:[...runSecrets],codexFound:Object.keys(saved.codex||{}).length,codexTotal:codexTotal(),heat:{secondsByTier:heatSeconds.map(v=>+v.toFixed(1)),secondsFull:+fullHeatSeconds.toFixed(1),overdriveUses},damageBonus:player?.damageBonus||0,lastHits:[...lastHitLog],digZones:digRun.map(z=>({...z,seconds:+z.seconds.toFixed(1),oreFromTiles:Math.round(z.oreFromTiles),oilStart:Math.round(z.oilStart),oilEnd:Math.round(z.oilEnd),oilMin:Math.round(z.oilMin),damageTaken:Math.round(z.damageTaken)})),digSeconds:+digRun.reduce((sum,z)=>sum+z.seconds,0).toFixed(1)});}
+  const BUILD_ID='mines2-threat-1';
+  function balanceRecordExtras(record){return Object.assign(record,{buildId:BUILD_ID,threat:{minutes:+threatMinutes().toFixed(2),level:threatLevel()},origin:player?.origin||selectedOrigin,relicCount:Object.values(relicBag).reduce((a,b)=>a+b,0),forgeLevel,forgeBuys:{...forgeBuys},shopBought,oreLeft:ore,seals,bellsRung,secrets:[...runSecrets],codexFound:Object.keys(saved.codex||{}).length,codexTotal:codexTotal(),heat:{secondsByTier:heatSeconds.map(v=>+v.toFixed(1)),secondsFull:+fullHeatSeconds.toFixed(1),overdriveUses},damageBonus:player?.damageBonus||0,lastHits:[...lastHitLog],digZones:digRun.map(z=>({...z,seconds:+z.seconds.toFixed(1),oreFromTiles:Math.round(z.oreFromTiles),damageTaken:Math.round(z.damageTaken)})),digSeconds:+digRun.reduce((sum,z)=>sum+z.seconds,0).toFixed(1)});}
   function exportBalanceRecords(){if(!balanceLocalOnly)return;const data=JSON.stringify({exportedAt:new Date().toISOString(),records:loadBalanceRecords()},null,2),url=URL.createObjectURL(new Blob([data],{type:'application/json'})),link=document.createElement('a');link.href=url;link.download=`the-mine-playtest-${new Date().toISOString().slice(0,10)}.json`;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
   window.addEventListener('pagehide',()=>{if(balanceRunStartedAt&&!balanceRunSaved&&screen!=='title')saveBalanceRun(balanceRunCleared?'클리어 후 종료':'중도 종료','페이지 닫힘');});
   function recordBalanceRoom(){if(!balanceRoom?.active)return;balanceRoom.hpEnd=player?Math.round(player.hp):0;balanceRoom.oreEnd=ore;balanceRoom.heatEnd=player?+player.rage.toFixed(2):0;balanceRoom.damageBySource=Object.fromEntries(Object.entries(balanceRoom.damageBySource||{}).map(([k,v])=>[k,Math.round(v)]));balanceRoom.bossDamage=Math.round(balanceRoom.bossDamage||0);const elapsed=Math.max(0,runTime-balanceRoom.startedAt);const {active,startedAt,...snapshot}=balanceRoom;balanceRooms.push({...snapshot,elapsed:+elapsed.toFixed(2)});balanceRoom.active=false;}
@@ -498,13 +515,13 @@
     if(balanceRoom){balanceRoom.selfDamage=(balanceRoom.selfDamage||0)+Math.min(before,amount);const costs=balanceRoom.selfCosts||(balanceRoom.selfCosts={});costs[cause]=(costs[cause]||0)+Math.min(before,amount);}
     if(player.hp<=0){player.hp=0;gameOver(cause);return false;}return true;
   }
-  function attackRateMultiplier(){const lateCollapse=relicBag.collapse_burst&&player&&player.collapseBurstOver ? .5 : 1;return runStatMultiplier()*(relicBag.exp_tempo?1.2:1)*lateCollapse*(player?.rageActive>0?1.25:1);}
+  function attackRateMultiplier(){const lateCollapse=relicBag.collapse_burst&&player&&player.collapseBurstOver ? .5 : 1;return runStatMultiplier()*(1+.2*(relicBag.exp_tempo||0))*lateCollapse*(player?.rageActive>0?1.25:1)*(1+.06*(relicBag.rampage_glove||0)*(player?.rampageStacks||0))*(player?.drumTimer>0?1+.3*(relicBag.battle_drum||0):1);}
   function newAttackContext(damage){return{id:`${runToken}:${player?.attackCount+1||0}`,damage,pending:1,landed:false,counted:false,paid:false,paidReflect:false,hungry:player?.weapon==='wand'&&!!relicBag.abyss_hungry,cannon:!!(relicBag.collapse_cannon&&player?.collapseCannonTimer>0),cancelled:false};}
   function retainAttackContext(context){if(context)context.pending++;}
   function releaseAttackContext(context){if(!context||context.pending<=0)return;if(--context.pending===0&&!context.cancelled&&!context.landed&&context.hungry&&!context.paid){context.paid=true;payHealthCost(3,'굶주린 탄환');abyssHitStreak=0;floatText(player.x,player.y-18,'-3','#ff7181',13);}}
   function clearShots(cancelled=false){for(const shot of shots){if(!shot.attackContext)continue;if(cancelled)shot.attackContext.cancelled=true;releaseAttackContext(shot.attackContext);}shots=[];}
   function clearPendingEchoes(){for(const echo of pendingEchoes){if(echo.attackContext){echo.attackContext.cancelled=true;releaseAttackContext(echo.attackContext);}}pendingEchoes=[];}
-  function outgoingDamageMultiplier(target,source,attackAngle=null,context=null){const direct=['axe','bolt','prism','echo','orbiter','cleave','rift','rail'].includes(source);let mult=runStatMultiplier()*(1+.08*heatTier());if(relicBag.hot_core&&heatTier()===2)mult*=1+.3*relicBag.hot_core;if(player?.rageActive>0)mult*=1.5;if(player?.adrenalineActive>0)mult*=2.5;if(relicBag.exp_edge)mult*=1.25;if(direct&&relicBag.collapse_momentum)mult*=1+momentumHits*.01;if(direct&&(context?.hungry||!context&&relicBag.abyss_hungry)&&['bolt','prism','echo','rail'].includes(source))mult*=Math.min(2.5,1+abyssHitStreak*.1);if(direct&&relicBag.collapse_cannon&&((player?.collapseCannonTimer||0)>0||context?.cannon))mult*=3;if(relicBag.collapse_burst&&phase==='boss'&&boss&&!boss.invulnerable&&(player?.collapseBurstTimer||0)>0)mult*=4;if(relicBag.collapse_frontal&&target?.kind==='boss'){const toward=Math.atan2(player.y-target.y,player.x-target.x),face=target.facingAngle??0,diff=Math.abs(Math.atan2(Math.sin(toward-face),Math.cos(toward-face)));mult*=diff<Math.PI/3?3:.15;}return mult;}
+  function outgoingDamageMultiplier(target,source,attackAngle=null,context=null){const direct=['axe','bolt','prism','echo','orbiter','cleave','rift','rail'].includes(source);let mult=runStatMultiplier()*(1+.08*heatTier());if(relicBag.hot_core&&heatTier()===2)mult*=1+.3*relicBag.hot_core;if(player?.rageActive>0)mult*=1.5;if(player?.hornTimer>0)mult*=1+.4*(relicBag.war_horn||0);if(player?.adrenalineActive>0)mult*=2.5;if(relicBag.exp_edge)mult*=1+.25*relicBag.exp_edge;if(direct&&relicBag.collapse_momentum)mult*=1+momentumHits*.01*relicBag.collapse_momentum;if(direct&&(context?.hungry||!context&&relicBag.abyss_hungry)&&['bolt','prism','echo','rail'].includes(source))mult*=1+abyssHitStreak*.1;if(direct&&relicBag.collapse_cannon&&((player?.collapseCannonTimer||0)>0||context?.cannon))mult*=1+2*relicBag.collapse_cannon;if(relicBag.collapse_burst&&phase==='boss'&&boss&&!boss.invulnerable&&(player?.collapseBurstTimer||0)>0)mult*=1+3*relicBag.collapse_burst;if(relicBag.collapse_frontal&&target?.kind==='boss'){const toward=Math.atan2(player.y-target.y,player.x-target.x),face=target.facingAngle??0,diff=Math.abs(Math.atan2(Math.sin(toward-face),Math.cos(toward-face)));mult*=diff<Math.PI/3?1+2*relicBag.collapse_frontal:.15;}return mult;}
   function healPlayer(amount){if(!player)return 0;const healed=Math.max(0,Math.min(player.maxHp-player.hp,amount));player.hp+=healed;if(balanceRoom){balanceRoom.healed+=healed;if(!balanceRoom.active&&balanceRooms.length)balanceRooms[balanceRooms.length-1].healed+=healed;}return healed;}
   window.addEventListener('pointerdown',e=>activePointers.add(e.pointerId),true);
   window.addEventListener('pointerup',e=>{activePointers.delete(e.pointerId);if(blockedOpeningPointers.delete(e.pointerId)){suppressedPointerClicks.add(e.pointerId);setTimeout(()=>suppressedPointerClicks.delete(e.pointerId),0);}},true);
@@ -540,7 +557,7 @@
     weaponUpgradeUsed=false;weaponUpgrade2Used=false;
     clearShots(true);
     for(const k of Object.keys(relicBag))delete relicBag[k];
-    props=[];hitStop=0;flashFx=null;bossIntro=0;oreFraction=0;seals=0;dig=null;zoneBoss=null;zoneVisited=0;shopBought=0;forgeLevel=0;zoneCombats=0;bellsRung=0;runSecrets=[];digRun=[];heatSeconds=[0,0,0];fullHeatSeconds=0;overdriveUses=0;forgeBuys={weapon:0,armor:0,oil:0};lastHitLog=[];specialRoom=null;crystalsAwarded=0;deepCleared=false;winRecorded=false;dynamiteTimer=0;oreMagnetCount=0;orePickupsThisRoom=0;rerollsLeft=guildLevel('reroll');
+    props=[];hitStop=0;flashFx=null;bossIntro=0;oreFraction=0;threatClock=0;seals=0;dig=null;zoneBoss=null;zoneVisited=0;shopBought=0;forgeLevel=0;zoneCombats=0;bellsRung=0;runSecrets=[];digRun=[];heatSeconds=[0,0,0];fullHeatSeconds=0;overdriveUses=0;forgeBuys={weapon:0,armor:0,oil:0};lastHitLog=[];specialRoom=null;crystalsAwarded=0;deepCleared=false;winRecorded=false;dynamiteTimer=0;oreMagnetCount=0;orePickupsThisRoom=0;rerollsLeft=guildLevel('reroll');
     player={x:W/2,y:H*.68,r:11,hp:100+6*guildLevel('hp'),maxHp:100+6*guildLevel('hp'),speed:205,weapon:selectedWeapon,origin:selectedOrigin,trail:[],trailClock:0,attackCount:0,weaponUpgrade:null,weaponUpgrade2:null,charging:false,chargeTime:0,rage:0,rageActive:0,adrenaline:0,adrenalineActive:0,voidCharge:0};
     enemies=[];bullets=[];clearShots(true);particles=[];texts=[];drops=[];hazards=[];lightningArcs=[];weaponEffects=[];voidWaves=[];attackTimer=.25;dashTimer=0;dashCooldown=0;parryCooldown=0;parryWindow=0;invuln=0;shake=0;
     zoneStep=0;depth=0;upgradeResume='stage';pendingWaves=[];spawnPortals=[];ore=20*guildLevel('ore');oreEarned=0;oreSpent=0;nextRoomBonus=false;seenEvents=[];
@@ -568,6 +585,7 @@
     if(voidWaves.length&&player)player.voidCharge=0;
     voidWaves=[];spawnPortals=[];pendingWaves=[];props=[];specialRoom=null;orePickupsThisRoom=0;
     if(player&&guildLevel('heat'))player.rage=Math.max(player.rage,guildLevel('heat')*.08);
+    if(player){player.hornTimer=relicBag.war_horn?6:0;player.shield=player.maxHp*.08*(relicBag.shell_crystal||0);player.rampageStacks=0;}
   }
   // Room templates: each combat room draws one, never the same twice in a row. zone gives a zone-specific weight bonus.
   const waveTemplates=[
@@ -597,7 +615,7 @@
     return kind;
   }
   function waveRoomPlan(kind){
-    const per=4+Math.min(stage,6)+dp().extraEnemies;
+    const per=4+Math.min(stage,6)+dp().extraEnemies+Math.floor(threatMinutes()/4);
     const bonus=nextRoomBonus&&kind==='den'?1.5:1;
     const waves=kind==='den'?roomPacing.waves.den:kind==='vein'?roomPacing.waves.vein:roomPacing.waves.wave[zoneStep===0?0:1];
     return Array.from({length:waves},(_,w)=>{
@@ -694,14 +712,14 @@
     const secrets=placeSecrets(grid,hidden,perimeter,nodes,inside);
     const canvas=document.createElement('canvas');canvas.width=DIG_W*DIG_T;canvas.height=DIG_H*DIG_T;const g=canvas.getContext('2d');g.fillStyle='#050408';g.fillRect(0,0,canvas.width,canvas.height);
     zoneBoss=pickZoneBoss();zoneVisited=0;
-    const stats={stage,boss:zoneBoss.name,seconds:0,tilesDug:{},oreFromTiles:0,oilStart:digOilMax(),oilEnd:digOilMax(),oilMin:digOilMax(),oilFromBarrels:0,gasBlasts:0,bestGasChain:0,lurkersSpawned:0,damageTaken:0,damageByCause:{},nodesTotal:nodes.length,nodesVisited:[],secretsTotal:secrets.length,secretsOpened:[],triggers:[]};digRun.push(stats);
-    dig={stats,hidden,perimeter,secrets,oreTiles:0,chain:0,triggered:new Set(),grid,seen,hits,nodes,canvas,g,oil:digOilMax(),oilMax:digOilMax(),x:(32.5)*DIG_T,y:3.5*DIG_T,gas:[],lurkers:[],lurkerClock:3,skip:null,lastTile:-1,digSound:0,lavaTick:0,toldOil:false};
+    const stats={stage,boss:zoneBoss.name,seconds:0,tilesDug:{},oreFromTiles:0,threatStart:+threatMinutes().toFixed(2),threatEnd:+threatMinutes().toFixed(2),gasBlasts:0,bestGasChain:0,lurkersSpawned:0,damageTaken:0,damageByCause:{},nodesTotal:nodes.length,nodesVisited:[],secretsTotal:secrets.length,secretsOpened:[],triggers:[]};digRun.push(stats);
+    dig={stats,hidden,perimeter,secrets,oreTiles:0,chain:0,triggered:new Set(),grid,seen,hits,nodes,canvas,g,x:(32.5)*DIG_T,y:3.5*DIG_T,gas:[],lurkers:[],lurkerClock:3,skip:null,lastTile:-1,digSound:0,lavaTick:0,toldOil:false};
     player.x=dig.x;player.y=dig.y;revealDig(true);
     if(player.origin==='surveyor')for(let r=0;r<DIG_H;r++)for(let c=0;c<DIG_W;c++)markSeen(c,r);
     toast(`${zoneName()} · 파 내려가 보스의 문을 찾아라`);
   }
   // Secrets: chambers sealed in rune walls. A cracked wall can be dug; a fully sealed one needs a gas explosion nearby.
-  const inscriptions=['갱도는 세 번 울리면 왕의 귀에 닿는다.','룬이 박힌 벽은 곡괭이를 비웃는다. 불붙은 숨만이 그것을 연다.','빛을 다 태운 자만이 문 앞의 그림자를 본다.','금맥을 끝까지 따라간 자는 혼자가 아니었다.','다섯 번 연달아 터지면 땅이 숨을 멈춘다.','상처 없이 내려온 광부는 아직 이름이 없다.','금니 하나면 죽음도 흥정할 수 있다고 그들은 믿었다.','잔향은 네가 지나온 길을 기억한다. 왕은 그것을 먹는다.'];
+  const inscriptions=['갱도는 세 번 울리면 왕의 귀에 닿는다.','룬이 박힌 벽은 곡괭이를 비웃는다. 불붙은 숨만이 그것을 연다.','오래 헤맨 자만이 문 앞의 그림자를 본다.','금맥을 끝까지 따라간 자는 혼자가 아니었다.','다섯 번 연달아 터지면 땅이 숨을 멈춘다.','상처 없이 내려온 광부는 아직 이름이 없다.','금니 하나면 죽음도 흥정할 수 있다고 그들은 믿었다.','잔향은 네가 지나온 길을 기억한다. 왕은 그것을 먹는다.'];
   const secretKinds={
     reliquary:{icon:'✟',color:'#d69aff',name:'유골함'},inscription:{icon:'☰',color:'#c9c2b6',name:'비문'},bell:{icon:'♫',color:'#ffe08a',name:'잔향의 종'},geode:{icon:'◆',color:'#7fdcff',name:'거대 정동석'},altar:{icon:'☥',color:'#ff7a8a',name:'피의 제단'},anvil:{icon:'⚒',color:'#ffb36a',name:'고대 모루'},corpse:{icon:'☠',color:'#a8a29a',name:'잊힌 광부'},chest:{icon:'❒',color:'#f5c766',name:'봉인 상자'}
   };
@@ -743,11 +761,10 @@
     if(kind==='bell'){bellsRung++;shake=Math.max(shake,5);playSound('boss');if(bellsRung>=3)secretTrigger('three_bells');secretPanel('잔향의 종',`종이 ${bellsRung}번 울렸다`,bellsRung>=3?'깊은 곳에서 무언가가 고개를 든다.':'소리는 아래로, 아래로 내려간다.',[back]);return;}
     if(kind==='geode'){const amount=45+20*stage;gainOre(amount);floatText(player.x,player.y-24,`+${amount} 광석`,'#7fdcff',18);for(let i=0;i<2;i++){const a=rand(0,Math.PI*2);dig.lurkers.push({x:player.x+Math.cos(a)*360,y:player.y+Math.sin(a)*260});dig.stats.lurkersSpawned++;}toast('정동석이 깨지자 어둠이 깨어난다');return;}
     if(kind==='anvil'){forgeLevel++;player.damageBonus=(player.damageBonus||0)+.09;balanceEvents.push({t:+runTime.toFixed(2),type:'forge',stage,item:'weapon',level:forgeLevel,price:0});secretPanel('고대 모루','무기가 스스로 달궈진다',`무기 단련 Lv ${forgeLevel}`,[back]);return;}
-    if(kind==='corpse'){dig.oil=Math.min(dig.oilMax,dig.oil+30);gainOre(20);secretPanel('잊힌 광부','손에 쥔 등잔이 아직 따뜻하다','기름 +30, 광석 +20',[back]);return;}
+    if(kind==='corpse'){threatClock=Math.max(0,threatClock-25);gainOre(20);secretPanel('잊힌 광부','손에 쥔 등잔이 아직 따뜻하다','위협 -25초, 광석 +20',[back]);return;}
     if(kind==='altar'){secretPanel('피의 제단','무엇을 바치겠나','대가는 영구적이다.',[{html:`<span class="cardicon">☥</span><span class="cardname">피를 바친다</span><span class="carddesc">최대 체력 -15 → 심층 유물 3개 중 선택</span>`,onClick:()=>{player.maxHp=Math.max(30,player.maxHp-15);player.hp=Math.min(player.hp,player.maxHp);if(makeDeepLoot(1).length)openLoot('deepRelic');else setScreen('dig');}},back]);return;}
     if(kind==='chest'){secretPanel('봉인 상자','열어 볼까','무언가가 안에서 숨을 쉰다.',[{html:`<span class="cardicon">❒</span><span class="cardname">연다</span><span class="carddesc">유물일 수도, 아닐 수도 있다.</span>`,onClick:()=>{if(runRandom()<.65&&makeDeepLoot(1).length){openLoot('deepRelic');return;}player.x=W/2;player.y=H*.68;startElite(false);}},back]);}
   }
-  function digOilMax(){return 100+(player.origin==='miner'?15:0);}
   function paintDigTile(c,r){
     const tile=dig.hidden[digIndex(c,r)]?TILE.ROCK:dig.grid[digIndex(c,r)],x=c*DIG_T,y=r*DIG_T,g=dig.g,[base,light,dark,accent]=biomePalettes[biomeIndex()],speck=((c*73+r*151)^(c*r))%7;
     if(tile===TILE.EMPTY){g.fillStyle=(c+r)%2?dark:'#0f0c15';g.fillRect(x,y,DIG_T,DIG_T);g.fillStyle=base;if(speck===0)g.fillRect(x+7,y+11,5,2);return;}
@@ -765,22 +782,20 @@
   function markSeen(c,r){if(c<0||r<0||c>=DIG_W||r>=DIG_H)return;const i=digIndex(c,r);if(dig.seen[i])return;dig.seen[i]=1;paintDigTile(c,r);}
   function revealDig(force=false){
     const c0=Math.floor(player.x/DIG_T),r0=Math.floor(player.y/DIG_T),key=digIndex(clamp(c0,0,DIG_W-1),clamp(r0,0,DIG_H-1));if(!force&&key===dig.lastTile)return;dig.lastTile=key;
-    const radius=7+(relicBag.deep_lantern?3:0);for(let r=r0-radius;r<=r0+radius;r++)for(let c=c0-radius;c<=c0+radius;c++)if(Math.hypot(c-c0,r-r0)<=radius+.3)markSeen(c,r);
+    const radius=7+3*(relicBag.deep_lantern||0);for(let r=r0-radius;r<=r0+radius;r++)for(let c=c0-radius;c<=c0+radius;c++)if(Math.hypot(c-c0,r-r0)<=radius+.3)markSeen(c,r);
   }
-  function digSpeedMultiplier(){return (player.weapon==='pick'?.55:1)*(player.origin==='miner'?.75:1)*(relicBag.drill_bit?.55:1);}
+  function digSpeedMultiplier(){return (player.weapon==='pick'?.55:1)*(player.origin==='miner'?.75:1)*.55**(relicBag.drill_bit||0);}
   function breakDigTile(c,r){
     const i=digIndex(c,r),tile=dig.grid[i];if(!digSolid(tile)||tile===TILE.WALL)return;dig.grid[i]=TILE.EMPTY;dig.hits[i]=0;if(dig.seen[i])paintDigTile(c,r);const tileName=Object.keys(TILE).find(k=>TILE[k]===tile);dig.stats.tilesDug[tileName]=(dig.stats.tilesDug[tileName]||0)+1;if(dig.perimeter.has(i))openSecretRoom(dig.perimeter.get(i));
     const x=(c+.5)*DIG_T,y=(r+.5)*DIG_T;burst(x,y,tile===TILE.ORE?'#ffc34d':tile===TILE.GEM?'#7fdcff':tile===TILE.GAS?'#a8f07a':tile===TILE.OIL?'#ffb36a':'#9c8c7a',tile===TILE.ORE?10:4);
     if(time-dig.digSound>.09){dig.digSound=time;playSound('mine');}
-    dig.oil=Math.max(0,dig.oil-.1*oilBurnScale());
-    if(tile===TILE.ORE){const amount=(1.2+stage*.4)*(relicBag.drill_bit?1.4:1);dig.stats.oreFromTiles+=amount;if(++dig.oreTiles>=26)secretTrigger('gold_seam');gainOreValue(amount);floatText(x,y-10,`+${Math.round(amount)}`,'#ffd98a',12);playSound('ore');}
-    if(tile===TILE.OIL){dig.oil=Math.min(dig.oilMax,dig.oil+14);dig.stats.oilFromBarrels+=14;floatText(x,y-10,'기름 +14','#ffb36a',13);playSound('heal');}
+    if(tile===TILE.ORE){const amount=(1.2+stage*.4)*(1+.4*(relicBag.drill_bit||0));dig.stats.oreFromTiles+=amount;if(++dig.oreTiles>=26)secretTrigger('gold_seam');gainOreValue(amount);floatText(x,y-10,`+${Math.round(amount)}`,'#ffd98a',12);playSound('ore');}
+    if(tile===TILE.OIL){threatClock=Math.max(0,threatClock-18);floatText(x,y-10,'위협 -18초','#ffb36a',13);playSound('heal');}
     if(tile===TILE.GEM){player.rage=Math.min(1,player.rage+.14);floatText(x,y-10,'열기 +14%','#7fdcff',13);playSound('relic');}
     if(tile===TILE.GAS)dig.gas.push({c,r,timer:.85,max:.85});
   }
-  function oilBurnScale(){return (player.origin==='surveyor'?.7:1)*(relicBag.lamp_glass?.75:1);}
   function explodeGas(pocket){
-    dig.stats.gasBlasts++;dig.chain=dig.gas.length?dig.chain+1:1;dig.stats.bestGasChain=Math.max(dig.stats.bestGasChain,dig.chain);if(dig.chain>=5)secretTrigger('chain_blast');if(relicBag.blast_heart)addHeat(10);
+    dig.stats.gasBlasts++;dig.chain=dig.gas.length?dig.chain+1:1;dig.stats.bestGasChain=Math.max(dig.stats.bestGasChain,dig.chain);if(dig.chain>=5)secretTrigger('chain_blast');if(relicBag.blast_heart)addHeat(10*relicBag.blast_heart);
     const radius=3.3,x=(pocket.c+.5)*DIG_T,y=(pocket.r+.5)*DIG_T;burst(x,y,'#a8f07a',26);burst(x,y,'#fff0a8',10);shake=Math.max(shake,6);playSound('relicBlast');
     for(let r=pocket.r-4;r<=pocket.r+4;r++)for(let c=pocket.c-4;c<=pocket.c+4;c++){if(Math.hypot(c-pocket.c,r-pocket.r)>radius)continue;const tile=digTile(c,r);if(tile===TILE.GAS&&!dig.gas.some(q=>q.c===c&&q.r===r)){dig.grid[digIndex(c,r)]=TILE.EMPTY;if(dig.seen[digIndex(c,r)])paintDigTile(c,r);dig.gas.push({c,r,timer:.14,max:.14});}else if([TILE.DIRT,TILE.ROCK,TILE.ORE,TILE.HARD,TILE.CRACK].includes(tile))breakDigTile(c,r);}
     if(!relicBag.gas_mask&&!relicBag.blast_heart&&Math.hypot(player.x-x,player.y-y)<radius*DIG_T+player.r&&invuln<=0)hurtPlayer(10+stage*2,'가스 폭발');
@@ -794,15 +809,15 @@
   function updateDig(dt){
     if(!dig||!player)return;
     runTime+=dt;invuln-=dt;if(shake>0)shake=Math.max(0,shake-dt*24);
-    dig.oil=Math.max(0,dig.oil-dt*.95*oilBurnScale());dig.stats.seconds+=dt;dig.stats.oilEnd=dig.oil;dig.stats.oilMin=Math.min(dig.stats.oilMin,dig.oil);
+    if(!relicBag.bone_lantern)threatClock+=dt*1.35*.75**(relicBag.lamp_glass||0)*(player.origin==='miner'?.8:player.origin==='surveyor'?.85:1);dig.stats.seconds+=dt;dig.stats.threatEnd=+threatMinutes().toFixed(2);
     let dx=(keys.d||keys.ArrowRight?1:0)-(keys.a||keys.ArrowLeft?1:0)+touchMove.dx,dy=(keys.s||keys.ArrowDown?1:0)-(keys.w||keys.ArrowUp?1:0)+touchMove.dy;const length=Math.hypot(dx,dy);if(length>1){dx/=length;dy/=length;}
-    const speed=player.speed*(relicBag.cart_wheel?1.4:1)*(dig.oil<=0?.85:1);player.walking=length>.01;
+    const speed=player.speed*(1+.4*(relicBag.cart_wheel||0));player.walking=length>.01;
     moveDigAxis(dx*speed*dt,0,dt);if(screen!=='dig')return;moveDigAxis(0,dy*speed*dt,dt);if(screen!=='dig')return;
     if(length>.01){mouse.x=player.x+dx*100;mouse.y=player.y+dy*100;}
     player.moveVX=dx*speed;player.moveVY=dy*speed;revealDig();
     for(let i=dig.gas.length-1;i>=0;i--){const pocket=dig.gas[i];pocket.timer-=dt;if(pocket.timer<=0){dig.gas.splice(i,1);explodeGas(pocket);if(screen!=='dig')return;}}
     if(digTile(Math.floor(player.x/DIG_T),Math.floor(player.y/DIG_T))===TILE.LAVA&&!relicBag.gas_mask){dig.lavaTick-=dt;if(dig.lavaTick<=0){dig.lavaTick=.5;if(invuln<=0)hurtPlayer(5+stage,'용암');if(screen!=='dig')return;}}
-    if(dig.oil<=0&&!relicBag.bone_lantern){if(!dig.toldOil){dig.toldOil=true;toast('등불이 꺼졌다 · 어둠이 몰려온다');playSound('boss');}dig.lurkerClock-=dt;if(dig.lurkerClock<=0&&dig.lurkers.length<4){dig.lurkerClock=4.5;const a=rand(0,Math.PI*2);dig.lurkers.push({x:player.x+Math.cos(a)*420,y:player.y+Math.sin(a)*300});dig.stats.lurkersSpawned++;}}
+    if(dig.stats.seconds>95&&!relicBag.bone_lantern){if(!dig.toldOil){dig.toldOil=true;toast('너무 오래 머물렀다 · 어둠이 몰려온다');playSound('boss');}dig.lurkerClock-=dt;if(dig.lurkerClock<=0&&dig.lurkers.length<4){dig.lurkerClock=4.5;const a=rand(0,Math.PI*2);dig.lurkers.push({x:player.x+Math.cos(a)*420,y:player.y+Math.sin(a)*300});dig.stats.lurkersSpawned++;}}
     for(let i=dig.lurkers.length-1;i>=0;i--){const l=dig.lurkers[i],gap=dist(l,player)||1,pace=(120+18*runDifficulty)*dt;l.x+=(player.x-l.x)/gap*pace;l.y+=(player.y-l.y)/gap*pace;if(gap<20){dig.lurkers.splice(i,1);burst(l.x,l.y,'#7a5aa8',14);if(invuln<=0)hurtPlayer(10+3*runDifficulty,'어둠');if(screen!=='dig')return;}}
     if(dig.skip&&dist(dig.skip,player)>46)dig.skip=null;
     for(const secret of dig.secrets){if(!secret.open||secret.used||dist(secret,player)>=22)continue;useSecret(secret);return;}
@@ -811,7 +826,7 @@
   }
   function enterNodePrompt(node){
     if(node.type==='boss'&&!dig.nodes.find(n=>n.type==='den').visited){dig.skip=node;toast('소굴을 정리해야 문이 열린다');playSound('parry');return;}
-    const info=mapNodeInfo[node.type],isBoss=node.type==='boss',title=isBoss?zoneBoss.name:info.label;lootAfter='nodeConfirm';if(isBoss){if(dig.oil<=0)secretTrigger('dark_walker');if(dig.stats.damageTaken===0&&dig.stats.seconds>35)secretTrigger('untouched');}
+    const info=mapNodeInfo[node.type],isBoss=node.type==='boss',title=isBoss?zoneBoss.name:info.label;lootAfter='nodeConfirm';if(isBoss){if(dig.stats.seconds>=130)secretTrigger('dark_walker');if(dig.stats.damageTaken===0&&dig.stats.seconds>35)secretTrigger('untouched');}
     showCardPanel({kicker:isBoss?'보스의 문':'갱도 발견',title,subtitle:isBoss?zoneBoss.title:info.desc,cards:[{html:`<span class="cardicon">${info.icon}</span><span class="cardname">들어간다</span><span class="carddesc">${isBoss?'문 너머로 내려간다.':'이 방에 도전한다.'}</span>`,onClick:()=>chooseMapNode(node)},{html:`<span class="cardicon">←</span><span class="cardname">돌아선다</span><span class="carddesc">계속 파 내려간다.</span>`,onClick:()=>{dig.skip=node;setScreen('dig');}}]});
   }
   function mapChoices(){if(!dig)return [];const den=dig.nodes.find(n=>n.type==='den');return dig.nodes.filter(n=>!n.visited&&(n.type!=='boss'||den.visited));}
@@ -824,8 +839,8 @@
     for(const pocket of dig.gas){const k=1-pocket.timer/pocket.max,x=(pocket.c+.5)*DIG_T,y=(pocket.r+.5)*DIG_T;ctx.globalAlpha=.16+.24*k;ctx.fillStyle='#a8f07a';ctx.beginPath();ctx.arc(x,y,3.3*DIG_T*k,0,Math.PI*2);ctx.fill();ctx.globalAlpha=.6+.4*Math.sin(time*30)**2;ctx.strokeStyle='#d6ff9a';ctx.lineWidth=3;ctx.beginPath();ctx.arc(x,y,3.3*DIG_T,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;}
     for(const l of dig.lurkers){ctx.fillStyle='#14111a';ctx.fillRect(l.x-11,l.y-13,22,26);ctx.fillStyle='#4a3468';ctx.fillRect(l.x-9,l.y-11,18,22);ctx.fillStyle='#ff5d78';ctx.fillRect(l.x-5,l.y-5,3,3);ctx.fillRect(l.x+2,l.y-5,3,3);}
     drawPlayer();drawParticles();drawTexts();ctx.restore();ctx.imageSmoothingEnabled=smooth;
-    ensureLights();lightCtx.globalCompositeOperation='source-over';lightCtx.globalAlpha=1;lightCtx.clearRect(0,0,lightCanvas.width,lightCanvas.height);const glow=clamp(dig.oil/25,.25,1),radius=(relicBag.deep_lantern?370:290)*(.55+.45*glow);lightCtx.fillStyle=`rgba(4,3,10,${dig.oil<=0?.8:.5})`;lightCtx.fillRect(0,0,lightCanvas.width,lightCanvas.height);lightCtx.globalCompositeOperation='destination-out';castLight(player.x-viewX,player.y-viewY,radius);ctx.save();ctx.imageSmoothingEnabled=true;ctx.drawImage(lightCanvas,0,0,W,H);ctx.restore();
-    const compassSecret=relicBag.cracked_compass?dig.secrets.filter(q=>!q.open).sort((a,b)=>dist(a,player)-dist(b,player))[0]:null,boss=compassSecret||dig.nodes.find(n=>n.type==='boss'),bearing=Math.atan2(boss.y-player.y,boss.x-player.x),oilW=280,oilX=(W-oilW)/2,oilY=H-26;ctx.save();ctx.fillStyle='#100d16e8';ctx.fillRect(oilX-2,oilY-2,oilW+4,18);ctx.fillStyle=dig.oil<25?'#ff5d4a':'#ffb36a';ctx.fillRect(oilX,oilY,oilW*clamp(dig.oil/dig.oilMax,0,1),14);ctx.fillStyle='#fff4dc';ctx.font='900 10px ui-monospace,monospace';ctx.textAlign='center';ctx.fillText(`등불 기름 ${Math.ceil(dig.oil)}`,W/2,oilY+11);ctx.fillStyle='#fff4dc';ctx.fillText(compassSecret?'비밀':'보스의 문',oilX-74,oilY+11);ctx.translate(oilX-26,oilY+7);ctx.rotate(bearing);ctx.fillStyle='#14111a';ctx.fillRect(-16,-5,24,10);ctx.fillStyle='#ff6a6a';ctx.beginPath();ctx.moveTo(19,0);ctx.lineTo(5,-10);ctx.lineTo(5,10);ctx.closePath();ctx.fill();ctx.fillRect(-14,-3,22,6);ctx.restore();
+    ensureLights();lightCtx.globalCompositeOperation='source-over';lightCtx.globalAlpha=1;lightCtx.clearRect(0,0,lightCanvas.width,lightCanvas.height);const radius=290+80*(relicBag.deep_lantern||0);lightCtx.fillStyle='rgba(4,3,10,.5)';lightCtx.fillRect(0,0,lightCanvas.width,lightCanvas.height);lightCtx.globalCompositeOperation='destination-out';castLight(player.x-viewX,player.y-viewY,radius);ctx.save();ctx.imageSmoothingEnabled=true;ctx.drawImage(lightCanvas,0,0,W,H);ctx.restore();
+    const compassSecret=relicBag.cracked_compass?dig.secrets.filter(q=>!q.open).sort((a,b)=>dist(a,player)-dist(b,player))[0]:null,boss=compassSecret||dig.nodes.find(n=>n.type==='boss'),bearing=Math.atan2(boss.y-player.y,boss.x-player.x),oilW=280,oilX=(W-oilW)/2,oilY=H-26;ctx.save();ctx.fillStyle='#100d16e8';ctx.fillRect(oilX-2,oilY-2,oilW+4,18);ctx.fillStyle='#ff7a4a';ctx.fillRect(oilX,oilY,oilW*(threatMinutes()%2)/2,14);ctx.fillStyle='#fff4dc';ctx.font='900 10px ui-monospace,monospace';ctx.textAlign='center';ctx.fillText(`위협 Lv ${threatLevel()} · 탐사 ${Math.floor(dig.stats.seconds)}초`,W/2,oilY+11);ctx.fillStyle='#fff4dc';ctx.fillText(compassSecret?'비밀':'보스의 문',oilX-74,oilY+11);ctx.translate(oilX-26,oilY+7);ctx.rotate(bearing);ctx.fillStyle='#14111a';ctx.fillRect(-16,-5,24,10);ctx.fillStyle='#ff6a6a';ctx.beginPath();ctx.moveTo(19,0);ctx.lineTo(5,-10);ctx.lineTo(5,10);ctx.closePath();ctx.fill();ctx.fillRect(-14,-3,22,6);ctx.restore();
     if(flashFx){ctx.fillStyle=`rgba(${flashFx.color},${flashFx.alpha*clamp(flashFx.life/flashFx.max,0,1)})`;ctx.fillRect(0,0,W,H);}
     if(touchMode)drawTouchStick('left',stickHomes.left,touchMove,'#9de8d9','이동');
   }
@@ -833,13 +848,12 @@
   function openForge(){
     lootAfter='shop';const discount=player.origin==='smith'?.6:1,weaponCost=Math.round((60+38*forgeLevel)*discount),armorCost=Math.round((55+45*forgeBuys.armor)*discount),oilCost=Math.round((30+22*forgeBuys.oil)*discount);
     const card=(icon,name,desc,cost,run,full=false)=>({cls:full?'sold':ore<cost?'cantAfford':'',disabled:full||ore<cost,html:`<span class="cardicon">${icon}</span><span class="cardname">${name}</span><span class="carddesc">${desc}</span><span class="price">⛏ ${cost}</span>`,onClick:()=>{if(!spendOre(cost))return;run();playSound('relic');openForge();}});
-    showCardPanel({kicker:'대장간',title:`무기 단련 Lv ${forgeLevel}`,subtitle:`보유 광석 ⛏ ${ore}`,cards:[card('⚔','무기 단련',`모든 무기 피해 +9% (현재 +${forgeLevel*9}%)`,weaponCost,()=>{forgeLevel++;forgeBuys.weapon++;player.damageBonus=(player.damageBonus||0)+.09;balanceEvents.push({t:+runTime.toFixed(2),type:'forge',stage,item:'weapon',level:forgeLevel,price:weaponCost});}),card('🛡',`몸 단련 Lv ${forgeBuys.armor}`,'최대 체력 +10, 체력 10 회복',armorCost,()=>{forgeBuys.armor++;player.maxHp+=10;healPlayer(10);balanceEvents.push({t:+runTime.toFixed(2),type:'forge',stage,item:'armor',level:forgeBuys.armor,price:armorCost});}),card('🛢','등불 기름','이 구역의 기름 +25',oilCost,()=>{forgeBuys.oil++;if(dig)dig.oil=Math.min(dig.oilMax,dig.oil+25);balanceEvents.push({t:+runTime.toFixed(2),type:'forge',stage,item:'oil',level:forgeBuys.oil,price:oilCost});})],buttons:[{text:'떠나기',onClick:()=>advanceZone()}]});
+    showCardPanel({kicker:'대장간',title:`무기 단련 Lv ${forgeLevel}`,subtitle:`보유 광석 ⛏ ${ore}`,cards:[card('⚔','무기 단련',`모든 무기 피해 +9% (현재 +${forgeLevel*9}%)`,weaponCost,()=>{forgeLevel++;forgeBuys.weapon++;player.damageBonus=(player.damageBonus||0)+.09;balanceEvents.push({t:+runTime.toFixed(2),type:'forge',stage,item:'weapon',level:forgeLevel,price:weaponCost});}),card('🛡',`몸 단련 Lv ${forgeBuys.armor}`,'최대 체력 +10, 체력 10 회복',armorCost,()=>{forgeBuys.armor++;player.maxHp+=10;healPlayer(10);balanceEvents.push({t:+runTime.toFixed(2),type:'forge',stage,item:'armor',level:forgeBuys.armor,price:armorCost});}),card('⌛','시계 되돌리기','위협 -40초',oilCost,()=>{forgeBuys.oil++;threatClock=Math.max(0,threatClock-40);balanceEvents.push({t:+runTime.toFixed(2),type:'forge',stage,item:'oil',level:forgeBuys.oil,price:oilCost});})],buttons:[{text:'떠나기',onClick:()=>advanceZone()}]});
   }
   function chooseMapNode(node){
     if(!mapChoices().includes(node))return;
-    balanceEvents.push({t:+runTime.toFixed(2),type:'map',stage,layer:zoneVisited,choice:node.type,options:mapChoices().map(n=>n.type),hp:player?+player.hp.toFixed(1):0,ore,oil:dig?Math.round(dig.oil):0});
+    balanceEvents.push({t:+runTime.toFixed(2),type:'map',stage,layer:zoneVisited,choice:node.type,options:mapChoices().map(n=>n.type),hp:player?+player.hp.toFixed(1):0,ore,threat:+threatMinutes().toFixed(2)});
     node.visited=true;dig.stats.nodesVisited.push(node.type);zoneStep=zoneVisited++;dig.x=player.x;dig.y=player.y;dig.skip=node;player.x=W/2;player.y=H*.68;player.dashing=0;mouse.x=W/2;mouse.y=H/2;
-    if(node.type==='shrine')dig.oil=Math.min(dig.oilMax,dig.oil+25);
     if(node.type==='wave'||node.type==='den'){startWave(node.type);setScreen('playing');}
     else if(node.type==='chest')openLoot('chest');
     else if(node.type==='boss')startBoss();
@@ -934,7 +948,7 @@
     else{const point=pickSpawnPoint(radius,index);x=point.x;y=point.y;}
     const aggression=dp().move,fireRate=dp().fire;
     // Health grows with cleared combat rooms (depth) so longer runs keep pace with relic growth.
-    const enemyHp=baseHp*depthHpScale()*dp().hp;
+    const enemyHp=baseHp*depthHpScale()*dp().hp*threatHp();
     const enemy={kind,x,y,r:radius,hp:enemyHp,maxHp:enemyHp,burnScale:enemyHp/baseHp,speed:(extra?extra.speed:elite?92:kind==='shooter'?61:charger?68:77)*aggression,damage:extra?extra.damage:elite?16:charger?12:10,fire:rand(.8,2)/fireRate,fireRate,flash:0,phase:0,angle:0,color:extra?extra.color:elite?'#e6a34c':kind==='shooter'?'#9e83c6':charger?'#e68b4e':'#a9b176'};
     if(kind==='burrower'){enemy.under=true;enemy.digState='under';enemy.digTimer=rand(1,1.9);enemy.spawnGrace=.4;}
     if(kind==='shield')enemy.shieldAngle=player?Math.atan2(player.y-y,player.x-x):0;
@@ -942,6 +956,7 @@
     if(kind==='mirror'){enemy.mirrorState='idle';enemy.mirrorTimer=rand(1.2,dp().mirrorCycle);}
     if(charger){enemy.chargeState='approach';enemy.chargeTimer=0;enemy.chargeCooldown=rand(1.1,1.8);enemy.chargeAim=0;}
     if(elite){enemy.eliteState='approach';enemy.eliteTimer=1.4;enemy.eliteAim=0;}
+    if(!elite&&!['mimic','burrower'].includes(kind)&&runRandom()<.022*threatMinutes()*(1+.3*runDifficulty))applyAffix(enemy,choice(Object.keys(eliteAffixes)));
     resolveEntityFromWalls(enemy);enemies.push(enemy);
   }
   function startElite(sealed=false){
@@ -960,9 +975,9 @@
     if(relicBag.collapse_burst){player.collapseBurstTimer=20;player.collapseBurstOver=false;}
     const def=currentBossDef(),pressure=def.kind==='star'||def.kind==='echo'?dp().finalPressure:runDifficulty,scale=(1+(stage-1)*growth.bossPerZone)*difficultyHpMultiplier(runDifficulty,'boss');
     // Bosses gain length gradually so the opening boss stays a teacher; the Star Core is already long because of its gated phases.
-    const health=(def.kind==='star'||def.kind==='echo'?840:780)*scale*growth.bossBase*(1+(dp().bossHp-1)*(dp().bossRamp||[.6,1,1.4,.5,.7])[biomeIndex()]);
+    const health=(def.kind==='star'||def.kind==='echo'?840:780)*scale*growth.bossBase*(1+(dp().bossHp-1)*(dp().bossRamp||[.6,1,1.4,.5,.7])[biomeIndex()])*threatHp();
     setupRoomProps('boss');bossIntro=1.25;player.trail=[];
-    boss={kind:'boss',bossKind:def.kind,name:def.name,color:def.color,x:W/2,y:142,r:32,hp:health,maxHp:health,burnScale:scale,speed:40,phase:1,attack:.78,telegraph:null,flash:0,angle:0,damage:18,act:'combat',hellIndex:0,thresholdIndex:0,hellTimer:0,hellAttack:.2,hellWaves:0,invulnerable:false,finalAct:false,finalPressure:pressure,introBoss:stage===1&&runDifficulty===0&&def.kind==='warden',rageAt:(stage===1&&runDifficulty===0&&def.kind==='warden') ? .4 : .5};
+    boss={kind:'boss',bossKind:def.kind,name:def.name,color:def.color,x:W/2,y:142,r:32,hp:health,maxHp:health,burnScale:scale,speed:40,phase:1,attack:.78,telegraph:null,flash:0,angle:0,damage:18,act:'combat',phaseGates:def.kind==='star'?null:[.66,.33],gateIndex:0,phaseRank:0,hellIndex:0,thresholdIndex:0,hellTimer:0,hellAttack:.2,hellWaves:0,invulnerable:false,finalAct:false,finalPressure:pressure,introBoss:stage===1&&runDifficulty===0&&def.kind==='warden',rageAt:(stage===1&&runDifficulty===0&&def.kind==='warden') ? .4 : .5};
     if(balanceRoom){balanceRoom.bossName=def.name;balanceRoom.bossKind=def.kind;balanceRoom.bossHpStart=health;balanceRoom.enemyCountStart=1;balanceRoom.enemyKinds={boss:1};}
     if(relicBag.collapse_frontal)boss.facingAngle=Math.atan2(player.y-boss.y,player.x-boss.x);
     enemies.push(boss);setScreen('playing');playSound('boss');toast(def.name);if(def.kind==='star')beginFinalHell(boss,false);updateHud();
@@ -987,7 +1002,7 @@
     setScreen('loot','lootOverlay');
   }
   function relicArt(item){return item.image?`<img class="relicImage" src="${item.image}" alt="">`:item.tier||item.glyph?`<span class="cardicon">${item.icon}</span>`:`<img class="relicImage" src="assets/relic-icons/${item.id}.png" alt="">`;}
-  function shopPrice(item){const base=item.tier?48:item.weapon?68:58;return Math.round(base*(1+.1*shopBought)*(player.origin==='smith'?1.2:1)*(runDifficulty>=3?1.2:runDifficulty===2?1.1:1)*zoneScale(growth.shopPerZone));}
+  function shopPrice(item){const base=item.tier?48:item.weapon?68:58;return Math.round(base*(1+.05*threatMinutes())*(player.origin==='smith'?1.2:1)*(runDifficulty>=3?1.2:runDifficulty===2?1.1:1)*zoneScale(growth.shopPerZone));}
   function openShop(stock){
     lootAfter='shop';const healCost=Math.round(26*zoneScale(growth.shopPerZone)),rerollCost=Math.round((shopRerolls?26:16)*zoneScale(growth.shopPerZone));
     const cards=stock.map(item=>{const price=shopPrice(item),sold=item.sold;return {cls:sold?'sold':ore<price?'cantAfford':'',disabled:sold||ore<price,html:`${relicArt(item)}<span class="cardname">${item.name}${relicBag[item.id]?` ×${relicBag[item.id]+1}`:''}</span><span class="carddesc">${item.desc}</span><span class="price">${sold?'구매함':`⛏ ${price}`}</span>`,onClick:()=>{if(!spendOre(price))return;shopBought++;item.sold=true;balanceEvents.push({t:+runTime.toFixed(2),type:'shop-buy',stage,item:item.id,price});grantRelic(item.id);openShop(stock);}};});
@@ -1022,7 +1037,7 @@
     $('lootKicker').textContent=after==='deepRelic'?'심층 유물':after==='eventLoot'?'사건 보상':phase==='boss'?'보스 상자':phase==='elite'?'정예 보상':'유물 상자';
     $('lootTitle').textContent=lootAfter==='eliteBonus'?'유물 하나를 강화하세요':lootAfter==='eliteExtra'?'추가 유물 보상':after==='riskPick'?'위험을 선택하세요':'상자가 열렸다';$('lootSubtitle').textContent=lootAfter==='eliteBonus'?'보유 유물 하나를 한 번 중첩합니다.':lootAfter==='eliteExtra'?'중첩할 유물이 없어 새 유물 하나를 받습니다.':after==='riskPick'?'대가를 확인하고 선택하세요. 건너뛸 수 있습니다.':'획득할 유물을 고르세요.';
     lootPool.forEach((item,index)=>{
-      const card=document.createElement('button');card.type='button';card.className=`card revealCard${item.tier?` tier-${['','explorer','abyss','collapse'][item.tier]}`:''}`;card.style.setProperty('--reveal-delay',`${index*.18}s`);
+      const card=document.createElement('button');card.type='button';card.className=`card revealCard${item.rare?' rareCard':''}${item.tier?` tier-${['','explorer','abyss','collapse'][item.tier]}`:''}`;card.style.setProperty('--reveal-delay',`${index*.18}s`);
       const artwork=relicArt(item);
       const tierBadge=item.tier?`<span class="tierBadge">${['','탐험가','심연','붕괴'][item.tier]}</span>`:'';
       card.innerHTML=`${artwork}<span class="cardname">${item.name}${relicBag[item.id]?` ×${relicBag[item.id]+1}`:''}</span><span class="carddesc">${item.desc}</span>${tierBadge}${completedSynergies(item.id).map(key=>`<span class="comboTag">＋조합 · ${synergyText[key].split(':')[0]}</span>`).join('')}`;
@@ -1049,12 +1064,12 @@
     const eligible=Object.entries(relics).filter(([id,item])=>!item.deep&&(!item.unlock||saved.unlockedRelics.includes(id))&&(!item.tier||item.tier<=runDifficulty)&&(!item.weapon||!player||item.weapon===player.weapon));
     let pool=eligible.filter(([id,item])=>!item.maxStacks||(relicBag[id]||0)<item.maxStacks);
     const picked=[],count=Math.min(optionCount,pool.length);
-    if(optionCount===3&&pool.length){const offense=pool.filter(([id])=>['exp_edge','exp_tempo','exp_hunter','exp_spark','ember','split','thunder','echo','razor','keen','axe_core','wand_arc','twin_moon','pick_core','wildfire','void','sun','dynamite','hot_core','overclock','golden_pick'].includes(id));if(offense.length)picked.push(choice(offense)[0]);}
+    if(optionCount===3&&pool.length){const offense=pool.filter(([id])=>['exp_edge','exp_tempo','exp_hunter','exp_spark','ember','split','thunder','echo','razor','keen','axe_core','wand_arc','twin_moon','pick_core','wildfire','void','sun','dynamite','hot_core','overclock','golden_pick','crit_core','auto_turret','kill_fuse','double_tap','flame_cloak','king_pulse','firework_crown'].includes(id));if(offense.length)picked.push(choice(offense)[0]);}
     while(picked.length<count){
       const available=pool.filter(([id])=>!picked.includes(id));let one;
       if(picked.length===count-1)one=choice(available);
       else{
-        const weighted=available.map(entry=>{const [id]=entry;let weight=1;if(player&&id===weaponRelics[player.weapon])weight+=2.4;if(!(relicBag[id]||0)&&Object.values(synergyPairs).some(pair=>pair.includes(id)&&pair.some(other=>other!==id&&(relicBag[other]||0)>0)))weight+=2;return{entry,weight};});
+        const weighted=available.map(entry=>{const [id]=entry;let weight=relics[id].rare?.3:1;if(player&&id===weaponRelics[player.weapon])weight+=2.4;if(!(relicBag[id]||0)&&Object.values(synergyPairs).some(pair=>pair.includes(id)&&pair.some(other=>other!==id&&(relicBag[other]||0)>0)))weight+=2;return{entry,weight};});
         let roll=runRandom()*weighted.reduce((sum,item)=>sum+item.weight,0);one=weighted[weighted.findIndex(item=>(roll-=item.weight)<=0)]?.entry||available[0];
       }
       picked.push(one[0]);
@@ -1065,7 +1080,7 @@
     const oldSynergies=new Set(activeSynergies().map(item=>item.key));
     relicBag[id]=(relicBag[id]||0)+1;
     if(id==='heart'){player.maxHp+=20*runStatMultiplier();healPlayer(25);}
-    if(id==='dash')player.dashBase=Math.max(.55,(player.dashBase||1.35)-.18);
+    if(id==='dash')player.dashBase=(player.dashBase||1.35)*.87;
     if(id==='gale')player.speed+=14;
     if(id==='exp_heart'){player.maxHp+=30*runStatMultiplier();healPlayer(30);}
     if(id==='exp_stride')player.speed+=30;
@@ -1147,7 +1162,7 @@
   function completedSynergies(id){return Object.entries(synergyPairs).filter(([,pair])=>pair.includes(id)&&!(relicBag[id]||0)&&pair.every(other=>other===id||(relicBag[other]||0)>0)).map(([key])=>key);}
   function hasSynergy(key){return !!synergyPairs[key]?.every(id=>(relicBag[id]||0)>0);}
   function activeSynergies(){return Object.keys(synergyPairs).filter(hasSynergy).map(key=>({key,name:synergyText[key].split(':')[0]}));}
-  function razorBladeCount(){return relicBag.razor?1+Math.min(2,relicBag.razor-1)+(hasSynergy('split_razor')?1:0):0;}
+  function razorBladeCount(){return relicBag.razor?relicBag.razor+(hasSynergy('split_razor')?1:0):0;}
   function showVictory(){
     balanceRunCleared=true;
     saveBalanceRun('클리어','최종 보스 처치');
@@ -1203,8 +1218,8 @@
     hudClass('difficultyHud',`difficultyBadge difficulty-${runDifficulty}`);
     hudText('oreText',`광석 ${ore}`);hudText('roomHud',screen==='dig'?'갱도 탐사':phase==='boss'?'보스전':phase==='elite'?(roomKind==='seal'?'봉인 갱도':'정예 전투'):specialRoom?(specialRoom.kind==='vault'?'보물 갱도':'붕괴 갱도'):`${roomKind==='den'?'소굴':roomKind==='vein'?'광맥':'전투'} · 웨이브 ${waveIndex}/${waveTotal}`);
     hudHtml('relicHud',Object.entries(relicBag).filter(([,n])=>n>0).map(([id,n])=>`<span class="relicpip" title="${relics[id].name}">${relics[id].icon}${n>1?'×'+n:''}</span>`).join(''));
-    hudText('recordHud',`처치 ${kills} · 최고 구역 ${saved.bestZone}`+(relicBag.collapse_momentum?` · 기세 +${momentumHits}% / 손실 ${Math.round(runStatPenalty*100)}%`:''));
-    if(boss){const state=boss.burrowing>0||boss.surfaceTimer>0?' · 잠행':boss.desperation?` · 필사 · ${Math.ceil(boss.despTime)}초 버티기`:boss.invulnerable?(boss.bossKind==='star'?' · 무적':boss.act==='hell'?' · 탄막 진행 중':boss.act==='transition'?' · 페이즈 전환 중':boss.hellIndex===3?' · 쌍둥이 처치 필요':' · 봉인 파괴 필요'):'';hudText('bossName',boss.name+(boss.phase===2?' · 광폭화':'')+state);hudWidth('bossFill',clamp(boss.hp/boss.maxHp*100,0,100));}
+    hudText('recordHud',`위협 Lv ${threatLevel()} · 처치 ${kills}`+(relicBag.collapse_momentum?` · 기세 +${momentumHits}% / 손실 ${Math.round(runStatPenalty*100)}%`:''));
+    if(boss){const state=boss.phaseBreak>0?' · 페이즈 전환':boss.burrowing>0||boss.surfaceTimer>0?' · 잠행':boss.desperation?` · 필사 · ${Math.ceil(boss.despTime)}초 버티기`:boss.invulnerable?(boss.bossKind==='star'?' · 무적':boss.act==='hell'?' · 탄막 진행 중':boss.act==='transition'?' · 페이즈 전환 중':boss.hellIndex===3?' · 쌍둥이 처치 필요':' · 봉인 파괴 필요'):'';hudText('bossName',boss.name+(boss.phase===2?' · 광폭화':'')+state);hudWidth('bossFill',clamp(boss.hp/boss.maxHp*100,0,100));}
   }
   const axeChargeMax=.45;
   function startAxeCharge(){if(!player||player.weapon!=='axe'||player.charging||attackTimer>0||relicBag.abyss_axe_storm&&player.axeStormOut)return;player.charging=true;player.chargeTime=0;playSound('charge');}
@@ -1218,9 +1233,10 @@
     const weap=weapons[player.weapon],attackNumber=player.attackCount+1,angle=Math.atan2(mouse.y-player.y,mouse.x-player.x);let damage=weap.damage*(1+(player.damageBonus||0));
     if(player.weapon==='axe')damage*=1+1.2*clamp(charge,0,1);
     const attackShotStart=shots.length;
-    if(relicBag.abyss_gambler){const jackpot=runRandom()<.2;damage*=jackpot?5:.5;floatText(player.x,player.y-22,jackpot?'대박 ×5':'반감','#ffe08a',12);}
+    if(relicBag.abyss_gambler){const jackpot=runRandom()<1-.8**relicBag.abyss_gambler;damage*=jackpot?5:.5;floatText(player.x,player.y-22,jackpot?'대박 ×5':'반감','#ffe08a',12);}
     if(relicBag.collapse_cannon&&!player.collapseCannonUsed){player.collapseCannonUsed=true;player.collapseCannonTimer=4;if(!payHealthCost(player.maxHp*.2,'피의 포문'))return;if(balanceRoom)balanceRoom.resourceUses++;floatText(player.x,player.y-24,'피의 포문 ×3','#ff7181',13);}
-    if(relicBag.exp_spark&&attackNumber%5===0)damage*=1.8;
+    if(relicBag.king_pulse&&attackNumber%3===0)damage*=1+relicBag.king_pulse;
+    if(relicBag.exp_spark&&attackNumber%5===0)damage*=1+.8*relicBag.exp_spark;
     if(player.weaponUpgrade==='wand_prism')damage*=1.25;
     if(relicBag.abyss_axe_storm&&player.weapon==='axe')damage*=1.6;
     if(relicBag.keen&&attackNumber%5===0){damage*=1+.75*relicBag.keen;floatText(player.x,player.y-20,'강타!','#ffe08a',13);}
@@ -1231,31 +1247,32 @@
     else if(player.weaponUpgrade==='twin_rift'&&attackNumber%(player.weaponUpgrade2==='twin_rift_repeat'?3:4)===0)fireTwinRift(angle,damage*(player.weaponUpgrade2==='twin_rift_repeat'?4.8:player.weaponUpgrade2==='twin_rift_pierce'?5.6:3.6),attackContext);
     else if(player.weaponUpgrade==='twin_cleave')fireTwinCleave(angle,damage*2.4*(player.weaponUpgrade2==='twin_cleave_long'?1.15:1),true,attackContext);
     else if(player.weaponUpgrade==='twin_orbit'){
-      const count=Math.min(6,2+(relicBag.split||0)+(player.weaponUpgrade2==='twin_orbit_blades'?1:0)),reach=player.weaponUpgrade2==='twin_orbit_reach';
+      const count=2+(relicBag.split||0)+(player.weaponUpgrade2==='twin_orbit_blades'?1:0),reach=player.weaponUpgrade2==='twin_orbit_reach';
       for(let i=0;i<count;i++)shots.push({kind:'orbiter',x:player.x,y:player.y,orbitAngle:angle+Math.PI*2*i/count,orbitRadius:reach?54:38,orbitSpeed:reach?12:8.5,life:.82,hit:new Set(),damage:damage*(1.2+.08*Math.max(0,(relicBag.split||0)-2))*(reach?1.35:1),pierce:999,spin:0});
     } else if(player.weapon==='pick')firePickSwing(angle,damage,attackNumber,attackContext);
     else if(player.weapon==='bomb')fireBomb(angle,damage);
     else {
       let count=player.weapon==='twin'?twinSwipeCount():player.weapon==='wand'&&player.weaponUpgrade==='wand_fan'?(player.weaponUpgrade2==='wand_fan_storm'?5:3):1,spread=player.weapon==='twin'?.2:player.weapon==='wand'&&player.weaponUpgrade==='wand_fan'?(player.weaponUpgrade2==='wand_fan_focus'?.1:player.weaponUpgrade2==='wand_fan_storm'?.12:.24):0;
-      if(relicBag.split&&player.weapon!=='twin'){count+=1+Math.min(2,relicBag.split-1);spread=player.weapon==='wand'&&player.weaponUpgrade==='wand_fan'?(player.weaponUpgrade2==='wand_fan_focus'?.1:player.weaponUpgrade2==='wand_fan_storm'?.12:.24):.13;}
+      if(relicBag.split&&player.weapon!=='twin'){count+=relicBag.split;spread=player.weapon==='wand'&&player.weaponUpgrade==='wand_fan'?(player.weaponUpgrade2==='wand_fan_focus'?.1:player.weaponUpgrade2==='wand_fan_storm'?.12:.24):.13;}
       if(player.weapon==='twin'){fireTwinSwipes(angle,damage,count,spread,'axe',attackContext);}
       else for(let i=0;i<count;i++){
         const offset=count===1?0:(i-(count-1)/2)*spread,a=angle+offset;
         const fanDamage=player.weaponUpgrade2==='wand_fan_storm'?.44:player.weaponUpgrade2==='wand_fan_focus'?.9:.58;
-        shots.push({kind:player.weapon==='wand'?'bolt':'axe',x:player.x+Math.cos(a)*13,y:player.y+Math.sin(a)*13,ox:player.x,oy:player.y,vx:Math.cos(a)*weap.speed,vy:Math.sin(a)*weap.speed,angle:a,age:0,returnAt:relicBag.abyss_axe_storm&&player.weapon==='axe' ? .72 : .4,life:player.weapon==='wand'?1.25:1.18,returning:false,hit:new Set(),landedHit:false,damage:(player.weapon==='wand'&&player.weaponUpgrade==='wand_fan'?damage*fanDamage:damage),pierce:player.weapon==='wand'?(player.weaponUpgrade==='wand_fan'?1:2)+(relicBag.abyss_hungry?1:0):999,bouncesLeft:relicBag.abyss_reflect&&player.weapon==='wand'?2:0,stormBounces:0,spin:0,upgrade:player.weaponUpgrade,splitAttack:!!relicBag.split&&player.weapon!=='twin',charge:player.weapon==='axe'?clamp(charge,0,1):0,scale:player.weapon==='axe'?1+1.5*clamp(charge,0,1):1,chargeBlast:player.weapon==='axe'&&i===0,chargeBlastPhases:{},chain:player.weapon==='wand'&&!!relicBag.wand_arc&&attackNumber%4===0&&i===0});
+        shots.push({kind:player.weapon==='wand'?'bolt':'axe',x:player.x+Math.cos(a)*13,y:player.y+Math.sin(a)*13,ox:player.x,oy:player.y,vx:Math.cos(a)*weap.speed,vy:Math.sin(a)*weap.speed,angle:a,age:0,returnAt:relicBag.abyss_axe_storm&&player.weapon==='axe' ? .72 : .4,life:player.weapon==='wand'?1.25:1.18,returning:false,hit:new Set(),landedHit:false,damage:(player.weapon==='wand'&&player.weaponUpgrade==='wand_fan'?damage*fanDamage:damage),pierce:player.weapon==='wand'?(player.weaponUpgrade==='wand_fan'?1:2)+(relicBag.abyss_hungry?1:0):999,bouncesLeft:relicBag.abyss_reflect&&player.weapon==='wand'?2*relicBag.abyss_reflect:0,stormBounces:0,spin:0,upgrade:player.weaponUpgrade,splitAttack:!!relicBag.split&&player.weapon!=='twin',charge:player.weapon==='axe'?clamp(charge,0,1):0,scale:player.weapon==='axe'?1+1.5*clamp(charge,0,1):1,chargeBlast:player.weapon==='axe'&&i===0,chargeBlastPhases:{},chain:player.weapon==='wand'&&!!relicBag.wand_arc&&attackNumber%4===0&&i===0});
       }
     }
     if(relicBag.abyss_axe_storm&&player.weapon==='axe')player.axeStormOut=true;
     if(player.weapon==='twin'&&relicBag.twin_moon&&attackNumber%3===0)fireTwinCleave(angle,damage*(.35+.1*(relicBag.twin_moon-1)),true,attackContext,'moon');
     for(const shot of shots.slice(attackShotStart)){shot.attackContext=attackContext;shot.missState=attackContext;retainAttackContext(attackContext);}
     player.attackCount=attackNumber;
+    if(relicBag.double_tap){const chance=.15*relicBag.double_tap,extra=Math.floor(chance)+(runRandom()<chance%1?1:0);for(let i=0;i<extra;i++){pendingEchoes.push({at:performance.now()+70+i*50,token:runToken,weapon:player.weapon,upgrade:player.weaponUpgrade,angle,attackContext});retainAttackContext(attackContext);}}
     if(relicBag.echo&&player.attackCount%(player.rageActive>0&&hasSynergy('overclock_echo')?2:4)===0){
       const token=runToken,weapon=player.weapon,upgrade=player.weaponUpgrade;
       pendingEchoes.push({at:performance.now()+110,token,weapon,upgrade,angle,attackContext});retainAttackContext(attackContext);
     }
     releaseAttackContext(attackContext);
-    const normalCooldown=weap.cooldown*Math.max(.62,1-(relicBag.echo||0)*.035)*(player.weaponUpgrade==='pick_drill'?.36:player.weaponUpgrade==='bomb_rapid'?.45:player.weaponUpgrade==='bomb_heavy'?1.35:1);
-    attackTimer=(player.weapon==='axe'?weap.cooldown*(1-.74*clamp(charge,0,1))*Math.max(.62,1-(relicBag.echo||0)*.035):normalCooldown)/attackRateMultiplier();playSound('shot');
+    const normalCooldown=weap.cooldown*(1/(1+(relicBag.echo||0)*.035))*(player.weaponUpgrade==='pick_drill'?.36:player.weaponUpgrade==='bomb_rapid'?.45:player.weaponUpgrade==='bomb_heavy'?1.35:1);
+    attackTimer=(player.weapon==='axe'?weap.cooldown*(1-.74*clamp(charge,0,1))*(1/(1+(relicBag.echo||0)*.035)):normalCooldown)/attackRateMultiplier();playSound('shot');
   }
   function updatePendingEchoes(){
     if(screen!=='playing'||!player)return;
@@ -1276,7 +1293,7 @@
   let bombVeinBonus=false;
   function bombRadius(){const up=player.weaponUpgrade;return (up==='bomb_heavy'?128:up==='bomb_rapid'?62:88)+14*(relicBag.bomb_core||0)+(player.weaponUpgrade2==='bomb_rapid_chain'?(player.bombChain||0)*11:0);}
   function fireBomb(angle,damage){
-    const up=player.weaponUpgrade,heavy=up==='bomb_heavy',rapid=up==='bomb_rapid',dx=mouse.x-player.x,dy=mouse.y-player.y,reach=Math.min(380,Math.hypot(dx,dy)),count=1+Math.min(3,relicBag.split||0);
+    const up=player.weaponUpgrade,heavy=up==='bomb_heavy',rapid=up==='bomb_rapid',dx=mouse.x-player.x,dy=mouse.y-player.y,reach=Math.min(380,Math.hypot(dx,dy)),count=1+(relicBag.split||0);
     for(let i=0;i<count;i++){const a=angle+(i-(count-1)/2)*.28,tx=clamp(player.x+Math.cos(a)*reach,40,W-40),ty=clamp(player.y+Math.sin(a)*reach,52,H-44),flight=Math.max(.14,reach/620);shots.push({kind:'bomb',x:player.x,y:player.y,ox:player.x,oy:player.y,tx,ty,age:0,flight,life:flight+1,hit:new Set(),damage:damage*(heavy?1.55:rapid?.52:1),pierce:999,spin:0,angle:a,radius:bombRadius()});}
   }
   function detonateBomb(s,mini=false){
@@ -1289,7 +1306,7 @@
     if(!mini&&up==='bomb_cluster'){const n=up2==='bomb_cluster_more'?5:3;for(let i=0;i<n;i++){const a=i*Math.PI*2/n+rand(0,.5);weaponEffects.push({kind:'blast',x:s.x,y:s.y,radius:12,color:'#ffd36a',life:.1,maxLife:.1});detonateBomb({...s,x:clamp(s.x+Math.cos(a)*78,30,W-30),y:clamp(s.y+Math.sin(a)*78,45,H-40)},true);}}
   }
   function firePickSwing(angle,damage,attackNumber,attackContext,echo=false){
-    const up=player.weaponUpgrade,up2=player.weaponUpgrade2,drill=up==='pick_drill',reach=drill?(up2==='pick_drill_pierce'?255:172):132,halfAngle=drill?.3:.98,split=1+.38*Math.min(3,relicBag.split||0);
+    const up=player.weaponUpgrade,up2=player.weaponUpgrade2,drill=up==='pick_drill',reach=drill?(up2==='pick_drill_pierce'?255:172):132,halfAngle=drill?.3:.98,split=1+.38*(relicBag.split||0);
     const hitDamage=damage*split*pickOreBonus()*(drill?.52:1)*(echo?.7:1);
     for(const e of [...enemies]){if(e.kind==='boss'&&e.invulnerable)continue;const dx=e.x-player.x,dy=e.y-player.y,d=Math.hypot(dx,dy),delta=Math.atan2(Math.sin(Math.atan2(dy,dx)-angle),Math.cos(Math.atan2(dy,dx)-angle));if(d<reach+e.r&&Math.abs(delta)<halfAngle)damageEnemy(e,hitDamage,'cleave',{attackContext},angle);}
     weaponEffects.push({kind:'cleave',x:player.x,y:player.y,angle,reach,halfAngle,color:drill?'#83e5ff':'#ffe08a',life:drill?.12:.2,maxLife:drill?.12:.2});hitPropsArc(angle,reach,halfAngle);
@@ -1305,10 +1322,10 @@
     for(const e of [...enemies]){if(e.kind==='boss'&&e.invulnerable)continue;const t=clamp(((e.x-player.x)*dx+(e.y-player.y)*dy)/lenSq,0,1);if(Math.hypot(e.x-(player.x+dx*t),e.y-(player.y+dy*t))<e.r+20)damageEnemy(e,damage*1.05*bonus*split,'rift',{attackContext},angle);}
     weaponEffects.push({kind:'cleave',x:player.x,y:player.y,angle,reach:length,halfAngle:.07,color:'#ffc06a',life:.26,maxLife:.26});hitPropsLine(player,end,20);shake=Math.max(shake,3);
   }
-  function twinSwipeCount(){return 2+(relicBag.split?1+Math.min(2,relicBag.split-1):0);}
+  function twinSwipeCount(){return 2+(relicBag.split||0);}
   function fireWandRail(angle,damage,allowEcho=true,allowSplit=true,attackContext=null){
     let landed=false;
-    if(allowSplit&&relicBag.split){const extra=1+Math.min(2,relicBag.split-1),count=extra+1;for(let i=0;i<count;i++){const rayAngle=angle+(i-(count-1)/2)*.16,rayDamage=damage;landed=fireWandRail(rayAngle,rayDamage,false,false,attackContext)||landed;if(player.weaponUpgrade2==='wand_rail_echo')landed=fireWandRail(rayAngle+.1,rayDamage*.58,false,false,attackContext)||landed;}return landed;}
+    if(allowSplit&&relicBag.split){const extra=relicBag.split,count=extra+1;for(let i=0;i<count;i++){const rayAngle=angle+(i-(count-1)/2)*.16,rayDamage=damage;landed=fireWandRail(rayAngle,rayDamage,false,false,attackContext)||landed;if(player.weaponUpgrade2==='wand_rail_echo')landed=fireWandRail(rayAngle+.1,rayDamage*.58,false,false,attackContext)||landed;}return landed;}
     const start={x:player.x,y:player.y},end=rayEnd(player.x,player.y,angle),length=dist(start,end),dx=end.x-start.x,dy=end.y-start.y,lenSq=dx*dx+dy*dy;
     let clearLength=length;
     for(let d=8;d<length;d+=8){const x=start.x+dx/length*d,y=start.y+dy/length*d;if(obstacles.some(r=>overlapsObstacle(x,y,2,r))){clearLength=d;break;}}
@@ -1378,7 +1395,7 @@
     let dx=(keys.d||keys.ArrowRight?1:0)-(keys.a||keys.ArrowLeft?1:0)+touchMove.dx,dy=(keys.s||keys.ArrowDown?1:0)-(keys.w||keys.ArrowUp?1:0)+touchMove.dy;
     if(!dx&&!dy){dx=touchAim.active?touchAim.dx:Math.cos(Math.atan2(mouse.y-player.y,mouse.x-player.x));dy=touchAim.active?touchAim.dy:Math.sin(Math.atan2(mouse.y-player.y,mouse.x-player.x));}
     const l=Math.hypot(dx,dy)||1;dx/=l;dy/=l;
-    player.dashing=.19;player.dashX=dx;player.dashY=dy;dashCooldown=(player.dashBase||1.35)/Math.max(.1,runStatMultiplier());invuln=Math.max(invuln,relicBag.collapse_dash ? .72 : .24);if(balanceRoom){balanceRoom.resourceUses++;balanceRoom.dashes=(balanceRoom.dashes||0)+1;}playSound('dash');
+    player.dashing=.19;player.dashX=dx;player.dashY=dy;dashCooldown=(player.dashBase||1.35)/Math.max(.1,runStatMultiplier());invuln=Math.max(invuln,.24*(1+2*(relicBag.collapse_dash||0)));if(balanceRoom){balanceRoom.resourceUses++;balanceRoom.dashes=(balanceRoom.dashes||0)+1;}playSound('dash');
   }
   function tryParry(){
     if(!player||screen!=='playing'||clearTransition||relicBag.abyss_evasion||parryWindow>0||parryCooldown>0)return false;
@@ -1388,7 +1405,7 @@
   function activateCombatPower(which){
     if(!player||screen!=='playing')return false;
     if(which==='rage'&&player.rage>=1&&player.rageActive<=0){
-      overdriveUses++;if(balanceRoom)balanceRoom.overdrives=(balanceRoom.overdrives||0)+1;player.rage=relicBag.twin_wick?.5:0;player.rageActive=overdriveDuration();player.overdriveEnded=false;if(balanceRoom)balanceRoom.resourceUses++;balanceEvents.push({t:+runTime.toFixed(2),type:'resource',resource:'rage'});
+      overdriveUses++;if(balanceRoom)balanceRoom.overdrives=(balanceRoom.overdrives||0)+1;player.rage=relicBag.twin_wick?1-.5**relicBag.twin_wick:0;player.rageActive=overdriveDuration();player.overdriveEnded=false;if(balanceRoom)balanceRoom.resourceUses++;balanceEvents.push({t:+runTime.toFixed(2),type:'resource',resource:'rage'});
       // The release is a defensive panic button as well as an attack window: nearby shots vanish and nearby rock shatters.
       const release={x:player.x,y:player.y},radius=225;bullets=bullets.filter(b=>{if(dist(b,release)>=radius)return true;burst(b.x,b.y,'#ffb36a',1);return false;});hitPropsCircle(release.x,release.y,radius);
       for(const e of enemies){if(e.kind==='boss'||e.kind==='seal'||e.under)continue;const dx=e.x-release.x,dy=e.y-release.y,d=Math.hypot(dx,dy)||1;if(d<radius){e.kbx=(e.kbx||0)+dx/d*520;e.kby=(e.kby||0)+dy/d*520;}}
@@ -1415,7 +1432,7 @@
       if(closeEnemy){const before=player.rage;player.rage=Math.min(1,player.rage+dt*2.6/100);if(before<1&&player.rage>=1){playSound('chest');floatText(player.x,player.y-30,'오버드라이브 준비 · R','#ffb36a',13);}}
       else if(player.heatIdle>4)player.rage=Math.max(0,player.rage-dt*.028);
     }
-    dynamiteTimer=Math.max(0,dynamiteTimer-dt);
+    dynamiteTimer=Math.max(0,dynamiteTimer-dt);player.hornTimer=Math.max(0,(player.hornTimer||0)-dt);player.drumTimer=Math.max(0,(player.drumTimer||0)-dt);if(player.rampageTimer>0){player.rampageTimer-=dt;if(player.rampageTimer<=0)player.rampageStacks=0;}
     if(runDifficulty>=2&&phase==='boss'&&boss&&!boss.invulnerable&&player.adrenalineActive<=0&&player.adrenaline<1)
       {player.adrenaline=Math.min(1,player.adrenaline+dt/18);if(player.adrenaline===1){playSound('chest');floatText(player.x,player.y-42,'아드레날린 준비','#78e7ff',12);}}
     if(runDifficulty<2){player.adrenaline=0;player.adrenalineActive=0;}
@@ -1447,7 +1464,7 @@
     if(bossIntro>0){bossIntro=Math.max(0,bossIntro-dt);updateParticles(dt);updateTexts(dt);return;}
     if(clearTransition){if(!clearTransition.cleaned){clearTransition.cleaned=true;props=[];specialRoom=null;clearShots(true);clearPendingEchoes();bullets=[];hazards=[];lightningArcs=[];voidWaves=[];}$('bossbar').classList.remove('visible');clearTransition.timer=Math.max(0,clearTransition.timer-dt);if(clearTransition.timer===0){collectAllDrops();const next=clearTransition.onComplete;clearTransition=null;next?.();if(screen!=='playing')return;}}
     updatePendingEchoes();if(screen!=='playing')return;
-    runTime+=dt;attackTimer-=dt;dashCooldown-=dt;parryCooldown=Math.max(0,parryCooldown-dt);invuln-=dt;if(shake>0)shake=Math.max(0,shake-dt*24);
+    runTime+=dt;threatClock+=dt;attackTimer-=dt;dashCooldown-=dt;parryCooldown=Math.max(0,parryCooldown-dt);invuln-=dt;if(shake>0)shake=Math.max(0,shake-dt*24);
     updateCombatPowers(dt);updateReinforcements(dt);
     player.razorHealCooldown=Math.max(0,(player.razorHealCooldown||0)-dt);player.counterReady=Math.max(0,(player.counterReady||0)-dt);
     if(player.collapseCannonTimer>0)player.collapseCannonTimer=Math.max(0,player.collapseCannonTimer-dt);
@@ -1456,7 +1473,7 @@
     let dx=(keys.d||keys.ArrowRight?1:0)-(keys.a||keys.ArrowLeft?1:0)+touchMove.dx,dy=(keys.s||keys.ArrowDown?1:0)-(keys.w||keys.ArrowUp?1:0)+touchMove.dy;const inputLength=Math.hypot(dx,dy);if(inputLength>1){dx/=inputLength;dy/=inputLength;}
     if(player.dashing>0){player.dashing-=dt;dx=player.dashX;dy=player.dashY;player.x+=dx*570*runStatMultiplier()*dt;player.y+=dy*570*runStatMultiplier()*dt;}
     else {const voidSlow=runDifficulty>=3?1-.5*(player.voidCharge||0):1;player.x+=dx*player.speed*runStatMultiplier()*voidSlow*dt;player.y+=dy*player.speed*runStatMultiplier()*voidSlow*dt;}
-    if(wasDashing&&player.dashing<=0)dropDynamite();
+    if(wasDashing&&player.dashing<=0){dropDynamite();if(relicBag.shock_boots){const radius=92+12*relicBag.shock_boots,hit=weapons[player.weapon].damage*(1+(player.damageBonus||0))*1.2*relicBag.shock_boots;weaponEffects.push({kind:'blast',x:player.x,y:player.y,radius,color:'#8de8d2',life:.26,maxLife:.26});for(const e of [...enemies])if(!e.under&&dist(e,player)<radius+e.r)damageEnemy(e,hit,'explosion');if(screen!=='playing')return;}}
     if(wasDashing&&player.dashing<=0&&relicBag.collapse_dash){const cost=player.maxHp*.1;if(!payHealthCost(cost,'무적의 역설'))return;floatText(player.x,player.y-20,`-${Math.ceil(cost)}`,'#ff7181',15);}
     if(player.axeStormOut&&relicBag.abyss_axe_storm&&!shots.some(s=>s.kind==='axe'))player.axeStormOut=false;
     if(boss&&boss.lastStand){const px=boss.x-player.x,py=boss.y-player.y,pd=Math.hypot(px,py)||1,pull=player.dashing>0?18:42+26*Math.min(1.65,bossPressure(boss));player.x+=px/pd*pull*dt;player.y+=py/pd*pull*dt;}
@@ -1484,6 +1501,7 @@
     updateShots(dt);if(screen!=='playing')return;
     updateEnemies(dt);if(screen!=='playing')return;updateVoidWaves(dt);
     updateBullets(dt);updateHazards(dt);updateLightningArcs(dt);updateParryWindow(dt);updateWeaponEffects(dt);updateDrops(dt);updateProps(dt);if(screen!=='playing')return;updateBossProps(dt);updateSpecialRoom(dt);if(screen!=='playing')return;updateParticles(dt);updateTexts(dt);
+    if(relicBag.flame_cloak){player.cloakTick=(player.cloakTick||0)-dt;if(player.cloakTick<=0){player.cloakTick=.3;const radius=120+14*relicBag.flame_cloak;for(const e of [...enemies])if(!e.under&&dist(e,player)<radius+e.r)damageEnemy(e,5*relicBag.flame_cloak*(e.burnScale||1),'aura');if(screen!=='playing')return;}}
     if(relicBag.razor){player.razorAngle=(player.razorAngle||0)+dt*2.5;const n=razorBladeCount();for(let i=0;i<n;i++){const a=player.razorAngle+Math.PI*2*i/n;const p={x:player.x+Math.cos(a)*razorOrbitRadius,y:player.y+Math.sin(a)*razorOrbitRadius,r:8};for(const e of [...enemies]){if(dist(p,e)<p.r+e.r&&runRandom()<dt*3.5)damageEnemy(e,(5+relicBag.razor*2)*(hasSynergy('split_razor')?1.2:1),'razor');}}}
     if(phase==='boss'&&boss){boss.phase=boss.hp<boss.maxHp*boss.rageAt?2:1;updateHud();}
     if(player.hp<=0){player.hp=0;gameOver();}
@@ -1542,13 +1560,13 @@
         const blastPhase=s.returning?'return':'outbound';
         if(s.chargeBlast&&s.charge>=.95&&relicBag.axe_core&&!s.chargeBlastPhases?.[blastPhase]&&!(e.kind==='boss'&&e.invulnerable)){
           s.chargeBlastPhases||={};s.chargeBlastPhases[blastPhase]=true;
-          const furnace=activeSynergies().some(item=>item.key==='axe_core_ember'),radius=58+(furnace?22:0),blast=hitDamage*Math.min(1.6,.85+.15*(relicBag.axe_core-1))*(furnace?1.35:1);
+          const furnace=activeSynergies().some(item=>item.key==='axe_core_ember'),radius=58+(furnace?22:0),blast=hitDamage*(.85+.15*(relicBag.axe_core-1))*(furnace?1.35:1);
           weaponEffects.push({kind:'blast',x:s.x,y:s.y,radius,color:'#ffc06a',life:.38,maxLife:.38});
           burst(s.x,s.y,'#ffc06a',22);burst(s.x,s.y,'#fff0a8',8);shake=Math.max(shake,4);floatText(s.x,s.y-22,s.returning?'귀환 폭발!':'폭발!','#ffe08a',18);playSound('relicBlast');
           for(const nearby of [...enemies])if(nearby!==e&&dist(s,nearby)<radius)damageEnemy(nearby,blast,'explosion');
         }
-        if(s.kind==='axe'&&relicBag.abyss_axe_storm&&!s.returning&&s.stormBounces<2){const target=enemies.filter(other=>other!==e&&!s.hit.has(other)&&!(other.kind==='boss'&&other.invulnerable)&&dist(other,e)<340).sort((a,b)=>dist(a,e)-dist(b,e))[0];if(target){const angle=Math.atan2(target.y-e.y,target.x-e.x),speed=Math.hypot(s.vx,s.vy)||weapons.axe.speed;s.stormBounces++;s.damage*=1.25;s.x=e.x;s.y=e.y;s.vx=Math.cos(angle)*speed;s.vy=Math.sin(angle)*speed;s.angle=angle;s.age=0;s.returnAt=.55;break;}}
-        if(s.kind==='bolt'&&s.chain&&!s.didChain){s.didChain=true;const target=enemies.filter(other=>other!==e&&!s.hit.has(other)&&!(other.kind==='boss'&&other.invulnerable)&&dist(other,s)<185).sort((a,b)=>dist(a,s)-dist(b,s))[0];if(target){drawLightning(s,target);damageEnemy(target,s.damage*.58,'lightning');}}
+        if(s.kind==='axe'&&relicBag.abyss_axe_storm&&!s.returning&&s.stormBounces<2*relicBag.abyss_axe_storm){const target=enemies.filter(other=>other!==e&&!s.hit.has(other)&&!(other.kind==='boss'&&other.invulnerable)&&dist(other,e)<340).sort((a,b)=>dist(a,e)-dist(b,e))[0];if(target){const angle=Math.atan2(target.y-e.y,target.x-e.x),speed=Math.hypot(s.vx,s.vy)||weapons.axe.speed;s.stormBounces++;s.damage*=1.25;s.x=e.x;s.y=e.y;s.vx=Math.cos(angle)*speed;s.vy=Math.sin(angle)*speed;s.angle=angle;s.age=0;s.returnAt=.55;break;}}
+        if(s.kind==='bolt'&&s.chain&&!s.didChain){s.didChain=true;const target=enemies.filter(other=>other!==e&&!s.hit.has(other)&&!(other.kind==='boss'&&other.invulnerable)&&dist(other,s)<185).sort((a,b)=>dist(a,s)-dist(b,s))[0];if(target){drawLightning(s,target);damageEnemy(target,s.damage*.58*relicBag.wand_arc,'lightning');}}
         if(s.upgrade==='wand_prism'&&!s.didSplit){s.didSplit=true;const lattice=player.weaponUpgrade2==='wand_prism_lattice',focus=player.weaponUpgrade2==='wand_prism_focus',directions=lattice?[-.62,-.2,.2,.62]:[-.43,.43],fragmentDamage=s.damage*(lattice ? .38 : focus ? .98 : .58)/1.25;for(const direction of directions){const a=s.angle+direction,speed=weapons.wand.speed*.78;shots.push({kind:'prism',x:s.x,y:s.y,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,angle:a,life:.9,hit:new Set([e]),landedHit:false,damage:fragmentDamage,pierce:1,spin:0,splitAttack:!!s.splitAttack,attackContext:s.attackContext,missState:s.attackContext});retainAttackContext(s.attackContext);}}
         if(s.pierce<999){s.pierce--;if(s.pierce<=0){blocked=true;break;}}
       }}
@@ -1567,10 +1585,11 @@
     if(e.bossKind==='queen'&&e.reflecting>0&&triggersOnHit){amount*=.25;if(!(e.reflectCooldown>time)){e.reflectCooldown=time+.22;const aim=Math.atan2(player.y-e.y,player.x-e.x),n=3+runDifficulty;for(let i=0;i<n;i++)enemyShot(e,aim+(i-(n-1)/2)*.18,210,'#bfefff');floatText(e.x,e.y-e.r-24,'반사!','#bfefff',15);}}
     const fireCritical=triggersOnHit&&attackContext?.heavyStrike&&e.burn>0&&hasSynergy('ember_keen');
     if(fireCritical)amount*=1.3;
+    if(triggersOnHit&&relicBag.crit_core){const chance=.1*relicBag.crit_core,rolls=Math.floor(chance)+(runRandom()<chance%1?1:0);if(rolls){amount*=1+rolls;e.critCue=rolls;}}
     if(source==='lightning'&&hasSynergy('frost_thunder')){amount*=1.25;if(['grunt','shooter','charger','elite','bomber','mirror'].includes(e.kind))e.slowTimer=Math.max(e.slowTimer||0,.72);}
     if(triggersOnHit&&relicBag.frost&&e.kind!=='boss')e.slowTimer=Math.max(e.slowTimer||0,.72);
     if(triggersOnHit&&relicBag.wildfire)e.wildfireTimer=Math.max(e.wildfireTimer||0,1.5);
-    if(!alreadyScaled){if(e.kind==='boss'&&source!=='boss'){if(relicBag.void)amount*=1+.25*relicBag.void;if(relicBag.exp_hunter)amount*=1.35;}if(relicBag.sun)amount*=1+.14*relicBag.sun;amount*=outgoingDamageMultiplier(e,source,attackAngle,attackContext);}
+    if(!alreadyScaled){if(e.kind==='boss'&&source!=='boss'){if(relicBag.void)amount*=1+.25*relicBag.void;if(relicBag.exp_hunter)amount*=1+.35*relicBag.exp_hunter;}if(relicBag.sun)amount*=1+.14*relicBag.sun;amount*=outgoingDamageMultiplier(e,source,attackAngle,attackContext);}
     if(e.kind==='boss'&&source==='burn')amount*=.8;
     const inheritedDamage=amount;
     if(e.kind==='boss'&&e.bossKind==='star'&&e.act==='combat'){
@@ -1580,7 +1599,8 @@
       if(gate!==null){amount=Math.min(amount,Math.max(0,e.hp-e.maxHp*gate));if(amount<=0)return;}
     }
     if(e.kind==='boss'&&e.bossKind==='moth'&&enemies.some(q=>q.kind==='phantom')){for(const q of enemies.filter(q=>q.kind==='phantom'))burst(q.x,q.y,'#c9b2ff',10);enemies=enemies.filter(q=>q.kind!=='phantom');floatText(e.x,e.y-e.r-20,'환영 소멸','#d9c7ff',14);}
-    const hpBeforeHit=e.hp;e.hp-=amount;if(balanceRoom){const dealt=Math.max(0,hpBeforeHit-Math.max(0,e.hp));balanceRoom.damageDealt+=dealt;if(balanceRoom.damageBySource)balanceRoom.damageBySource[source]=(balanceRoom.damageBySource[source]||0)+dealt;if(e.kind==='boss')balanceRoom.bossDamage=(balanceRoom.bossDamage||0)+dealt;}e.flash=.09;
+    let phaseGateHit=false;if(e.kind==='boss'&&e.phaseGates&&e.gateIndex<e.phaseGates.length&&!e.desperation){const line=e.maxHp*e.phaseGates[e.gateIndex];if(e.hp-amount<=line){amount=Math.max(0,e.hp-line);phaseGateHit=true;}}
+    const hpBeforeHit=e.hp;e.hp-=amount;if(phaseGateHit){beginPhaseBreak(e);floatText(e.x,e.y-e.r-14,Math.round(inheritedDamage),'#ffd27a',22);}if(balanceRoom){const dealt=Math.max(0,hpBeforeHit-Math.max(0,e.hp));balanceRoom.damageDealt+=dealt;if(balanceRoom.damageBySource)balanceRoom.damageBySource[source]=(balanceRoom.damageBySource[source]||0)+dealt;if(e.kind==='boss')balanceRoom.bossDamage=(balanceRoom.bossDamage||0)+dealt;}e.flash=.09;
     if(triggersOnHit&&!['boss','core','seal','brother','maw','phantom'].includes(e.kind)&&player){const fx=origin?.x??player.x,fy=origin?.y??player.y,push=(player.weapon==='bomb'?90:player.weapon==='pick'?230:player.weapon==='axe'?130:player.weapon==='twin'?70:32)*(e.kind==='elite'||e.kind==='shield'?.25:1),kx=e.x-fx,ky=e.y-fy,kd=Math.hypot(kx,ky)||1;e.kbx=(e.kbx||0)+kx/kd*push;e.kby=(e.kby||0)+ky/kd*push;}
     if(triggersOnHit&&e.kind==='boss'&&attackContext&&!attackContext.heated){attackContext.heated=true;addHeat(player.weapon==='wand'||player.weapon==='bomb'?.8:player.weaponUpgrade==='pick_drill'?.6:1.6);}
     if(triggersOnHit&&player.weaponUpgrade2==='pick_drill_heat')addHeat(.9);
@@ -1590,12 +1610,14 @@
     if(['axe','bolt','prism','echo','orbiter','cleave','rift','rail'].includes(source)&&relicBag.collapse_momentum)momentumHits++;
     if(['bolt','prism','echo','rail'].includes(source)&&(attackContext?.hungry||!attackContext&&relicBag.abyss_hungry)){if(attackContext){if(!attackContext.counted){abyssHitStreak++;attackContext.counted=true;}}else abyssHitStreak++;}
     {const heavy=clamp(amount/Math.max(1,e.kind==='boss'?e.maxHp*.04:e.maxHp),0,1);if(runRandom()<.22+heavy*.6||e.hp<=0)floatText(e.x+rand(-8,8),e.y-14,Math.round(amount),heavy>.6?'#ffd27a':e.kind==='boss'?'#ffe596':'#fff0c0',Math.round(12+heavy*9));}
-    if(triggersOnHit&&relicBag.ember){e.burn=Math.max(e.burn||0,2.2+(source==='echo'&&activeSynergies().some(s=>s.key==='ember_echo')?1.5:0));e.burnStacks=Math.min(100,(e.burnStacks||0)+1);}
+    if(triggersOnHit&&relicBag.ember){e.burn=Math.max(e.burn||0,2.2+(source==='echo'&&activeSynergies().some(s=>s.key==='ember_echo')?1.5:0));e.burnStacks=(e.burnStacks||0)+1;}
     if(triggersOnHit&&relicBag.thunder){
       const target=enemies.filter(other=>other!==e&&!(other.kind==='boss'&&other.invulnerable)&&dist(other,e)<220).sort((a,b)=>dist(a,e)-dist(b,e))[0];
-      if(target){drawLightning(e,target);damageEnemy(target,inheritedDamage*.52,'lightning',null,null,true);if(origin?.splitAttack&&activeSynergies().some(s=>s.key==='split_thunder')){const second=enemies.filter(other=>other!==e&&other!==target&&dist(other,target)<160).sort((a,b)=>dist(a,target)-dist(b,target))[0];if(second){drawLightning(target,second);damageEnemy(second,inheritedDamage*.32,'lightning',null,null,true);}}}
+      if(target){drawLightning(e,target);damageEnemy(target,inheritedDamage*.52,'lightning',null,null,true);if(relicBag.thunder>1)for(const extra of enemies.filter(other=>other!==e&&other!==target&&!other.under&&!(other.kind==='boss'&&other.invulnerable)&&dist(other,e)<260).sort((a,b)=>dist(a,e)-dist(b,e)).slice(0,relicBag.thunder-1)){drawLightning(e,extra);damageEnemy(extra,inheritedDamage*.52,'lightning',null,null,true);}if(origin?.splitAttack&&activeSynergies().some(s=>s.key==='split_thunder')){const second=enemies.filter(other=>other!==e&&other!==target&&dist(other,target)<160).sort((a,b)=>dist(a,target)-dist(b,target))[0];if(second){drawLightning(target,second);damageEnemy(second,inheritedDamage*.32,'lightning',null,null,true);}}}
       else {drawLightning({x:e.x+rand(-34,34),y:32},e);damageEnemy(e,inheritedDamage*.24,'lightning',null,null,true);}
     }
+    if(triggersOnHit&&relicBag.leech_awl&&time-(player.leechAt||0)>.15){player.leechAt=time;healPlayer(.6*relicBag.leech_awl);}
+    if(triggersOnHit&&relicBag.auto_turret){const chance=.12*relicBag.auto_turret,shotsFired=Math.floor(chance)+(runRandom()<chance%1?1:0);for(let i=0;i<shotsFired;i++){const aim=enemies.filter(other=>!other.under&&!(other.kind==='boss'&&other.invulnerable)).sort((a,b)=>dist(a,e)-dist(b,e))[Math.min(i+1,enemies.length-1)]||e;if(!enemies.includes(aim))continue;drawLightning(player,aim);damageEnemy(aim,inheritedDamage*.9,'lightning',null,null,true);}}
     if(e.hp<=0&&e.kind==='boss'&&runDifficulty>=3&&!e.desperationDone){startDesperation(e);return;}
     if(e.hp<=0){killEnemy(e);}
   }
@@ -1607,6 +1629,10 @@
     if(relicBag.wildfire&&e.wildfireTimer>0&&!resolvingKillBurst){resolvingKillBurst=true;const ashfire=activeSynergies().some(s=>s.key==='ember_wildfire'),radius=82+(ashfire?28:0),blastDamage=24*relicBag.wildfire*(ashfire?1.4:1);burst(e.x,e.y,'#ff9b60',20);for(const other of [...enemies])if(dist(e,other)<radius)damageEnemy(other,blastDamage*(other.burnScale||1),'burn');resolvingKillBurst=false;}
     if(e.kind==='bomber'&&e.bomberState==='fuse'&&!e.selfDetonated&&!resolvingKillBurst){resolvingKillBurst=true;burst(e.x,e.y,'#ffb36a',24);shake=Math.max(shake,4);floatText(e.x,e.y-20,'역폭발!','#ffcf7a',15);for(const other of [...enemies])if(other.kind!=='boss'&&dist(e,other)<70+other.r)damageEnemy(other,30*(other.burnScale||1),'burn');resolvingKillBurst=false;}
     if(e.kind!=='seal'&&e.kind!=='brother'&&e.kind!=='maw'){const base=e.kind==='boss'?12:e.kind==='elite'?5:1;spawnOre(e.x,e.y,base*(roomKind==='vein'&&phase==='wave'?2:1));}
+    if(relicBag.ore_tax&&e.kind!=='boss')spawnOre(e.x,e.y,.6*relicBag.ore_tax);
+    if(relicBag.rampage_glove){player.rampageStacks=(player.rampageStacks||0)+1;player.rampageTimer=3;}
+    if(relicBag.kill_fuse&&!resolvingKillBurst){resolvingKillBurst=true;const radius=68+16*relicBag.kill_fuse,blast=14*relicBag.kill_fuse;weaponEffects.push({kind:'blast',x:e.x,y:e.y,radius,color:'#ff9a4a',life:.24,maxLife:.24});for(const other of [...enemies])if(!other.under&&dist(e,other)<radius+other.r)damageEnemy(other,blast*(other.burnScale||1),'explosion');resolvingKillBurst=false;if(screen!=='playing')return;}
+    if(relicBag.firework_crown&&e.kind!=='boss'&&props.length<40&&runRandom()<.12*relicBag.firework_crown)props.push({kind:'tnt',x:e.x,y:e.y,r:14,hp:0,maxHp:1,flash:0,spawn:0,fuse:.6,fuseMax:.6,seed:0,friendly:true});
     addHeat(e.kind==='elite'?18:e.kind==='canary'?14:e.kind==='boss'?0:5);
     if(e.affix==='split'&&!resolvingKillBurst)for(let i=0;i<2;i++){spawnEnemy('grunt',i,{x:e.x+(i?26:-26),y:e.y});const pup=enemies[enemies.length-1];if(pup){pup.hp*=.5;pup.maxHp*=.5;pup.spawnGrace=.5;}}
     if(e.kind==='elite'){hitstop(.06);shake=Math.max(shake,5);}
@@ -1637,7 +1663,7 @@
       if(e.kind==='seal'||e.kind==='brother'||e.kind==='maw'||e.kind==='phantom'||e.kind==='core'){updateFinalAdd(e,dt);continue;}
       const oldX=e.x,oldY=e.y,dx=player.x-e.x,dy=player.y-e.y,d=Math.hypot(dx,dy)||1;
       if(e.kbx||e.kby){moveEntityWithWalls(e,e.kbx*dt,e.kby*dt);e.x=clamp(e.x,e.r+26,W-e.r-26);e.y=clamp(e.y,e.r+38,H-e.r-34);e.kbx*=Math.pow(.0012,dt);e.kby*=Math.pow(.0012,dt);if(Math.hypot(e.kbx,e.kby)<6){e.kbx=0;e.kby=0;}}
-      e.canaryBuff=Math.max(0,(e.canaryBuff||0)-dt);e.slowTimer=Math.max(0,(e.slowTimer||0)-dt);const moveSpeed=e.speed*(e.slowTimer>0?Math.max(.42,.64-.055*((relicBag.frost||1)-1)):1)*(e.canaryBuff>0?1.35:1)*(e.affix==='swift'?1.3:1),advancedSteps=Math.max(0,runDifficulty-1);
+      e.canaryBuff=Math.max(0,(e.canaryBuff||0)-dt);e.slowTimer=Math.max(0,(e.slowTimer||0)-dt);const moveSpeed=e.speed*(e.slowTimer>0?.64/(1+.12*((relicBag.frost||1)-1)):1)*(e.canaryBuff>0?1.35:1)*(e.affix==='swift'?1.3:1),advancedSteps=Math.max(0,runDifficulty-1);
       if(e.kind==='mimic'){if(!e.awake){e.spawnGrace=.2;if(d<105||e.hp<e.maxHp||enemies.every(o=>o===e||o.kind==='mimic')&&!pendingWaves.length&&!spawnPortals.length){e.awake=true;burst(e.x,e.y,'#ffc34d',16);floatText(e.x,e.y-26,'미믹!','#ffd27a',17);playSound('charge');}}else moveEntityWithWalls(e,dx/d*moveSpeed*dt,dy/d*moveSpeed*dt);}
       else if(e.kind==='burrower'){updateBurrower(e,dt,dx,dy,d,moveSpeed);if(screen!=='playing')return;}
       else if(e.kind==='shield')updateShieldMiner(e,dt,dx,dy,d,moveSpeed);
@@ -1741,6 +1767,7 @@
     if(runDifficulty>=3&&e.bossKind==='moth'&&e.phase===2&&!e.cloudsSpawned){e.cloudsSpawned=true;for(const x of [120,W-120])hazards.push({kind:'cloud',x,y:H-90,r:40,phase:'active',timer:9999,activeTime:9999,damage:10,color:'#c99cff',speed:36,life:9999});toast('인분 폭풍 · 떠도는 구름을 피하세요');}
     if(e.bossKind==='echo'&&e.phase===2&&!e.cloudsSpawned){e.cloudsSpawned=true;for(const x of runDifficulty>=2?[120,W-120]:[W-120])hazards.push({kind:'cloud',x,y:H-90,r:34,phase:'active',timer:9999,activeTime:9999,damage:10,color:'#b98cff',speed:30+8*runDifficulty,life:9999});toast('광폭화 · 메아리가 당신을 쫓는다');}
     if(runDifficulty>=3&&e.bossKind==='warden'){const want=e.hp/e.maxHp<.4?70:e.hp/e.maxHp<.7?40:0;e.arenaInset=Math.min(want,(e.arenaInset||0)+dt*25);const m=35+e.arenaInset;if(e.arenaInset>1&&(player.x<m||player.x>W-m||player.y<m||player.y>H-m)&&invuln<=0)hurtPlayer(10,'낙석 벽');if(want>(e.insetToast||0)){e.insetToast=want;toast('낙석 · 벽이 좁혀온다');}}
+    if(e.phaseBreak>0){e.phaseBreak-=dt;if(e.phaseBreak<=0){e.phaseBreak=0;e.invulnerable=false;e.attack=.25;e.idleBlend=0;const kit=phaseSignatures[e.bossKind];if(kit)e.forcedPattern=kit[Math.min(kit.length-1,e.phaseRank-1)];}return;}
     if(e.reflecting>0)e.reflecting=Math.max(0,e.reflecting-dt);
     if(e.burrowing>0){
       e.burrowing-=dt;const dx=player.x-e.x,dy=player.y-e.y,gap=Math.hypot(dx,dy)||1,pace=Math.min(gap,(330+30*runDifficulty)*dt);e.x=clamp(e.x+dx/gap*pace,60,W-60);e.y=clamp(e.y+dy/gap*pace,70,H-60);if(frame%3===0&&particles.length<420)particles.push({x:e.x+rand(-22,22),y:e.y+rand(-10,10),vx:rand(-30,30),vy:rand(-50,-10),life:.4,color:'#8d7154',size:5});
@@ -1789,7 +1816,7 @@
       if(pattern==='well')tele.well={x:clamp(player.x+rand(-40,40),90,W-90),y:clamp(player.y+rand(-30,30),90,H-90)};
       e.telegraph=tele;
       const attackDelay=e.introBoss ? (e.phase===2 ? .9 : 1.08) : (e.finalAct ? .62 : (e.phase===2 ? .76 : .92));
-      e.attack=e.lastStand ? (pressure===0?.42:Math.max(runDifficulty>=3?.3:.36,.48-pressure*.06)*abyssTempo) : Math.max(runDifficulty>=3?.4:.52,(attackDelay-pressure*.07)*abyssTempo);
+      e.attack=e.lastStand ? (pressure===0?.42:Math.max(runDifficulty>=3?.3:.36,.48-pressure*.06)*abyssTempo) : Math.max(runDifficulty>=3?.4:.52,(attackDelay-pressure*.07)*abyssTempo);e.attack*=1-.12*(e.phaseRank||0);
     }
     if(e.telegraph){e.telegraph.timer-=dt;if(e.telegraph.timer<=0){const fired=e.telegraph;fireBossPattern(e,fired);fireMirageCopies(e,fired);e.telegraph=null;
       // Abyss+ combo: every third evolved attack is followed by its paired attack with its own telegraph.
@@ -1825,6 +1852,8 @@
   // Abyss and above: after the rage threshold, a boss's existing attacks evolve. The pattern list itself is unchanged.
   const bossComboPairs={slam:'wall',aimed:'target',fan:'wall',feather:'target',radial:'aimed',split:'target',ring:'aimed',wall:'aimed'};
   // Collapse desperation: at 0 HP the boss becomes invulnerable and runs a fixed survival sequence, then dies.
+  const phaseSignatures={warden:['charge','wall'],moth:['beam','ring'],forge:['core','slam'],mole:['dive','dive'],queen:['reflect','beam'],wyrm:['charge','radial'],echo:['echo','echo']};
+  function beginPhaseBreak(e){e.gateIndex++;e.phaseRank=(e.phaseRank||0)+1;e.phaseBreak=.85;e.invulnerable=true;e.telegraph=null;e.chargeTime=0;e.chargePath=null;e.followUps=[];bullets=[];hazards=hazards.filter(h=>h.kind==='footprint'||h.kind==='cloud');shake=Math.max(shake,9);burst(e.x,e.y,e.color,34);flashFx={color:'255,235,190',life:.14,max:.14,alpha:.3};hitstop(.08,true);toast(`${e.name} · ${e.phaseRank+1}페이즈`);playSound('boss');}
   const desperationKits={mole:{time:8,seq:['dive','radial','dive','charge','dive']},queen:{time:10,seq:['beam','ring','fan','beam','split']},wyrm:{time:10,seq:['charge','wall','charge','radial','charge']},echo:{time:12,seq:['echo','charge','beam','echo','ring']},forge:{time:10,seq:['slam','wall','beam','slam','fan']},warden:{time:8,seq:['charge','radial','quake','charge','radial']},moth:{time:10,seq:['beam','feather','ring','beam','fan']},star:{time:12,seq:['spiral','gigablast','beam','well','ring']}};
   function startDesperation(e){
     const kit=desperationKits[e.bossKind]||desperationKits.warden;
@@ -1957,7 +1986,7 @@
   }
   function updateHazards(dt){
     for(let i=hazards.length-1;i>=0;i--){const h=hazards[i];h.timer-=dt;
-      if(h.kind==='footprint'){h.tick-=dt;if(h.tick<=0){for(const e of [...enemies])if(dist(e,h)<e.r+h.r)damageEnemy(e,weapons[player.weapon].damage*.4,'footprint');h.tick=.28;}if(h.timer<=0)hazards.splice(i,1);continue;}
+      if(h.kind==='footprint'){h.tick-=dt;if(h.tick<=0){for(const e of [...enemies])if(dist(e,h)<e.r+h.r)damageEnemy(e,weapons[player.weapon].damage*.4*(relicBag.abyss_footsteps||1),'footprint');h.tick=.28;}if(h.timer<=0)hazards.splice(i,1);continue;}
       if(h.kind==='cloud'){const a=Math.atan2(player.y-h.y,player.x-h.x);h.x+=Math.cos(a)*h.speed*dt;h.y+=Math.sin(a)*h.speed*dt;}
       if(h.kind==='well'&&h.phase==='active'){const d=dist(h,player);if(d>3){const a=Math.atan2(h.y-player.y,h.x-player.x),pull=h.pull*Math.min(1,140/Math.max(40,d));moveEntityWithWalls(player,Math.cos(a)*pull*dt,Math.sin(a)*pull*dt);}}
       if(h.phase==='warn'&&h.timer<=0){h.phase='active';h.timer=h.activeTime;if(h.kind==='target'&&h.burstCount>0){for(let j=0;j<h.burstCount;j++)enemyShot({x:h.x,y:h.y},Math.PI*2*j/h.burstCount,190,h.color);}}
@@ -1989,13 +2018,18 @@
       if(invuln<=0&&dist(b,player)<b.r+parryHitRadius()){hurtPlayer(b.damage,'탄환',b.source);bullets.splice(i,1);}
     }
   }
-  function updateParryWindow(dt){if(parryWindow<=0)return;parryWindow=Math.max(0,parryWindow-dt);if(parryWindow===0&&relicBag.collapse_parry)parryCooldown=3;}
+  function updateParryWindow(dt){if(parryWindow<=0)return;parryWindow=Math.max(0,parryWindow-dt);if(parryWindow===0&&relicBag.collapse_parry)parryCooldown=3/relicBag.collapse_parry;}
   function parryRadiusScale(){return 1.3+.1*(relicBag.parry_guard||0);}
   function parryVisualRadius(){return player.r*2*(1.2+.1*(relicBag.parry_guard||0));}
   function parryHitRadius(){return player.r*(parryWindow>0?2*parryRadiusScale():1);}
   function reflectParryDamage(amount,attacker){const target=enemies.includes(attacker)&&!(attacker.kind==='boss'&&attacker.invulnerable)?attacker:enemies.filter(e=>!(e.kind==='boss'&&e.invulnerable)).sort((a,b)=>dist(a,player)-dist(b,player))[0];if(!target)return false;const reflected=Math.max(1,Math.round(amount*(1.5+.5*(relicBag.parry_edge||0))));burst(target.x,target.y,'#8cf5ff',10);damageEnemy(target,reflected,'parry',null,null,true);floatText(target.x,target.y-target.r-10,String(reflected),'#62dcff',16);return true;}
-  function hurtPlayer(amount,cause='접촉',attacker=null){if(relicBag.abyss_evasion&&runRandom()<.5){invuln=Math.max(invuln,.2);burst(player.x,player.y,'#c69aff',8);floatText(player.x,player.y-24,'\uD68C\uD53C!','#c9a5ff',16);playSound('dash');return;}if(parryWindow>0){parryWindow=0;parryCooldown=.35;invuln=Math.max(invuln,relicBag.exp_parry ? .35 : .2);parryCooldown=relicBag.collapse_parry?0:.35;shake=Math.max(shake,3);weaponEffects.push({kind:'parry',x:player.x,y:player.y,radius:54,life:.24,maxLife:.24,color:'#8cf5ff'});burst(player.x,player.y,'#8cf5ff',16);if(balanceRoom?.active)balanceRoom.parries=(balanceRoom.parries||0)+1;floatText(player.x,player.y-28,'패링!','#aaf7ff',18);{const ring=parryVisualRadius()+60;bullets=bullets.filter(b=>{if(dist(b,player)>=ring)return true;burst(b.x,b.y,'#aaf7ff',2);return false;});}addHeat(14);hitstop(.06,true);flashFx={color:'170,245,255',life:.1,max:.1,alpha:.22};reflectParryDamage(amount,attacker);if(hasSynergy('guard_parry')){player.counterReady=3;floatText(player.x,player.y-44,'반격 준비','#a7efbf',12);}playSound('parryHit');return;}if(invuln>0)return;if(runDifficulty>=2&&player.adrenalineActive<=0&&player.adrenaline>0){player.adrenaline=0;floatText(player.x,player.y-36,'아드레날린 초기화','#83eaff',11);}let taken=difficultyDamageMultiplier(runDifficulty)*(1-Math.min(.45,(relicBag.guard||0)*.1));if(relicBag.exp_guard)taken*=.8;if(relicBag.ore_armor)taken/=1+Math.floor(ore/20)*.02*relicBag.ore_armor*(hasSynergy('ore_armor_guard')?1.6:1);if(player.rageActive<=0)player.rage=relicBag.hot_core?0:Math.max(0,player.rage-.3);flashFx={color:'255,60,80',life:.16,max:.16,alpha:.28};amount=Math.max(1,Math.round(amount*taken*zoneScale(growth.zoneDamage)));const hpBefore=player.hp;player.hp-=amount;if(screen==='dig'&&dig){const loss=Math.max(0,hpBefore-Math.max(0,player.hp));dig.stats.damageTaken+=loss;dig.stats.damageByCause[cause]=Math.round((dig.stats.damageByCause[cause]||0)+loss);}else if(balanceRoom){const loss=Math.max(0,hpBefore-Math.max(0,player.hp));balanceRoom.damageTaken+=loss;balanceRoom.hits=(balanceRoom.hits||0)+1;const causes=balanceRoom.damageByCause||(balanceRoom.damageByCause={});causes[cause]=(causes[cause]||0)+loss;}if(relicBag.collapse_momentum){momentumHits=0;const oldFactor=runStatMultiplier();runStatPenalty=Math.min(1,runStatPenalty+.1);const ratio=oldFactor?runStatMultiplier()/oldFactor:0;player.maxHp=Math.max(1,player.maxHp*ratio);player.hp=Math.max(0,Math.min(player.hp,player.maxHp));if(runStatPenalty>=1)player.hp=0;}invuln=.54;shake=6;burst(player.x,player.y,'#ff7181',7);playSound('hurt');floatText(player.x,player.y-20,`-${amount}`,'#ff8990',15);lastHitLog.push({t:+runTime.toFixed(2),cause,amount,hp:Math.round(player.hp)});if(lastHitLog.length>12)lastHitLog.shift();if(player.hp<=0&&relicBag.gold_tooth&&!player.toothUsed&&ore>=80){player.toothUsed=true;balanceEvents.push({t:+runTime.toFixed(2),type:'gold-tooth',ore});spendOre(ore);player.hp=player.maxHp*.5;invuln=1.5;toast('금니가 깨졌다 · 되살아났다');burst(player.x,player.y,'#ffd36a',30);return;}if(player.hp<=0){player.hp=0;gameOver(cause);}}
+  function hurtPlayer(amount,cause='접촉',attacker=null){if(relicBag.abyss_evasion&&runRandom()<1-.5**relicBag.abyss_evasion){invuln=Math.max(invuln,.2);burst(player.x,player.y,'#c69aff',8);floatText(player.x,player.y-24,'\uD68C\uD53C!','#c9a5ff',16);playSound('dash');return;}if(parryWindow>0){parryWindow=0;parryCooldown=.35;invuln=Math.max(invuln,.2+.15*(relicBag.exp_parry||0));parryCooldown=relicBag.collapse_parry?0:.35;shake=Math.max(shake,3);weaponEffects.push({kind:'parry',x:player.x,y:player.y,radius:54,life:.24,maxLife:.24,color:'#8cf5ff'});burst(player.x,player.y,'#8cf5ff',16);if(balanceRoom?.active)balanceRoom.parries=(balanceRoom.parries||0)+1;floatText(player.x,player.y-28,'패링!','#aaf7ff',18);{const ring=parryVisualRadius()+60;bullets=bullets.filter(b=>{if(dist(b,player)>=ring)return true;burst(b.x,b.y,'#aaf7ff',2);return false;});}addHeat(14);player.drumTimer=relicBag.battle_drum?3:0;hitstop(.06,true);flashFx={color:'170,245,255',life:.1,max:.1,alpha:.22};reflectParryDamage(amount,attacker);if(hasSynergy('guard_parry')){player.counterReady=3;floatText(player.x,player.y-44,'반격 준비','#a7efbf',12);}playSound('parryHit');return;}if(invuln>0)return;if(runDifficulty>=2&&player.adrenalineActive<=0&&player.adrenaline>0){player.adrenaline=0;floatText(player.x,player.y-36,'아드레날린 초기화','#83eaff',11);}let taken=difficultyDamageMultiplier(runDifficulty)*threatDamage()/(1+.12*(relicBag.guard||0));if(relicBag.exp_guard)taken/=1+.25*relicBag.exp_guard;if(relicBag.ore_armor)taken/=1+Math.floor(ore/20)*.02*relicBag.ore_armor*(hasSynergy('ore_armor_guard')?1.6:1);if(player.rageActive<=0)player.rage=relicBag.hot_core?0:Math.max(0,player.rage-.3);flashFx={color:'255,60,80',life:.16,max:.16,alpha:.28};amount=Math.max(1,Math.round(amount*taken*zoneScale(growth.zoneDamage)));if(player.shield>0){const blocked=Math.min(player.shield,amount);player.shield-=blocked;amount-=blocked;if(amount<=0){invuln=.4;burst(player.x,player.y,'#8cf5ff',10);floatText(player.x,player.y-22,'보호막','#8cf5ff',14);playSound('parry');return;}}const hpBefore=player.hp;player.hp-=amount;if(screen==='dig'&&dig){const loss=Math.max(0,hpBefore-Math.max(0,player.hp));dig.stats.damageTaken+=loss;dig.stats.damageByCause[cause]=Math.round((dig.stats.damageByCause[cause]||0)+loss);}else if(balanceRoom){const loss=Math.max(0,hpBefore-Math.max(0,player.hp));balanceRoom.damageTaken+=loss;balanceRoom.hits=(balanceRoom.hits||0)+1;const causes=balanceRoom.damageByCause||(balanceRoom.damageByCause={});causes[cause]=(causes[cause]||0)+loss;}if(relicBag.collapse_momentum){momentumHits=0;const oldFactor=runStatMultiplier();runStatPenalty=Math.min(1,runStatPenalty+.1);const ratio=oldFactor?runStatMultiplier()/oldFactor:0;player.maxHp=Math.max(1,player.maxHp*ratio);player.hp=Math.max(0,Math.min(player.hp,player.maxHp));if(runStatPenalty>=1)player.hp=0;}invuln=.54;shake=6;burst(player.x,player.y,'#ff7181',7);playSound('hurt');floatText(player.x,player.y-20,`-${amount}`,'#ff8990',15);lastHitLog.push({t:+runTime.toFixed(2),cause,amount,hp:Math.round(player.hp)});if(lastHitLog.length>12)lastHitLog.shift();if(player.hp<=0&&relicBag.gold_tooth&&(player.toothUsed||0)<relicBag.gold_tooth&&ore>=80){player.toothUsed=(player.toothUsed||0)+1;balanceEvents.push({t:+runTime.toFixed(2),type:'gold-tooth',ore});spendOre(ore);player.hp=player.maxHp*.5;invuln=1.5;toast('금니가 깨졌다 · 되살아났다');burst(player.x,player.y,'#ffd36a',30);return;}if(player.hp<=0){player.hp=0;gameOver(cause);}}
   // ---- The Mines II: heat, ore chunks and breakable props ----
+  // Threat rises with time and is what answers runaway builds; digging spends it faster than fighting does.
+  function threatMinutes(){return threatClock/60;}
+  function threatLevel(){return Math.floor(threatMinutes()/2)+1;}
+  function threatHp(){return 1+.065*threatMinutes()*(1+.2*runDifficulty);}
+  function threatDamage(){return 1+.025*threatMinutes()*(1+.2*runDifficulty);}
   function guildLevel(id){return saved.guild?.[id]||0;}
   function deepZone(){return stage===FINAL_STAGE+1&&!endless;}
   function biomeIndex(){return deepZone()?4:(stage-1)%4;}
@@ -2449,6 +2483,8 @@
     const aim=Math.atan2(mouse.y-player.y,mouse.x-player.x),held=getPlayerWeaponPixelSprite(player.weapon);if(held){ctx.save();ctx.translate(12,7);ctx.rotate(aim+held.offset);ctx.imageSmoothingEnabled=false;ctx.drawImage(held.sprite,-held.anchorX*28/20,-held.anchorY*24/20,28,24);ctx.restore();}
     if(player.dashing>0){ctx.save();ctx.rotate(Math.atan2(player.dashY,player.dashX));ctx.fillStyle='#87f3d5';ctx.fillRect(-31,-3,15,6);ctx.restore();}if(parryWindow>0){ctx.save();const strength=parryWindow/.2;ctx.globalAlpha=.65+.35*strength;ctx.strokeStyle='#e8fdff';ctx.shadowColor='#8cf5ff';ctx.shadowBlur=14;ctx.lineWidth=5;ctx.beginPath();const radius=parryVisualRadius();ctx.arc(0,0,radius,0,Math.PI*2);ctx.stroke();ctx.shadowBlur=0;ctx.strokeStyle='#8cf5ff';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,radius,0,Math.PI*2);ctx.stroke();ctx.restore();}ctx.restore();
     if(player.rageActive>0||player.adrenalineActive>0){ctx.save();ctx.textAlign='center';ctx.font='bold 10px ui-monospace,monospace';if(player.rageActive>0){ctx.fillStyle='#ff9a78';ctx.fillText('오버드라이브',player.x,player.y-31);}if(player.adrenalineActive>0){ctx.fillStyle='#9af4ff';ctx.fillText('아드레날린',player.x,player.y-43-(player.rageActive>0?12:0));}ctx.restore();}
+    if(relicBag.flame_cloak){ctx.save();ctx.globalAlpha=.16+.06*Math.sin(time*8);ctx.strokeStyle='#ff8a3d';ctx.lineWidth=3;ctx.beginPath();ctx.arc(player.x,player.y,120+14*relicBag.flame_cloak,0,Math.PI*2);ctx.stroke();ctx.restore();}
+    if(player.shield>0){ctx.save();ctx.globalAlpha=.75;ctx.strokeStyle='#8cf5ff';ctx.lineWidth=2;ctx.beginPath();ctx.arc(player.x,player.y,25,-Math.PI/2,-Math.PI/2+Math.PI*2*clamp(player.shield/(player.maxHp*.08*(relicBag.shell_crystal||1)),0,1));ctx.stroke();ctx.restore();}
     if(player.charging){const charge=clamp(player.chargeTime/axeChargeMax,0,1);ctx.save();ctx.strokeStyle=charge>=1?'#fff0a8':'#eab45d';ctx.lineWidth=3;ctx.globalAlpha=.65+.35*charge;ctx.beginPath();ctx.arc(player.x,player.y,19,-Math.PI/2,-Math.PI/2+Math.PI*2*charge);ctx.stroke();ctx.restore();}
     if(relicBag.razor){const n=razorBladeCount();for(let i=0;i<n;i++){const a=(player.razorAngle||0)+Math.PI*2*i/n;ctx.save();ctx.translate(player.x+Math.cos(a)*razorOrbitRadius,player.y+Math.sin(a)*razorOrbitRadius);ctx.rotate(a);ctx.fillStyle=hasSynergy('blood_razor')?'#ef7185':'#a7efbf';ctx.fillRect(-3,-7,6,14);ctx.restore();}}
   }  function drawParticles(){for(const p of particles){ctx.globalAlpha=clamp(p.life*2,0,1);ctx.fillStyle=p.color;ctx.fillRect(p.x-p.size/2,p.y-p.size/2,p.size,p.size);}ctx.globalAlpha=1;}

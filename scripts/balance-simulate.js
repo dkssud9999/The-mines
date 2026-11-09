@@ -63,9 +63,9 @@ function runBalanceSimulation(gameHtml, options = {}) {
   const requestAnimationFrame = () => 0;
   const sourceMatch = gameHtml.match(/<script\b[^>]*>([\s\S]*?)<\/script>/i);
   if (!sourceMatch) throw new Error('index.html has no inline game script');
-  const tripCost = options.tripCost ?? 19;
+  const tripCost = options.tripCost ?? 14;
   const injection = `const tripCost=${tripCost};globalThis.__balanceGame = {
-    startRun, update, chooseRoute, takeLoot, chooseWeaponUpgrade, tryDash, activateCombatPower, chooseMapNode, mapChoices, advanceZone, travelTo(node){dig.oil=Math.max(0,dig.oil-tripCost);chooseMapNode(node);}, get oil(){return dig?dig.oil:0;},
+    startRun, update, chooseRoute, takeLoot, chooseWeaponUpgrade, tryDash, activateCombatPower, chooseMapNode, mapChoices, advanceZone, travelTo(node){dig.stats.seconds+=tripCost;threatClock+=tripCost*1.35;chooseMapNode(node);}, get oil(){return dig?Math.max(0,110-dig.stats.seconds):0;},
     panelCards(){return $('lootCards').children.filter(c=>c.listeners.click&&!c.disabled);}, setGuild(next){saved.guild=next;if(next.pick&&!saved.unlockedWeapons.includes('pick'))saved.unlockedWeapons.push('pick');if(next.bomb&&!saved.unlockedWeapons.includes('bomb'))saved.unlockedWeapons.push('bomb');},
     get extra(){return {forgeLevel,seals,ore,oreEarned,heat:player?.rage||0,props:props.length,balanceEvents};},
     setMouse(x,y){mouse.x=x;mouse.y=y;}, setKeys(next){keys=next;}, setFiring(value){mouse.down=value;},
