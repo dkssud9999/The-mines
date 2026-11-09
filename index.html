@@ -237,7 +237,7 @@
   // charge*: charger tell/dash/speed/recover, finalPressure: final boss pressure (Normal 0, Abyss = old Hard finale).
   const difficultyProfiles=[
     {name:'광부',bomberFuse:1.0,mirrorShards:2,mirrorCycle:4.0,  hp:1,bossHp:2.4,  dmg:1,    move:1,   fire:1,   extraEnemies:0,reinforceGap:1,  clearHeal:6,chargeTell:.62,chargeDash:.34,chargeSpeed:520,chargeRecover:.72,finalPressure:0},
-    {name:'탐험가',bomberFuse:0.8,mirrorShards:3,mirrorCycle:3.5,hp:1.3,bossHp:1.4,dmg:1.15, move:1,   fire:1,   extraEnemies:1,reinforceGap:1,  clearHeal:5,chargeTell:.52,chargeDash:.32,chargeSpeed:580,chargeRecover:.60,finalPressure:.75},
+    {name:'탐험가',bomberFuse:0.8,mirrorShards:3,mirrorCycle:3.5,hp:1.3,bossHp:1.8,bossRamp:[.3,1,1.6,.5,.7],dmg:1.15, move:1,   fire:1,   extraEnemies:1,reinforceGap:1,  clearHeal:5,chargeTell:.52,chargeDash:.32,chargeSpeed:580,chargeRecover:.60,finalPressure:.75},
     {name:'심연',bomberFuse:0.65,mirrorShards:3,mirrorCycle:3.0,  hp:2.4,bossHp:1.15,dmg:1.6,  move:1.08,fire:1.16,extraEnemies:2,reinforceGap:.85,clearHeal:3,chargeTell:.41,chargeDash:.28,chargeSpeed:685,chargeRecover:.46,finalPressure:1},
     {name:'붕괴',bomberFuse:0.55,mirrorShards:4,mirrorCycle:2.6,  hp:3.5,bossHp:1,dmg:2,    move:1.16,fire:1.32,extraEnemies:3,reinforceGap:.7, clearHeal:3,chargeTell:.38,chargeDash:.26,chargeSpeed:730,chargeRecover:.42,finalPressure:1.65}
   ];
@@ -344,7 +344,7 @@
     razor:{name:'면도날 고리',icon:'◌',desc:'플레이어 주변 반경 160px를 도는 칼날이 멀리 있는 적도 베어냅니다.',color:'#a7efbf'},
     heart:{name:'광부의 심장',icon:'♥',desc:'최대 체력이 20 늘고 체력을 회복한다.',color:'#ff8e9b'},
     dash:{name:'잔상 장화',icon:'➤',desc:'대시 재사용 시간이 줄어든다. 최대 5회 중첩된다.',color:'#8de8d2',maxStacks:5},
-    void:{name:'공허 종',icon:'◈',desc:'보스에게 주는 피해가 크게 늘어난다.',color:'#c6a5ff',unlock:1},
+    void:{name:'공허 종',icon:'◈',desc:'보스에게 주는 피해가 크게 늘어난다. 최대 3회 중첩된다.',color:'#c6a5ff',unlock:1,maxStacks:3},
     sun:{name:'태양 파편',icon:'☼',desc:'모든 공격 피해가 강해진다.',color:'#ffd879',unlock:2},
     guard:{name:'현무암 외피',icon:'⬟',desc:'받는 피해가 10% 감소한다. 최대 5회 중첩되며, 피해 감소는 최대 45%다.',color:'#a9adb8',maxStacks:5},
     gale:{name:'질풍의 깃털',icon:'➶',desc:'이동 속도가 14 증가한다. 중첩 가능.',color:'#9de8d9'},
@@ -891,7 +891,7 @@
     if(relicBag.collapse_burst){player.collapseBurstTimer=20;player.collapseBurstOver=false;}
     const def=currentBossDef(),pressure=def.kind==='star'||def.kind==='echo'?dp().finalPressure:runDifficulty,scale=(1+(stage-1)*growth.bossPerZone)*difficultyHpMultiplier(runDifficulty,'boss');
     // Bosses gain length gradually so the opening boss stays a teacher; the Star Core is already long because of its gated phases.
-    const health=(def.kind==='star'||def.kind==='echo'?840:780)*scale*growth.bossBase*(1+(dp().bossHp-1)*[.6,1,1.4,.5,.7][biomeIndex()]);
+    const health=(def.kind==='star'||def.kind==='echo'?840:780)*scale*growth.bossBase*(1+(dp().bossHp-1)*(dp().bossRamp||[.6,1,1.4,.5,.7])[biomeIndex()]);
     setupRoomProps('boss');bossIntro=1.25;player.trail=[];
     boss={kind:'boss',bossKind:def.kind,name:def.name,color:def.color,x:W/2,y:142,r:32,hp:health,maxHp:health,burnScale:(1+(stage-1)*growth.bossPerZone*.55)*difficultyHpMultiplier(runDifficulty),speed:40,phase:1,attack:.78,telegraph:null,flash:0,angle:0,damage:18,act:'combat',hellIndex:0,thresholdIndex:0,hellTimer:0,hellAttack:.2,hellWaves:0,invulnerable:false,finalAct:false,finalPressure:pressure,introBoss:stage===1&&runDifficulty===0&&def.kind==='warden',rageAt:(stage===1&&runDifficulty===0&&def.kind==='warden') ? .4 : .5};
     if(balanceRoom){balanceRoom.bossName=def.name;balanceRoom.bossKind=def.kind;balanceRoom.bossHpStart=health;balanceRoom.enemyCountStart=1;balanceRoom.enemyKinds={boss:1};}
@@ -1233,7 +1233,7 @@
   function twinSwipeCount(){return 2+(relicBag.split?1+Math.min(2,relicBag.split-1):0);}
   function fireWandRail(angle,damage,allowEcho=true,allowSplit=true,attackContext=null){
     let landed=false;
-    if(allowSplit&&relicBag.split){const extra=1+Math.min(2,relicBag.split-1),count=extra+1;for(let i=0;i<count;i++){const rayAngle=angle+(i-(count-1)/2)*.16;landed=fireWandRail(rayAngle,damage,false,false,attackContext)||landed;if(player.weaponUpgrade2==='wand_rail_echo')landed=fireWandRail(rayAngle+.1,damage*.58,false,false,attackContext)||landed;}return landed;}
+    if(allowSplit&&relicBag.split){const extra=1+Math.min(2,relicBag.split-1),count=extra+1;for(let i=0;i<count;i++){const rayAngle=angle+(i-(count-1)/2)*.16,rayDamage=damage*(i===Math.floor((count-1)/2)?1:.55);landed=fireWandRail(rayAngle,rayDamage,false,false,attackContext)||landed;if(player.weaponUpgrade2==='wand_rail_echo')landed=fireWandRail(rayAngle+.1,rayDamage*.58,false,false,attackContext)||landed;}return landed;}
     const start={x:player.x,y:player.y},end=rayEnd(player.x,player.y,angle),length=dist(start,end),dx=end.x-start.x,dy=end.y-start.y,lenSq=dx*dx+dy*dy;
     let clearLength=length;
     for(let d=8;d<length;d+=8){const x=start.x+dx/length*d,y=start.y+dy/length*d;if(obstacles.some(r=>overlapsObstacle(x,y,2,r))){clearLength=d;break;}}
