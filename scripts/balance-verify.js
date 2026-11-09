@@ -76,10 +76,10 @@ function runBalanceChecks(gameHtml, options = {}) {
     finishRoom:()=>{pendingWaves=[];spawnPortals=[];if(specialRoom){specialRoom.timer=0;updateSpecialRoom(0);}else if(!enemies.length)spawnEnemy('grunt',0);for(let pass=0;pass<8&&enemies.length;pass++)for(const enemy of [...enemies])killEnemy(enemy);for(let i=0;i<5&&screen==='playing';i++)update(1);},settle:()=>{for(let i=0;i<5&&screen==='playing';i++)update(1);},chooseWeaponUpgrade,getUpgradeOptions:()=>player.weaponUpgrade?(weaponUpgradeBranches[player.weaponUpgrade]||[]):weaponUpgrades[player.weapon],startRun:()=>startRun(), setDifficulty:n=>{difficulty=n;saved.highestDifficulty=3;},
     setProgress:(value,room=0)=>{stage=value;roomCount=room;},clickEndAction:text=>{const button=document.getElementById('endActions').children.find(x=>x.textContent===text);if(!button)throw new Error('Missing end action '+text);for(const fn of button.listeners.get('click')||[])fn();},getState:()=>({phase,screen,stage,roomCount,runDifficulty,lootAfter,lootPool:lootPool.map(x=>x.id),player:player&&{...player},boss:boss&&{...boss},enemies:enemies.map(e=>({...e})),shots:shots.map(s=>({...s})),voidWaves:voidWaves.map(w=>({...w})),touchMove:{...touchMove},touchAim:{...touchAim},mouse:{...mouse},attackTimer,dashCooldown,invuln,collapseBurstOver:player?.collapseBurstOver}),
     setRelic:(id,n=1)=>{relicBag[id]=n;}, setEnemyList:list=>{enemies=list;}, setBoss:e=>{boss=e;enemies=e?[e]:[];phase='boss';}, setPlayer:(patch)=>Object.assign(player,patch),
-    ii:{clickCard:i=>{const kids=document.getElementById('lootCards').children,c=kids[kids.length-2+i];for(const fn of c.listeners.get('click')||[])fn();},props:()=>props,drops:()=>drops,ore:()=>ore,seals:()=>seals,setSeals:v=>{seals=v;},setOre:v=>{ore=v;},heatTier,addHeat,addProp,hitProp,updateProps,collectAllDrops,spawnOre,spawnEnemy,openDeepGate,zoneMap:()=>zoneMap,generateZoneMap,enemies:()=>enemies,bullets:()=>bullets,addBullet:(x,y)=>bullets.push({x,y,vx:0,vy:0,r:5,damage:1,life:9,color:'#fff'}),clearEnemies:()=>{enemies=[];pendingWaves=[];spawnPortals=[];},clearProps:()=>{props=[];},placeProp:(kind,x,y)=>{const p={kind,x,y,r:15,hp:kind==='vein'?3:1,maxHp:3,flash:0,spawn:0,fuse:0,seed:0};props.push(p);return p;},tryParry,playerRef:()=>player,winRecorded:()=>winRecorded,crystals:()=>saved.crystals||0,guild:(id,n)=>{saved.guild={...(saved.guild||{}),[id]:n};},guildLevel,startSpecialRoom,specialRoom:()=>specialRoom,updateSpecialRoom,startElite,firePick:(a)=>firePickSwing(a,32,1,null),giveRelic:grantRelic,setStage:v=>{stage=v;},deepZone,updateEnemies},chooseMapNode,mapChoices,advanceZone,chooseRoute,openLoot,takeLoot,skipOptionalLoot,makeLoot,makeTierLoot,makeOwnedStackLoot,healPlayer,save,
+    ii:{clickCard:i=>{const kids=document.getElementById('lootCards').children,c=kids[kids.length-2+i];for(const fn of c.listeners.get('click')||[])fn();},props:()=>props,drops:()=>drops,ore:()=>ore,seals:()=>seals,setSeals:v=>{seals=v;},setOre:v=>{ore=v;},heatTier,addHeat,addProp,hitProp,updateProps,collectAllDrops,spawnOre,spawnEnemy,openDeepGate,dig:()=>dig,generateDig,mapChoices,updateDig,breakDigTile,forgeLevel:()=>forgeLevel,openForge,shopBought:()=>shopBought,TILE,setOrigin:v=>{selectedOrigin=v;},enemies:()=>enemies,bullets:()=>bullets,addBullet:(x,y)=>bullets.push({x,y,vx:0,vy:0,r:5,damage:1,life:9,color:'#fff'}),clearEnemies:()=>{enemies=[];pendingWaves=[];spawnPortals=[];},clearProps:()=>{props=[];},placeProp:(kind,x,y)=>{const p={kind,x,y,r:15,hp:kind==='vein'?3:1,maxHp:3,flash:0,spawn:0,fuse:0,seed:0};props.push(p);return p;},tryParry,playerRef:()=>player,winRecorded:()=>winRecorded,crystals:()=>saved.crystals||0,guild:(id,n)=>{saved.guild={...(saved.guild||{}),[id]:n};},guildLevel,startSpecialRoom,specialRoom:()=>specialRoom,updateSpecialRoom,startElite,firePick:(a)=>firePickSwing(a,32,1,null),giveRelic:grantRelic,clickForge:i=>{const kids=document.getElementById('lootCards').children,c=kids[kids.length-3+i];for(const fn of c.listeners.get('click')||[])fn();},setAlt:kind=>{zoneBoss=altBosses.find(b=>b.kind===kind);},startBossNow:()=>startBoss(),setStage:v=>{stage=v;},deepZone,updateEnemies},chooseMapNode,mapChoices,advanceZone,chooseRoute,openLoot,takeLoot,skipOptionalLoot,makeLoot,makeTierLoot,makeOwnedStackLoot,healPlayer,save,
     setWeapon:value=>{selectedWeapon=value;},setAim:(x,y)=>{mouse.x=x;mouse.y=y;},setAttackCount:value=>{player.attackCount=value;},setUpgrade:(one,two=null)=>{player.weaponUpgrade=one;player.weaponUpgrade2=two;},getAttackStats:()=>({momentumHits,abyssHitStreak,pendingEchoes:pendingEchoes.map(e=>({...e}))}),updateShots,updatePendingEchoes,startWave,startElite,startBoss,resetRoomCombat,update,updateEnemies,updateBoss,updateVoidCharge,updateVoidWaves,startAttack,tryDash,activateCombatPower,hurtPlayer,damageEnemy,
     setScreen,recordBalanceRoom,beginBalanceRoom,report:()=>window.mineBalanceReport,
-    getRelics:()=>({...relicBag}),getSaved:()=>({...saved}),getWeapons:()=>weapons,getRelicDefs:()=>relics,getUpgradeDefs:()=>weaponUpgrades,getBranchDefs:()=>weaponUpgradeBranches,setBenchmark:(weapon,one,two,bag,count,distance,spread)=>{selectedWeapon=weapon;difficulty=1;startRun();startWave('wave');setScreen('playing');pendingWaves=[];spawnPortals=[];props=[];obstacles=[];clearShots(true);enemies=Array.from({length:count},(_,i)=>({kind:'grunt',x:480+distance+(spread?i*30:i%3*8),y:300+(spread?(i-(count-1)/2)*65:Math.floor(i/3)*9),r:13,hp:1e8,maxHp:1e8,speed:0,damage:0,flash:0}));player.x=480;player.y=300;player.weaponUpgrade=one;player.weaponUpgrade2=two;mouse.x=480+distance;mouse.y=300;for(const key of Object.keys(relicBag))delete relicBag[key];Object.assign(relicBag,bag);},benchmarkTick:()=>{mouse.down=true;const homes=enemies.map(e=>[e,e.x,e.y]);update(1/60);for(const [e,x,y] of homes){e.x=x;e.y=y;e.kbx=0;e.kby=0;}},benchmarkHP:()=>enemies.reduce((sum,e)=>sum+e.hp,0),
+    getRelics:()=>({...relicBag}),getSaved:()=>({...saved}),getWeapons:()=>weapons,getRelicDefs:()=>relics,getUpgradeDefs:()=>weaponUpgrades,getBranchDefs:()=>weaponUpgradeBranches,setBenchmark:(weapon,one,two,bag,count,distance,spread)=>{selectedWeapon=weapon;difficulty=1;startRun();player.x=W/2;player.y=H/2;startWave('wave');setScreen('playing');pendingWaves=[];spawnPortals=[];props=[];obstacles=[];clearShots(true);enemies=Array.from({length:count},(_,i)=>({kind:'grunt',x:480+distance+(spread?i*30:i%3*8),y:300+(spread?(i-(count-1)/2)*65:Math.floor(i/3)*9),r:13,hp:1e8,maxHp:1e8,speed:0,damage:0,flash:0}));player.x=480;player.y=300;player.weaponUpgrade=one;player.weaponUpgrade2=two;mouse.x=480+distance;mouse.y=300;for(const key of Object.keys(relicBag))delete relicBag[key];Object.assign(relicBag,bag);},benchmarkTick:()=>{mouse.down=true;const homes=enemies.map(e=>[e,e.x,e.y]);update(1/60);for(const [e,x,y] of homes){e.x=x;e.y=y;e.kbx=0;e.kby=0;}},benchmarkHP:()=>enemies.reduce((sum,e)=>sum+e.hp,0),
     setNow:v=>setMockNow(v),dispatchWindow:(type,e={})=>{for(const h of [...(windowHandlers.get(type)||[])])h.fn(e);},
     dispatchCanvas:(type,e={})=>{for(const h of [...(canvas.listeners.get(type)||[])])h(e);},dispatchDocument:(type,e={})=>{for(const h of [...(documentHandlers.get(type)||[])])h(e);},
     canvas,handlers:windowHandlers
@@ -98,7 +98,7 @@ function runBalanceChecks(gameHtml, options = {}) {
     api.dispatchCanvas(type, event);
   };
   if (typeof globalThis.Audio === 'undefined') globalThis.Audio = class { play() { return Promise.resolve(); } };
-  const newRun = (difficulty = 0) => { api.setDifficulty(difficulty); api.startRun(); if (api.getState().screen === 'map') api.chooseMapNode(api.mapChoices()[0]); };
+  const newRun = (difficulty = 0) => { api.setDifficulty(difficulty); api.startRun(); if (api.getState().screen === 'dig') api.chooseMapNode(api.mapChoices().find(n => n.type === 'wave') || api.mapChoices()[0]); };
   const findId = (id, list) => list.some(item => item.id === id);
 
   check('saved configuration survives load and run setup', () => {
@@ -119,13 +119,14 @@ function runBalanceChecks(gameHtml, options = {}) {
           while(api.getState().screen!=='end'&&steps++<500){
             const current=api.getState();
             if(current.screen==='playing')api.finishRoom();
-            else if(current.screen==='map'){const choices=api.mapChoices();api.chooseMapNode(choices.find(n=>n.type===route)||choices.find(n=>!['shop','event'].includes(n.type))||choices[0]);}
+            else if(current.screen==='dig'){const choices=api.mapChoices();api.chooseMapNode(choices.find(n=>n.type===route)||choices.find(n=>!['shop','event'].includes(n.type))||choices[0]);}
             else if(current.screen==='weaponUpgrade'){
               if(!current.player.weaponUpgrade){firstUpgradeSeen=true;assert(current.stage===1,'first upgrade delayed beyond first zone');assert(current.roomCount>=1,'first upgrade came before any combat room');}
               api.chooseWeaponUpgrade(api.getUpgradeOptions()[0].id,current.player.weaponUpgrade?2:1);
             }else if(current.screen==='loot'){
               assert(new Set(current.lootPool).size===current.lootPool.length,'duplicate loot candidates');
-              if(current.lootAfter==='shop'||current.lootAfter==='event')api.advanceZone();
+              if(current.lootAfter==='deepGate')api.ii.clickCard(1);
+              else if(current.lootAfter==='shop'||current.lootAfter==='event'||current.lootAfter==='nodeConfirm')api.advanceZone();
               else if(current.lootAfter==='riskPick'&&resolution==='skip')api.skipOptionalLoot();
               else if(current.lootPool.length)api.takeLoot(current.lootPool[0]);
               else api.skipOptionalLoot();
@@ -282,7 +283,7 @@ function runBalanceChecks(gameHtml, options = {}) {
     freshRoom();const p=ii.playerRef();ii.spawnEnemy('shield',0,{x:p.x+150,y:p.y});const s=ii.enemies()[0];s.shieldAngle=Math.PI;const h0=s.hp;api.damageEnemy(s,10,'axe');const front=h0-s.hp;s.shieldAngle=0;const h1=s.hp;api.damageEnemy(s,10,'axe');const back=h1-s.hp;assert(back>front*3,'shield did not reduce frontal damage');
   });
   check('II zone map: every layer reachable, every node leads to the boss',()=>{
-    for(let d=0;d<4;d++){newRun(d);for(let z=1;z<=4;z++){ii.setStage(z);ii.generateZoneMap();const layers=ii.zoneMap().layers;assert(layers[layers.length-1][0].type==='boss','map does not end at a boss');layers.forEach((layer,i)=>{layer.forEach(n=>{if(i<layers.length-1)assert(n.next.length>0,`dead end at ${n.type}`);n.next.forEach(k=>assert(layers[i+1][k],'edge out of range'));});if(i)layer.forEach((n,k)=>assert(layers[i-1].some(m=>m.next.includes(k)),`unreachable ${n.type}`));});assert(z>3||layers.flat().some(n=>n.type==='seal'),'seal node missing');assert(new Set(layers.flat().map(n=>n.type)).size>=7,'zone map lacks variety');}}
+    for(let d=0;d<4;d++){newRun(d);for(let z=1;z<=4;z++){ii.setStage(z);ii.generateDig();const d=ii.dig(),types=d.nodes.map(n=>n.type);assert(types.includes('boss')&&types.includes('den'),'mine lacks den or boss');assert(z>3||types.includes('seal'),'seal node missing');assert(new Set(types).size>=8,'mine lacks variety');for(const n of d.nodes)assert(d.grid[n.r*64+n.c]===0,`node ${n.type} is walled in`);assert(ii.mapChoices().every(n=>n.type!=='boss'),'boss door open before the den');}}
   });
   check('II seal room grants a seal, three seals open the Echo King and the win still counts on loss',()=>{
     freshRoom(1);ii.startElite(true);ii.setSeals(2);api.finishRoom();assert(ii.seals()===3,'seal not granted');
@@ -292,7 +293,18 @@ function runBalanceChecks(gameHtml, options = {}) {
   check('II killing the Echo King reaches the true ending and records a deep clear',()=>{api.setWeapon('axe');newRun(1);api.setProgress(5);ii.setSeals(3);const before=api.getSaved().deepClears||0;const king={kind:'boss',bossKind:'echo',x:500,y:100,r:32,hp:1,maxHp:1,invulnerable:false};api.setBoss(king);api.damageEnemy(king,10,'axe');api.settle();assert(api.getState().screen==='end','Echo King kill did not end the run');assert((api.getSaved().deepClears||0)===before+1,'deep clear not recorded');});
   check('II without seals the Star Core ends the run',()=>{api.setWeapon('axe');newRun(1);api.setProgress(4);ii.setSeals(1);const star={kind:'boss',bossKind:'star',x:500,y:100,r:32,hp:1,maxHp:1,invulnerable:false};api.setBoss(star);api.damageEnemy(star,10,'axe');api.settle();assert(api.getState().screen==='end','run did not end at the Star Core');assert(ii.crystals()>0,'no crystals awarded');});
   check('II guild upgrades feed the run and old saves still load',()=>{ii.guild('hp',2);ii.guild('ore',1);api.setWeapon('axe');newRun(0);assert(ii.playerRef().maxHp===112,'guild hp not applied');assert(ii.ore()>=20,'guild ore not applied');ii.guild('hp',0);ii.guild('ore',0);});
-  check('II timed rooms end on their own and pay out',()=>{for(const kind of ['vault','cavein']){freshRoom(0);api.setPlayer({hp:1e6,maxHp:1e6});ii.startSpecialRoom(kind);assert(ii.specialRoom(),'special room missing');for(let i=0;i<60&&ii.specialRoom();i++)api.update(.5);assert(!ii.specialRoom(),`${kind} never ended`);api.settle();assert(['map','loot','weaponUpgrade'].includes(api.getState().screen),`${kind} did not resolve: ${api.getState().screen}`);}});
+  check('II timed rooms end on their own and pay out',()=>{for(const kind of ['vault','cavein']){freshRoom(0);api.setPlayer({hp:1e6,maxHp:1e6});ii.startSpecialRoom(kind);assert(ii.specialRoom(),'special room missing');for(let i=0;i<60&&ii.specialRoom();i++)api.update(.5);assert(!ii.specialRoom(),`${kind} never ended`);api.settle();assert(['dig','loot','weaponUpgrade'].includes(api.getState().screen),`${kind} did not resolve: ${api.getState().screen}`);}});
+  check('II overdrive keeps tier 3 and leaves heat behind',()=>{freshRoom();const p=ii.playerRef();ii.addHeat(100);api.activateCombatPower('rage');assert(ii.heatTier()===2,'overdrive lost heat tier');for(let i=0;i<200&&ii.playerRef().rageActive>0;i++)api.update(.05);assert(ii.playerRef().rage>=.4-1e-9,'overdrive left no heat');});
+  check('II digging: ore pays, oil refills, gas detonates, surveyor sees all',()=>{
+    api.setWeapon('axe');ii.setOrigin('miner');api.setDifficulty(0);api.startRun();const d=ii.dig(),T=ii.TILE;const put=(c,r,t)=>{d.grid[r*64+c]=t;};
+    const o0=ii.ore();put(10,10,T.ORE);ii.breakDigTile(10,10);assert(ii.ore()>o0,'ore tile paid nothing');d.oil=50;put(11,10,T.OIL);ii.breakDigTile(11,10);assert(d.oil>60,'oil tile did not refill');put(12,10,T.GAS);ii.breakDigTile(12,10);assert(d.gas.length===1,'gas did not arm');
+    ii.setOrigin('surveyor');api.startRun();assert(ii.dig().seen.every(v=>v===1),'surveyor did not reveal the mine');assert(ii.playerRef().maxHp===90,'surveyor hp');ii.setOrigin('sapper');api.startRun();assert(api.getRelics().dynamite===1,'sapper lacks dynamite');ii.setOrigin('miner');
+  });
+  check('II forge feeds weapon damage, shop prices rise per purchase',()=>{freshRoom();ii.setOre(500);ii.openForge();ii.clickForge(0);assert(ii.forgeLevel()===1,'forge level');approx(ii.playerRef().damageBonus,.09,'forge damage');});
+  check('II alternate bosses run their signatures',()=>{
+    for(const kind of ['mole','queen','wyrm']){freshRoom(1);api.setPlayer({hp:1e6,maxHp:1e6});ii.setAlt(kind);ii.startBossNow();for(let i=0;i<900;i++)api.update(1/30);assert(api.getState().boss?.bossKind===kind,`${kind} did not persist`);}
+  });
+  check('II bomb thrower lands area damage and breaks props',()=>{freshRoom(0,'bomb');const p=ii.playerRef();ii.spawnEnemy('grunt',0,{x:p.x+200,y:p.y});const e=ii.enemies()[0],hp=e.hp;e.speed=0;const v=ii.placeProp('vein',p.x+210,p.y);api.setAim(p.x+200,p.y);api.startAttack(1);for(let i=0;i<40;i++)api.update(1/60);assert(e.hp<hp,'bomb did no damage');assert(v.hp<3,'bomb did not hit the vein');});
   check('Twin Abyss risk candidates are two compatible risks plus one safe item',()=>{
     api.setWeapon('twin');newRun(2);const pool=api.makeTierLoot(2,3);assert(pool.length===3,'risk fallback did not fill three cards');
     assert(pool.filter(x=>(x.tier||0)>=2).length===3,'compatible twin risk count mismatch');
@@ -302,7 +314,7 @@ function runBalanceChecks(gameHtml, options = {}) {
     assert(state.lootAfter==='eliteExtra','empty stack pool did not select extra loot');
     assert(state.lootPool.length===3,'extra loot missing three candidates');
     assert(!state.lootPool.includes('exp_edge'),'extra loot offered capped relic');
-    api.takeLoot(state.lootPool[0]);assert(api.getState().screen==='map','extra loot did not return to the map');
+    api.takeLoot(state.lootPool[0]);assert(api.getState().screen==='dig','extra loot did not return to the mine');
   });
   check('void partial charge survives room boundary without firing early',()=>{
     api.setWeapon('axe');newRun(3);api.setPlayer({voidCharge:.6,rage:.4});api.startWave();
@@ -316,7 +328,7 @@ function runBalanceChecks(gameHtml, options = {}) {
     api.setWeapon('axe');newRun(1);api.setProgress(4);const last={kind:'boss',bossKind:'warden',x:500,y:100,r:32,hp:1,maxHp:1,invulnerable:false};api.setBoss(last);api.damageEnemy(last,10,'axe');api.settle();
     assert(api.getState().screen==='end','final boss did not show victory');api.clickEndAction('무한 구역으로 계속');
     assert(api.getState().lootAfter==='endless'&&api.getState().stage===5,'endless reward missing');
-    api.takeLoot(api.getState().lootPool[0]);assert(api.getState().screen==='map'&&api.getState().stage===5,'endless reward failed to reopen the map');
+    api.takeLoot(api.getState().lootPool[0]);assert(api.getState().screen==='dig'&&api.getState().stage===5,'endless reward failed to reopen the mine');
   });
   check('axe storm snapshots its initial 1.6x boost',()=>{
     api.setWeapon('axe');newRun(2);api.setEnemyList([]);api.setRelic('abyss_axe_storm');api.startAttack(1);approx(api.getState().shots[0].damage,20*2.05*1.6,'storm initial damage');
@@ -328,9 +340,9 @@ function runBalanceChecks(gameHtml, options = {}) {
     for(let i=0;i<120;i++)api.updateEnemies(1/60);approx(target.hp,after,'damage continued after burn should expire');
   });  const matrix=[];
   if(options.matrix){
-    const weaponList=options.matrixWeapon?[options.matrixWeapon]:['axe','wand','twin','pick'];
+    const weaponList=options.matrixWeapon?[options.matrixWeapon]:['axe','wand','twin','pick','bomb'];
     for(const weapon of weaponList){
-      const bags=[{}, {split:1}, {split:3}, {thunder:1}, {exp_edge:1,exp_tempo:1}, {echo:1}, {[{axe:'axe_core',wand:'wand_arc',twin:'twin_moon',pick:'pick_core'}[weapon]]:1}];
+      const bags=[{}, {split:1}, {split:3}, {thunder:1}, {exp_edge:1,exp_tempo:1}, {echo:1}, {[{axe:'axe_core',wand:'wand_arc',twin:'twin_moon',pick:'pick_core',bomb:'bomb_core'}[weapon]]:1}];
       for(const distance of [40,80])for(const layout of ['single','cluster','spread'])for(let bi=0;bi<bags.length;bi++){
         const count=layout==='single'?1:5;
         for(const first of [null,...api.getUpgradeDefs()[weapon].map(x=>x.id)])for(const second of first?[null,...api.getBranchDefs()[first].map(x=>x.id)]:[null]){

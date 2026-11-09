@@ -63,10 +63,11 @@ function runBalanceSimulation(gameHtml, options = {}) {
   const requestAnimationFrame = () => 0;
   const sourceMatch = gameHtml.match(/<script\b[^>]*>([\s\S]*?)<\/script>/i);
   if (!sourceMatch) throw new Error('index.html has no inline game script');
-  const injection = `globalThis.__balanceGame = {
-    startRun, update, chooseRoute, takeLoot, chooseWeaponUpgrade, tryDash, activateCombatPower, chooseMapNode, mapChoices, advanceZone,
-    panelCards(){return $('lootCards').children.filter(c=>c.listeners.click&&!c.disabled);}, setGuild(next){saved.guild=next;if(next.pick&&!saved.unlockedWeapons.includes('pick'))saved.unlockedWeapons.push('pick');},
-    get extra(){return {seals,ore,oreEarned,heat:player?.rage||0,props:props.length,balanceEvents};},
+  const tripCost = options.tripCost ?? 19;
+  const injection = `const tripCost=${tripCost};globalThis.__balanceGame = {
+    startRun, update, chooseRoute, takeLoot, chooseWeaponUpgrade, tryDash, activateCombatPower, chooseMapNode, mapChoices, advanceZone, travelTo(node){dig.oil=Math.max(0,dig.oil-tripCost);chooseMapNode(node);}, get oil(){return dig?dig.oil:0;},
+    panelCards(){return $('lootCards').children.filter(c=>c.listeners.click&&!c.disabled);}, setGuild(next){saved.guild=next;if(next.pick&&!saved.unlockedWeapons.includes('pick'))saved.unlockedWeapons.push('pick');if(next.bomb&&!saved.unlockedWeapons.includes('bomb'))saved.unlockedWeapons.push('bomb');},
+    get extra(){return {forgeLevel,seals,ore,oreEarned,heat:player?.rage||0,props:props.length,balanceEvents};},
     setMouse(x,y){mouse.x=x;mouse.y=y;}, setKeys(next){keys=next;}, setFiring(value){mouse.down=value;},
     setDifficulty(value){difficulty=value;}, setWeapon(value){selectedWeapon=value;},
     get state(){return {props,screen,phase,stage,roomCount,runTime,kills,player,enemies,bullets,shots,hazards,obstacles,lootPool,lootAfter,boss,saved,relicBag,mouse,keys};},
@@ -132,13 +133,13 @@ function runBalanceSimulation(gameHtml, options = {}) {
   }
   function drive() {
     const s=game.state;
-    if(s.screen==='map') {
-      const choices=game.mapChoices(), hpRatio=s.player.hp/s.player.maxHp;
-      const order=routeStrategy==='seal'?['seal','boss','den','chest','shrine','vault','wave','elite','vein','cavein','shop','event']
-        :routeStrategy==='elite'?['boss','den','elite','chest','wave','vein','vault','shrine','cavein','shop','event','seal']
-        :routeStrategy==='shrine'?['boss','den','shrine','chest','wave','vein','vault','cavein','elite','shop','event','seal']
-        :hpRatio<.55?['boss','den','shrine','chest','vault','vein','wave','shop','cavein','elite','event','seal']:['boss','den','chest','elite','vein','vault','wave','shop','shrine','cavein','event','seal'];
-      game.chooseMapNode(order.map(t=>choices.find(n=>n.type===t)).find(Boolean)||choices[0]); return;
+    if(s.screen==='dig') {
+      const allChoices=game.mapChoices(), hpRatio=s.player.hp/s.player.maxHp, keep=allChoices.filter(n=>game.oil<24||!['den','boss'].includes(n.type)), choices=keep.length&&game.oil>=24?keep:allChoices.filter(n=>['den','boss'].includes(n.type));
+      const order=routeStrategy==='seal'?['seal','boss','den','chest','forge','shrine','vault','wave','elite','vein','cavein','shop','event']
+        :routeStrategy==='elite'?['boss','den','elite','chest','forge','wave','vein','vault','shrine','cavein','shop','event','seal']
+        :routeStrategy==='shrine'?['boss','den','shrine','chest','forge','wave','vein','vault','cavein','elite','shop','event','seal']
+        :hpRatio<.55?['boss','den','shrine','chest','forge','vault','vein','wave','shop','cavein','elite','event','seal']:['boss','den','chest','forge','elite','vein','vault','wave','shop','shrine','cavein','event','seal'];
+      game.travelTo(order.map(t=>choices.find(n=>n.type===t)).find(Boolean)||choices[0]); return;
     }
     if(s.screen==='loot') {
       if(s.lootAfter==='shop'){const buy=game.panelCards().find(c=>!c.className.includes('sold'));if(buy&&!buy._tried){buy._tried=true;buy.listeners.click[0]();return;}game.advanceZone();return;}
@@ -158,8 +159,8 @@ function runBalanceSimulation(gameHtml, options = {}) {
     if(target){game.setMouse(target.x,target.y);game.setFiring(true);}else game.setFiring(false);
     if(p.rage>=1&&p.rageActive<=0)game.activateCombatPower('rage');
     if(p.adrenaline>=1&&p.adrenalineActive<=0)game.activateCombatPower('adrenaline');
-    let ideal= p.weapon==='twin'?125:p.weapon==='pick'?(p.weaponUpgrade==='pick_drill'?135:105):p.weapon==='axe'?155:250;
-    if(bossTarget)ideal=p.weapon==='twin'?120:p.weapon==='pick'?(p.weaponUpgrade==='pick_drill'?135:100):p.weapon==='axe'?155:230;if(p.weaponUpgrade==='twin_orbit')ideal=p.weaponUpgrade2==='twin_orbit_reach'?54:40;
+    let ideal= p.weapon==='bomb'?240:p.weapon==='twin'?125:p.weapon==='pick'?(p.weaponUpgrade==='pick_drill'?135:105):p.weapon==='axe'?155:250;
+    if(bossTarget)ideal=p.weapon==='bomb'?240:p.weapon==='twin'?120:p.weapon==='pick'?(p.weaponUpgrade==='pick_drill'?135:100):p.weapon==='axe'?155:230;if(p.weaponUpgrade==='twin_orbit')ideal=p.weaponUpgrade2==='twin_orbit_reach'?54:40;
     const targetDistance=target?hypot(target.x-p.x,target.y-p.y):Infinity;
     if(target!==lastNavTarget){lastNavTarget=target;lastDistance=targetDistance;lastProgressAt=s.runTime;navPath=null;lastPlanAt=-Infinity;}
     if(target&&targetDistance+8<lastDistance){lastDistance=targetDistance;lastProgressAt=s.runTime;}
