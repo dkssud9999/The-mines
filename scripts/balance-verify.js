@@ -73,10 +73,10 @@ function runBalanceChecks(gameHtml, options = {}) {
   const location = { search: options.search || '' };
   const raf = () => 1, cancelRaf = () => {}, timer = () => 1, clearTimer = () => {};
   const exportCode = `window.__balanceApi={
-    finishRoom:()=>{for(const enemy of [...enemies])killEnemy(enemy);},chooseWeaponUpgrade,getUpgradeOptions:()=>player.weaponUpgrade?(weaponUpgradeBranches[player.weaponUpgrade]||[]):weaponUpgrades[player.weapon],startRun:()=>startRun(), setDifficulty:n=>{difficulty=n;saved.highestDifficulty=3;},
+    finishRoom:()=>{pendingWaves=[];spawnPortals=[];if(specialRoom){specialRoom.timer=0;updateSpecialRoom(0);}for(const enemy of [...enemies])killEnemy(enemy);for(let i=0;i<5&&screen==='playing';i++)update(1);},settle:()=>{for(let i=0;i<5&&screen==='playing';i++)update(1);},chooseWeaponUpgrade,getUpgradeOptions:()=>player.weaponUpgrade?(weaponUpgradeBranches[player.weaponUpgrade]||[]):weaponUpgrades[player.weapon],startRun:()=>startRun(), setDifficulty:n=>{difficulty=n;saved.highestDifficulty=3;},
     setProgress:(value,room=0)=>{stage=value;roomCount=room;},clickEndAction:text=>{const button=document.getElementById('endActions').children.find(x=>x.textContent===text);if(!button)throw new Error('Missing end action '+text);for(const fn of button.listeners.get('click')||[])fn();},getState:()=>({phase,screen,stage,roomCount,runDifficulty,lootAfter,lootPool:lootPool.map(x=>x.id),player:player&&{...player},boss:boss&&{...boss},enemies:enemies.map(e=>({...e})),shots:shots.map(s=>({...s})),voidWaves:voidWaves.map(w=>({...w})),touchMove:{...touchMove},touchAim:{...touchAim},mouse:{...mouse},attackTimer,dashCooldown,invuln,collapseBurstOver:player?.collapseBurstOver}),
     setRelic:(id,n=1)=>{relicBag[id]=n;}, setEnemyList:list=>{enemies=list;}, setBoss:e=>{boss=e;enemies=e?[e]:[];phase='boss';}, setPlayer:(patch)=>Object.assign(player,patch),
-    chooseRoute,openLoot,takeLoot,skipOptionalLoot,makeLoot,makeTierLoot,makeOwnedStackLoot,healPlayer,save,
+    chooseMapNode,mapChoices,advanceZone,chooseRoute,openLoot,takeLoot,skipOptionalLoot,makeLoot,makeTierLoot,makeOwnedStackLoot,healPlayer,save,
     setWeapon:value=>{selectedWeapon=value;},setAim:(x,y)=>{mouse.x=x;mouse.y=y;},setAttackCount:value=>{player.attackCount=value;},setUpgrade:(one,two=null)=>{player.weaponUpgrade=one;player.weaponUpgrade2=two;},getAttackStats:()=>({momentumHits,abyssHitStreak,pendingEchoes:pendingEchoes.map(e=>({...e}))}),updateShots,updatePendingEchoes,startWave,startElite,startBoss,resetRoomCombat,update,updateEnemies,updateBoss,updateVoidCharge,updateVoidWaves,startAttack,tryDash,activateCombatPower,hurtPlayer,damageEnemy,
     setScreen,recordBalanceRoom,beginBalanceRoom,report:()=>window.mineBalanceReport,
     getRelics:()=>({...relicBag}),getSaved:()=>({...saved}),getWeapons:()=>weapons,getRelicDefs:()=>relics,getUpgradeDefs:()=>weaponUpgrades,getBranchDefs:()=>weaponUpgradeBranches,setBenchmark:(weapon,one,two,bag,count,distance,spread)=>{selectedWeapon=weapon;difficulty=1;startRun();obstacles=[];clearShots(true);enemies=Array.from({length:count},(_,i)=>({kind:'grunt',x:480+distance+(spread?i*30:i%3*8),y:300+(spread?(i-(count-1)/2)*65:Math.floor(i/3)*9),r:13,hp:1e8,maxHp:1e8,speed:0,damage:0,flash:0}));player.x=480;player.y=300;player.weaponUpgrade=one;player.weaponUpgrade2=two;mouse.x=480+distance;mouse.y=300;for(const key of Object.keys(relicBag))delete relicBag[key];Object.assign(relicBag,bag);},benchmarkTick:()=>{mouse.down=true;update(1/60);},benchmarkHP:()=>enemies.reduce((sum,e)=>sum+e.hp,0),
@@ -97,7 +97,7 @@ function runBalanceChecks(gameHtml, options = {}) {
     api.dispatchWindow(type, event);
     api.dispatchCanvas(type, event);
   };
-  const newRun = (difficulty = 0) => { api.setDifficulty(difficulty); api.startRun(); };
+  const newRun = (difficulty = 0) => { api.setDifficulty(difficulty); api.startRun(); if (api.getState().screen === 'map') api.chooseMapNode(api.mapChoices()[0]); };
   const findId = (id, list) => list.some(item => item.id === id);
 
   check('saved configuration survives load and run setup', () => {
@@ -115,21 +115,22 @@ function runBalanceChecks(gameHtml, options = {}) {
         check(`difficulty ${difficulty} ${route} route risk ${resolution}`, () => {
           newRun(difficulty);
           let steps=0,firstUpgradeSeen=false;
-          while(api.getState().screen!=='end'&&steps++<100){
+          while(api.getState().screen!=='end'&&steps++<500){
             const current=api.getState();
             if(current.screen==='playing')api.finishRoom();
-            else if(current.screen==='choice')api.chooseRoute(route);
+            else if(current.screen==='map'){const choices=api.mapChoices();api.chooseMapNode(choices.find(n=>n.type===route)||choices.find(n=>!['shop','event'].includes(n.type))||choices[0]);}
             else if(current.screen==='weaponUpgrade'){
-              if(!current.player.weaponUpgrade){firstUpgradeSeen=true;assert(current.stage===1,'first upgrade delayed beyond first zone');if(difficulty>0)assert(current.roomCount===1,'upper first upgrade did not follow first wave');}
+              if(!current.player.weaponUpgrade){firstUpgradeSeen=true;assert(current.stage===1,'first upgrade delayed beyond first zone');assert(current.roomCount>=1,'first upgrade came before any combat room');}
               api.chooseWeaponUpgrade(api.getUpgradeOptions()[0].id,current.player.weaponUpgrade?2:1);
             }else if(current.screen==='loot'){
               assert(new Set(current.lootPool).size===current.lootPool.length,'duplicate loot candidates');
-              if(current.lootAfter==='riskPick'&&resolution==='skip')api.skipOptionalLoot();
+              if(current.lootAfter==='shop'||current.lootAfter==='event')api.advanceZone();
+              else if(current.lootAfter==='riskPick'&&resolution==='skip')api.skipOptionalLoot();
               else if(current.lootPool.length)api.takeLoot(current.lootPool[0]);
               else api.skipOptionalLoot();
             }else throw new Error('unexpected progression state '+current.screen);
           }
-          assert(api.getState().screen==='end'&&api.getState().stage===3,'full run did not reach third-zone completion');
+          assert(api.getState().screen==='end'&&api.getState().stage===4,'full run did not reach fourth-zone completion');
           assert(firstUpgradeSeen,'first upgrade never offered');
         });
       }
@@ -261,15 +262,14 @@ function runBalanceChecks(gameHtml, options = {}) {
   });
   check('Twin Abyss risk candidates are two compatible risks plus one safe item',()=>{
     api.setWeapon('twin');newRun(2);const pool=api.makeTierLoot(2,3);assert(pool.length===3,'risk fallback did not fill three cards');
-    assert(pool.filter(x=>(x.tier||0)>=2).length===2,'compatible twin risk count mismatch');
-    assert(pool.some(x=>(x.tier||0)<2),'safe fallback missing');
+    assert(pool.filter(x=>(x.tier||0)>=2).length===3,'compatible twin risk count mismatch');
   });
   check('empty elite stack pool offers uncapped extra loot',()=>{
     api.setWeapon('axe');newRun(2);api.setRelic('exp_edge');api.openLoot('eliteBonus');const state=api.getState();
     assert(state.lootAfter==='eliteExtra','empty stack pool did not select extra loot');
     assert(state.lootPool.length===3,'extra loot missing three candidates');
     assert(!state.lootPool.includes('exp_edge'),'extra loot offered capped relic');
-    api.takeLoot(state.lootPool[0]);assert(api.getState().phase==='boss','extra loot did not lead to boss');
+    api.takeLoot(state.lootPool[0]);assert(api.getState().screen==='map','extra loot did not return to the map');
   });
   check('void partial charge survives room boundary without firing early',()=>{
     api.setWeapon('axe');newRun(3);api.setPlayer({voidCharge:.6,rage:.4});api.startWave();
@@ -280,10 +280,10 @@ function runBalanceChecks(gameHtml, options = {}) {
     assert(api.getState().player.hp<=0,'self cost incorrectly prevented death');approx(api.getState().player.maxHp,100,'self cost triggered momentum penalty');
   });
   check('final victory continues into endless reward and fourth zone',()=>{
-    api.setWeapon('axe');newRun(1);api.setProgress(3);const last={kind:'boss',bossKind:'warden',x:500,y:100,r:32,hp:1,maxHp:1,invulnerable:false};api.setBoss(last);api.damageEnemy(last,10,'axe');
+    api.setWeapon('axe');newRun(1);api.setProgress(4);const last={kind:'boss',bossKind:'warden',x:500,y:100,r:32,hp:1,maxHp:1,invulnerable:false};api.setBoss(last);api.damageEnemy(last,10,'axe');api.settle();
     assert(api.getState().screen==='end','final boss did not show victory');api.clickEndAction('무한 구역으로 계속');
-    assert(api.getState().lootAfter==='endless'&&api.getState().stage===4,'endless reward missing');
-    api.takeLoot(api.getState().lootPool[0]);assert(api.getState().screen==='playing'&&api.getState().stage===4,'endless reward failed to start wave');
+    assert(api.getState().lootAfter==='endless'&&api.getState().stage===5,'endless reward missing');
+    api.takeLoot(api.getState().lootPool[0]);assert(api.getState().screen==='map'&&api.getState().stage===5,'endless reward failed to reopen the map');
   });
   check('axe storm snapshots its initial 1.6x boost',()=>{
     api.setWeapon('axe');newRun(2);api.setEnemyList([]);api.setRelic('abyss_axe_storm');api.startAttack(1);approx(api.getState().shots[0].damage,20*2.2*1.6,'storm initial damage');

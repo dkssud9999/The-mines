@@ -19,7 +19,8 @@ function runBalanceSimulation(gameHtml, options = {}) {
 
   class MockElement {
     constructor(id = '') {
-      this.id = id; this.children = []; this.style = { setProperty() {} };
+      this.id = id; this.children = []; this.style = { setProperty() {} }; this._html = '';
+      Object.defineProperty(this, 'innerHTML', { get: () => this._html, set: v => { this._html = v; this.children = []; } });
       this.dataset = {}; this.className = ''; this.textContent = ''; this.title = '';
       this.disabled = false; this.listeners = Object.create(null);
       const classes = new Set();
@@ -63,7 +64,9 @@ function runBalanceSimulation(gameHtml, options = {}) {
   const sourceMatch = gameHtml.match(/<script\b[^>]*>([\s\S]*?)<\/script>/i);
   if (!sourceMatch) throw new Error('index.html has no inline game script');
   const injection = `globalThis.__balanceGame = {
-    startRun, update, chooseRoute, takeLoot, chooseWeaponUpgrade, tryDash, activateCombatPower,
+    startRun, update, chooseRoute, takeLoot, chooseWeaponUpgrade, tryDash, activateCombatPower, chooseMapNode, mapChoices, advanceZone,
+    panelCards(){return $('lootCards').children.filter(c=>c.listeners.click&&!c.disabled);}, setGuild(next){saved.guild=next;if(next.pick&&!saved.unlockedWeapons.includes('pick'))saved.unlockedWeapons.push('pick');},
+    get extra(){return {seals,ore,oreEarned,heat:player?.rage||0,props:props.length,balanceEvents};},
     setMouse(x,y){mouse.x=x;mouse.y=y;}, setKeys(next){keys=next;}, setFiring(value){mouse.down=value;},
     setDifficulty(value){difficulty=value;}, setWeapon(value){selectedWeapon=value;},
     get state(){return {screen,phase,stage,roomCount,runTime,kills,player,enemies,bullets,shots,hazards,obstacles,lootPool,lootAfter,boss,saved,relicBag,mouse,keys};},
@@ -80,12 +83,13 @@ function runBalanceSimulation(gameHtml, options = {}) {
   );
   const game = globalThis.__balanceGame;
   delete globalThis.__balanceGame;
+  if(options.guild)game.setGuild(options.guild);
   game.setDifficulty(difficulty); game.setWeapon(weapon); game.startRun();
 
   const hypot = Math.hypot;
   const normalize = (x,y) => { const n=hypot(x,y)||1; return [x/n,y/n]; };
   function targetFor(state) {
-    return state.enemies.filter(e => e.hp>0 && !(e.kind==='boss'&&e.invulnerable))
+    return state.enemies.filter(e => e.hp>0 && !e.under && !(e.kind==='boss'&&e.invulnerable))
       .sort((a,b)=>hypot(a.x-state.player.x,a.y-state.player.y)-hypot(b.x-state.player.x,b.y-state.player.y))[0] || null;
   }
   let rewardIndex=0,riskPicked=false;
@@ -128,12 +132,20 @@ function runBalanceSimulation(gameHtml, options = {}) {
   }
   function drive() {
     const s=game.state;
-    if(s.screen==='choice') {
-      const hpRatio=s.player.hp/s.player.maxHp;
-      const route=routeStrategy==='elite'?'elite':routeStrategy==='shrine'?'shrine':hpRatio<.55?'shrine':'elite';
-      game.chooseRoute(route); return;
+    if(s.screen==='map') {
+      const choices=game.mapChoices(), hpRatio=s.player.hp/s.player.maxHp;
+      const order=routeStrategy==='seal'?['seal','boss','den','chest','shrine','vault','wave','elite','vein','cavein','shop','event']
+        :routeStrategy==='elite'?['boss','den','elite','chest','wave','vein','vault','shrine','cavein','shop','event','seal']
+        :routeStrategy==='shrine'?['boss','den','shrine','chest','wave','vein','vault','cavein','elite','shop','event','seal']
+        :hpRatio<.55?['boss','den','shrine','chest','vault','vein','wave','shop','cavein','elite','event','seal']:['boss','den','chest','elite','vein','vault','wave','shop','shrine','cavein','event','seal'];
+      game.chooseMapNode(order.map(t=>choices.find(n=>n.type===t)).find(Boolean)||choices[0]); return;
     }
-    if(s.screen==='loot') { chooseReward(s); return; }
+    if(s.screen==='loot') {
+      if(s.lootAfter==='shop'){const buy=game.panelCards().find(c=>!c.className.includes('sold'));if(buy&&!buy._tried){buy._tried=true;buy.listeners.click[0]();return;}game.advanceZone();return;}
+      if(s.lootAfter==='event'){const cards=game.panelCards();cards[cards.length-1].listeners.click[0]();return;}
+      if(s.lootAfter==='deepGate'){game.panelCards()[0].listeners.click[0]();return;}
+      chooseReward(s); return;
+    }
     if(s.screen==='weaponUpgrade') {
       const options=game.upgradeOptions;
       const requestedId=s.player.weaponUpgrade?upgrade2:upgrade1;
@@ -146,8 +158,8 @@ function runBalanceSimulation(gameHtml, options = {}) {
     if(target){game.setMouse(target.x,target.y);game.setFiring(true);}else game.setFiring(false);
     if(p.rage>=1&&p.rageActive<=0)game.activateCombatPower('rage');
     if(p.adrenaline>=1&&p.adrenalineActive<=0)game.activateCombatPower('adrenaline');
-    let ideal= p.weapon==='twin'?125:p.weapon==='axe'?155:250;
-    if(bossTarget)ideal=p.weapon==='twin'?120:p.weapon==='axe'?155:230;if(p.weaponUpgrade==='twin_orbit')ideal=p.weaponUpgrade2==='twin_orbit_reach'?54:40;
+    let ideal= p.weapon==='twin'?125:p.weapon==='pick'?(p.weaponUpgrade==='pick_drill'?135:105):p.weapon==='axe'?155:250;
+    if(bossTarget)ideal=p.weapon==='twin'?120:p.weapon==='pick'?(p.weaponUpgrade==='pick_drill'?135:100):p.weapon==='axe'?155:230;if(p.weaponUpgrade==='twin_orbit')ideal=p.weaponUpgrade2==='twin_orbit_reach'?54:40;
     const targetDistance=target?hypot(target.x-p.x,target.y-p.y):Infinity;
     if(target!==lastNavTarget){lastNavTarget=target;lastDistance=targetDistance;lastProgressAt=s.runTime;navPath=null;lastPlanAt=-Infinity;}
     if(target&&targetDistance+8<lastDistance){lastDistance=targetDistance;lastProgressAt=s.runTime;}
@@ -208,7 +220,7 @@ function runBalanceSimulation(gameHtml, options = {}) {
     time:+final.runTime.toFixed(2),kills:final.kills,zone:final.stage,phase:final.phase,
     hp:final.player?+final.player.hp.toFixed(1):0,maxHp:final.player?+final.player.maxHp.toFixed(1):0,
     upgrades:final.player?[final.player.weaponUpgrade,final.player.weaponUpgrade2].filter(Boolean):[],
-    relics:{...final.relicBag},rooms:report.rooms,steps
+    relics:{...final.relicBag},rooms:report.rooms,steps,...(game.extra?{extra:game.extra}:{})
   };
 }
 
