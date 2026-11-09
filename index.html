@@ -1718,7 +1718,7 @@
   }
   function updateVoidWaves(dt){
     for(let i=voidWaves.length-1;i>=0;i--){
-      const wave=voidWaves[i];wave.radius=Math.min(wave.maxRadius,wave.radius+wave.speed*dt);
+      const wave=voidWaves[i];if(!wave)continue;wave.radius=Math.min(wave.maxRadius,wave.radius+wave.speed*dt);
       for(const enemy of enemies){if(wave.hit.has(enemy))continue;if(dist(enemy,wave)<=wave.radius+enemy.r){wave.hit.add(enemy);if(enemy.kind!=='boss'||enemy.act==='combat'&&!enemy.invulnerable)enemy.stunTimer=Math.max(enemy.stunTimer||0,5);burst(enemy.x,enemy.y,'#bd83ff',8);}}
       if(wave.radius>=wave.maxRadius){voidWaves.splice(i,1);if(!voidWaves.length&&player)player.voidCharge=0;}
     }
@@ -1799,7 +1799,7 @@
   function startShotReturn(s){if(s.returning)return;s.returning=true;s.hit.clear();if(s.kind==='axe'&&s.upgrade==='axe_return_cut'&&player.weaponUpgrade2==='axe_return_split'&&!s.returnSplinter){s.returnSplinter=true;for(const direction of [-1,1]){const angle=s.angle+direction*.42,damage=s.damage*.48;shots.push({kind:'axe',x:s.x,y:s.y,vx:Math.cos(angle)*weapons.axe.speed*.78,vy:Math.sin(angle)*weapons.axe.speed*.78,angle,age:0,returnAt:.3,life:.9,returning:false,returnSplinter:true,hit:new Set(),landedHit:false,damage,pierce:999,spin:0,upgrade:'axe_return_cut',attackContext:s.attackContext,missState:s.attackContext});retainAttackContext(s.attackContext);}}}
   function removeShotAt(index){const shot=shots.splice(index,1)[0];if(shot)releaseAttackContext(shot.attackContext);}
   function updateShots(dt){
-    for(let i=shots.length-1;i>=0;i--){if(screen!=='playing')return;const s=shots[i],prevX=s.x,prevY=s.y;s.life-=dt;s.spin+=dt*15;
+    for(let i=shots.length-1;i>=0;i--){if(screen!=='playing')return;if(!shots[i])continue;const s=shots[i],prevX=s.x,prevY=s.y;s.life-=dt;s.spin+=dt*15;
       if(s.kind==='bomb'){s.age+=dt;const k=clamp(s.age/s.flight,0,1);s.x=s.ox+(s.tx-s.ox)*k;s.y=s.oy+(s.ty-s.oy)*k;s.arc=Math.sin(Math.PI*k)*48;s.spin+=dt*6;if(k>=1){detonateBomb(s);if(screen!=='playing')return;removeShotAt(i);}continue;}
       if(s.kind==='orbiter'){
         s.orbitAngle+=s.orbitSpeed*dt;s.x=player.x+Math.cos(s.orbitAngle)*s.orbitRadius;s.y=player.y+Math.sin(s.orbitAngle)*s.orbitRadius;
@@ -2264,8 +2264,8 @@
     if(e.kind==='maw'){const pressure=e.finalPressure??runDifficulty,a=Math.atan2(player.y-e.y,player.x-e.x),d=dist(e,player),speed=Math.min(e.speed,d*2);moveEntityWithWalls(e,Math.cos(a)*speed*dt,Math.sin(a)*speed*dt);e.fire-=dt;if(e.fire<=0){for(let i=-1;i<=1;i++)enemyShot(e,a+i*.28,pressure===0?175:175+30*pressure,'#ff7694');e.fire=1.7-.35*pressure;}if(d<e.r+parryHitRadius()&&invuln<=0)hurtPlayer(e.damage,undefined,e);}
   }
   function updateHazards(dt){
-    for(let i=hazards.length-1;i>=0;i--){const h=hazards[i];h.timer-=dt;
-      if(h.kind==='footprint'){h.tick-=dt;if(h.tick<=0){for(const e of [...enemies])if(dist(e,h)<e.r+h.r)damageEnemy(e,weapons[player.weapon].damage*.4*(relicBag.abyss_footsteps||1),'footprint');h.tick=.28;}if(h.timer<=0)hazards.splice(i,1);continue;}
+    for(let i=hazards.length-1;i>=0;i--){const h=hazards[i];if(!h)continue;h.timer-=dt;
+      if(h.kind==='footprint'){h.tick-=dt;if(h.tick<=0){for(const e of [...enemies])if(dist(e,h)<e.r+h.r)damageEnemy(e,weapons[player.weapon].damage*.4*(relicBag.abyss_footsteps||1),'footprint');h.tick=.28;}if(h.timer<=0&&hazards[i]===h)hazards.splice(i,1);continue;}
       if(h.kind==='cloud'){const a=Math.atan2(player.y-h.y,player.x-h.x);h.x+=Math.cos(a)*h.speed*dt;h.y+=Math.sin(a)*h.speed*dt;}
       if(h.kind==='well'&&h.phase==='active'){const d=dist(h,player);if(d>3){const a=Math.atan2(h.y-player.y,h.x-player.x),pull=h.pull*Math.min(1,140/Math.max(40,d));moveEntityWithWalls(player,Math.cos(a)*pull*dt,Math.sin(a)*pull*dt);}}
       if(h.phase==='warn'&&h.timer<=0){h.phase='active';h.timer=h.activeTime;if(h.kind==='target'&&h.burstCount>0){for(let j=0;j<h.burstCount;j++)enemyShot({x:h.x,y:h.y},Math.PI*2*j/h.burstCount,190,h.color);}}
@@ -2276,14 +2276,14 @@
         else hit=dist(player,h)<h.r+parryHitRadius();
         if(hit&&invuln<=0)hurtPlayer(h.damage,h.kind==='lane'||h.kind==='sweep'?'장판·레이저':'폭격',h.source);
       }
-      if(h.timer<=0)hazards.splice(i,1);
+      if(h.timer<=0&&hazards[i]===h)hazards.splice(i,1);
     }
   }
   function updateBloodFootsteps(dt){if(!relicBag.abyss_footsteps)return;const speed=Math.hypot(player.moveVX||0,player.moveVY||0);player.trailSpawn=(player.trailSpawn||0)-dt;if(speed>24){player.stationaryTime=0;if(player.trailSpawn<=0){hazards.push({kind:'footprint',x:player.x,y:player.y,r:16,phase:'active',timer:1.35,tick:0,damage:weapons[player.weapon].damage*.4,color:'#bd4b91'});player.trailSpawn=.16;}}else{player.stationaryTime=(player.stationaryTime||0)+dt;if(player.stationaryTime>=1){player.stationaryTime=0;payHealthCost(4,'피의 발자국');floatText(player.x,player.y-18,'-4','#ff7181',14);}}}
   function rayEnd(x,y,a){const dx=Math.cos(a),dy=Math.sin(a),ts=[];if(dx>0)ts.push((W-30-x)/dx);if(dx<0)ts.push((30-x)/dx);if(dy>0)ts.push((H-30-y)/dy);if(dy<0)ts.push((30-y)/dy);const t=Math.min(...ts.filter(v=>v>0));return{x:x+dx*t,y:y+dy*t};}
   function enemyShot(from,angle,speed,color='#e77d8a'){if(relicBag.orb_gravity)speed*=.85;bullets.push({x:from.x,y:from.y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,r:5,color,damage:12,life:4,source:from});if(time-lastEnemyShotSound>.075){lastEnemyShotSound=time;playSound('enemyShot');}}
   function updateBullets(dt){
-    for(let i=bullets.length-1;i>=0;i--){const b=bullets[i];b.life-=dt;
+    for(let i=bullets.length-1;i>=0;i--){const b=bullets[i];if(!b)continue;b.life-=dt;
       if(b.kind==='spiral'){b.angle+=b.spinRate*dt;b.vx=Math.cos(b.angle)*b.speed;b.vy=Math.sin(b.angle)*b.speed;}
       if(b.kind==='giant'&&b.homing>0){b.homing-=dt;const current=Math.atan2(b.vy,b.vx),target=Math.atan2(player.y-b.y,player.x-b.x),turn=Math.atan2(Math.sin(target-current),Math.cos(target-current));b.angle=current+clamp(turn,-dt*1.8,dt*1.8);b.vx=Math.cos(b.angle)*b.speed;b.vy=Math.sin(b.angle)*b.speed;}
       if(b.kind==='feather'){
@@ -2294,7 +2294,7 @@
       if(b.splitAt!==undefined){b.splitAt-=dt;if(b.splitAt<=0){bullets.splice(i,1);const count=b.splitCount||6;for(let j=0;j<count;j++)enemyShot({x:b.x,y:b.y},Math.PI*2*j/count,205,'#ffb3e7');continue;}}
       const blocked=obstacles.some(r=>b.x>r.x&&b.x<r.x+r.w&&b.y>r.y&&b.y<r.y+r.h);
       if(blocked||b.life<=0||b.x<0||b.x>W||b.y<0||b.y>H){bullets.splice(i,1);continue;}
-      if(invuln<=0&&dist(b,player)<b.r+parryHitRadius()){hurtPlayer(b.damage,'탄환',b.source);bullets.splice(i,1);}
+      if(invuln<=0&&dist(b,player)<b.r+parryHitRadius()){hurtPlayer(b.damage,'탄환',b.source);if(bullets[i]===b)bullets.splice(i,1);if(screen!=='playing')return;}
     }
   }
   function updateParryWindow(dt){if(parryWindow<=0)return;parryWindow=Math.max(0,parryWindow-dt);if(parryWindow===0&&relicBag.collapse_parry)parryCooldown=3/relicBag.collapse_parry;}
@@ -2342,7 +2342,7 @@
   }
   function collectAllDrops(){for(const d of drops)if(d.kind==='ore')gainOreValue(d.value);drops=drops.filter(d=>d.kind!=='ore');}
   function updateDrops(dt){
-    for(let i=drops.length-1;i>=0;i--){const d=drops[i];
+    for(let i=drops.length-1;i>=0;i--){const d=drops[i];if(!d)continue;
       if(d.kind!=='ore'){d.life-=dt;if(d.life<=0)drops.splice(i,1);continue;}
       d.age+=dt;const dx=player.x-d.x,dy=player.y-d.y,gap=Math.hypot(dx,dy)||1,vacuum=!!clearTransition,reach=vacuum?9999:magnetRadius();
       if(d.age>.28&&gap<reach){const pull=vacuum?1100:300+(1-gap/reach)*640;d.vx=dx/gap*pull;d.vy=dy/gap*pull;}else{d.vx*=.9;d.vy*=.9;}
