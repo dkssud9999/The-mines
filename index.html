@@ -962,7 +962,7 @@
     // Bosses gain length gradually so the opening boss stays a teacher; the Star Core is already long because of its gated phases.
     const health=(def.kind==='star'||def.kind==='echo'?840:780)*scale*growth.bossBase*(1+(dp().bossHp-1)*(dp().bossRamp||[.6,1,1.4,.5,.7])[biomeIndex()]);
     setupRoomProps('boss');bossIntro=1.25;player.trail=[];
-    boss={kind:'boss',bossKind:def.kind,name:def.name,color:def.color,x:W/2,y:142,r:32,hp:health,maxHp:health,burnScale:(1+(stage-1)*growth.bossPerZone*.55)*difficultyHpMultiplier(runDifficulty),speed:40,phase:1,attack:.78,telegraph:null,flash:0,angle:0,damage:18,act:'combat',hellIndex:0,thresholdIndex:0,hellTimer:0,hellAttack:.2,hellWaves:0,invulnerable:false,finalAct:false,finalPressure:pressure,introBoss:stage===1&&runDifficulty===0&&def.kind==='warden',rageAt:(stage===1&&runDifficulty===0&&def.kind==='warden') ? .4 : .5};
+    boss={kind:'boss',bossKind:def.kind,name:def.name,color:def.color,x:W/2,y:142,r:32,hp:health,maxHp:health,burnScale:scale,speed:40,phase:1,attack:.78,telegraph:null,flash:0,angle:0,damage:18,act:'combat',hellIndex:0,thresholdIndex:0,hellTimer:0,hellAttack:.2,hellWaves:0,invulnerable:false,finalAct:false,finalPressure:pressure,introBoss:stage===1&&runDifficulty===0&&def.kind==='warden',rageAt:(stage===1&&runDifficulty===0&&def.kind==='warden') ? .4 : .5};
     if(balanceRoom){balanceRoom.bossName=def.name;balanceRoom.bossKind=def.kind;balanceRoom.bossHpStart=health;balanceRoom.enemyCountStart=1;balanceRoom.enemyKinds={boss:1};}
     if(relicBag.collapse_frontal)boss.facingAngle=Math.atan2(player.y-boss.y,player.x-boss.x);
     enemies.push(boss);setScreen('playing');playSound('boss');toast(def.name);if(def.kind==='star')beginFinalHell(boss,false);updateHud();
@@ -1216,7 +1216,7 @@
   function startAttack(charge=1){
     if(!player||relicBag.abyss_axe_storm&&player.axeStormOut&&player.weapon==='axe')return;
     const weap=weapons[player.weapon],attackNumber=player.attackCount+1,angle=Math.atan2(mouse.y-player.y,mouse.x-player.x);let damage=weap.damage*(1+(player.damageBonus||0));
-    if(player.weapon==='axe')damage*=1+1.05*clamp(charge,0,1);
+    if(player.weapon==='axe')damage*=1+1.2*clamp(charge,0,1);
     const attackShotStart=shots.length;
     if(relicBag.abyss_gambler){const jackpot=runRandom()<.2;damage*=jackpot?5:.5;floatText(player.x,player.y-22,jackpot?'대박 ×5':'반감','#ffe08a',12);}
     if(relicBag.collapse_cannon&&!player.collapseCannonUsed){player.collapseCannonUsed=true;player.collapseCannonTimer=4;if(!payHealthCost(player.maxHp*.2,'피의 포문'))return;if(balanceRoom)balanceRoom.resourceUses++;floatText(player.x,player.y-24,'피의 포문 ×3','#ff7181',13);}
@@ -1538,7 +1538,7 @@
       if(s.returning&&(s.kind==='axe'||s.kind==='echo'))blocked=false;
       hitPropsByShot(s);if(screen!=='playing')return;
       if(frame%3===0&&particles.length<420&&!(s.kind==='orbiter'||s.orbiting))particles.push({x:s.x,y:s.y,vx:0,vy:0,life:.14,color:s.kind==='bolt'?'#7fdcff':s.kind==='prism'?'#ffe7a2':s.kind==='echo'?'#c79cff':'#e3c26e',size:3+(s.scale||1)});
-      for(const e of [...enemies]){if(!s.hit.has(e)&&dist(s,e)<e.r+8*(s.scale||1)){s.hit.add(e);s.landedHit=true;if(s.missState)s.missState.landed=true;const hitDamage=s.damage*(s.upgrade==='axe_return_cut'&&s.returning?(player.weaponUpgrade2==='axe_return_rend'?2.5:1.6):s.kind==='axe'&&s.returning?.7:1);damageEnemy(e,hitDamage,s.kind,s);
+      for(const e of [...enemies]){if(!s.hit.has(e)&&dist(s,e)<e.r+8*(s.scale||1)){s.hit.add(e);s.landedHit=true;if(s.missState)s.missState.landed=true;const hitDamage=s.damage*(s.upgrade==='axe_return_cut'&&s.returning?(player.weaponUpgrade2==='axe_return_rend'?2.5:1.6):1);damageEnemy(e,hitDamage,s.kind,s);
         const blastPhase=s.returning?'return':'outbound';
         if(s.chargeBlast&&s.charge>=.95&&relicBag.axe_core&&!s.chargeBlastPhases?.[blastPhase]&&!(e.kind==='boss'&&e.invulnerable)){
           s.chargeBlastPhases||={};s.chargeBlastPhases[blastPhase]=true;

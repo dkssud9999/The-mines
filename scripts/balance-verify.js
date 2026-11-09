@@ -340,7 +340,7 @@ function runBalanceChecks(gameHtml, options = {}) {
     api.takeLoot(api.getState().lootPool[0]);assert(api.getState().screen==='dig'&&api.getState().stage===5,'endless reward failed to reopen the mine');
   });
   check('axe storm snapshots its initial 1.6x boost',()=>{
-    api.setWeapon('axe');newRun(2);api.setEnemyList([]);api.setRelic('abyss_axe_storm');api.startAttack(1);approx(api.getState().shots[0].damage,20*2.05*1.6,'storm initial damage');
+    api.setWeapon('axe');newRun(2);api.setEnemyList([]);api.setRelic('abyss_axe_storm');api.startAttack(1);approx(api.getState().shots[0].damage,20*2.2*1.6,'storm initial damage');
   });
   check('burn and lightning cannot refresh each other without another attack',()=>{
     api.setWeapon('wand');newRun(1);api.setPlayer({x:480,y:300});const target={kind:'grunt',x:700,y:300,r:13,hp:1000,maxHp:1000,speed:0,damage:0,flash:0};api.setEnemyList([target]);api.setRelic('ember');api.setRelic('thunder');api.damageEnemy(target,1,'bolt');
